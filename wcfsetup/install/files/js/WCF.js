@@ -3446,14 +3446,14 @@ WCF.MultipleLanguageInput = Class.extend({
 		}
 		
 		var $form = $(this._element.parents('form')[0]);
-		var $elementID = this._element.wcfIdentify();
+		var $elementName = this._element.attr('name');
 		
 		for (var $languageID in this._availableLanguages) {
 			if (this._values[$languageID] === undefined) {
 				this._values[$languageID] = '';
 			}
 			
-			$('<input type="hidden" name="' + $elementID + '_i18n[' + $languageID + ']" value="' + WCF.String.escapeHTML(this._values[$languageID]) + '" />').appendTo($form);
+			$('<input type="hidden" name="' + $elementName + '_i18n[' + $languageID + ']" value="' + WCF.String.escapeHTML(this._values[$languageID]) + '" />').appendTo($form);
 		}
 		
 		// remove name attribute to prevent conflict with i18n values
