@@ -197,11 +197,11 @@ DROP TABLE IF EXISTS wcf1_category;
 CREATE TABLE wcf1_category (
 	categoryID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	objectTypeID INT(10) NOT NULL,
-	parentCategoryID INT(10) NOT NULL,
+	parentCategoryID INT(10) NOT NULL DEFAULT 0,
 	title VARCHAR(255) NOT NULL,
 	description TEXT,
-	showOrder INT(10) NOT NULL,
-	time INT(10) NOT NULL,
+	showOrder INT(10) NOT NULL DEFAULT 0,
+	time INT(10) NOT NULL DEFAULT 0,
 	isDisabled TINYINT(1) NOT NULL DEFAULT 0,
 	additionalData TEXT
 );
@@ -328,10 +328,11 @@ CREATE TABLE wcf1_event_listener (
 
 DROP TABLE IF EXISTS wcf1_import_mapping;
 CREATE TABLE wcf1_import_mapping (
+	importHash CHAR(8) NOT NULL,
 	objectTypeID INT(10) NOT NULL,
 	oldID VARCHAR(255) NOT NULL,
 	newID INT(10) NOT NULL,
-	UNIQUE KEY (objectTypeID, oldID)
+	UNIQUE KEY (importHash, objectTypeID, oldID)
 );
 
 DROP TABLE IF EXISTS wcf1_label;
@@ -766,7 +767,7 @@ CREATE TABLE wcf1_search_index (
 	time INT(10) NOT NULL DEFAULT 0,
 	userID INT(10),
 	username VARCHAR(255) NOT NULL DEFAULT '',
-	languageID INT(10),
+	languageID INT(10) NOT NULL DEFAULT 0,
 	UNIQUE KEY (objectTypeID, objectID, languageID),
 	FULLTEXT INDEX fulltextIndex (subject, message, metaData),
 	FULLTEXT INDEX fulltextIndexSubjectOnly (subject),
@@ -1049,6 +1050,7 @@ DROP TABLE IF EXISTS wcf1_user_group;
 CREATE TABLE wcf1_user_group (
 	groupID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	groupName VARCHAR(255) NOT NULL DEFAULT '',
+	groupDescription TEXT,
 	groupType TINYINT(1) NOT NULL DEFAULT 4,
 	priority MEDIUMINT(8) NOT NULL DEFAULT 0,
 	userOnlineMarking VARCHAR(255) NOT NULL DEFAULT '%s',
@@ -1595,7 +1597,8 @@ INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfInputHo
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfInputBorderRadius', '0');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfBaseFontSize', '13px');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfBaseFontFamily', '"Trebuchet MS", Arial, sans-serif');
-INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfLayoutFluidGap', '30px');
+INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfLayoutMinWidth', '980px');
+INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfLayoutMaxWidth', '90%');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfLayoutFixedWidth', '1200px');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfPageBackgroundColor', 'rgba(224, 224, 224, 1)');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfPageColor', 'rgba(102, 102, 102, 1)');
@@ -1648,8 +1651,8 @@ INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfDeleted
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfDeletedColor', 'rgba(204, 0, 0, 1)');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfDisabledBackgroundColor', 'rgba(238, 255, 238, 1)');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfDisabledColor', 'rgba(0, 153, 0, 1)');
-INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfTextShadowLightColor', 'rgba(255, 255, 255, .8)');
-INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfTextShadowDarkColor', 'rgba(0, 0, 0, .8)');
+INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfTextShadowLightColor', 'transparent');
+INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfTextShadowDarkColor', 'transparent');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('useFluidLayout', '1');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('pageLogo', '');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('individualLess', '');

@@ -730,6 +730,7 @@ WCF.ACP.Package.Installation.Cancel = Class.extend({
  * Provides the package uninstallation.
  * 
  * @param	jQuery		elements
+ * @param	string		wcfPackageListURL
  */
 WCF.ACP.Package.Uninstallation = WCF.ACP.Package.Installation.extend({
 	/**
@@ -745,13 +746,21 @@ WCF.ACP.Package.Uninstallation = WCF.ACP.Package.Installation.extend({
 	_packageID: 0,
 	
 	/**
+	 * URL of WCF package list
+	 * @var	string
+	 */
+	_wcfPackageListURL: '',
+	
+	/**
 	 * Initializes the WCF.ACP.Package.Uninstallation class.
 	 * 
 	 * @param	jQuery		elements
+	 * @param	string		wcfPackageListURL
 	 */
-	init: function(elements) {
+	init: function(elements, wcfPackageListURL) {
 		this._elements = elements;
 		this._packageID = 0;
+		this._wcfPackageListURL = wcfPackageListURL;
 		
 		if (this._elements !== undefined && this._elements.length) {
 			this._super(0, 'UninstallPackage');
@@ -819,6 +828,11 @@ WCF.ACP.Package.Uninstallation = WCF.ACP.Package.Installation.extend({
 	 * @param	jQuery		element
 	 */
 	_showConfirmationDialog: function(element) {
+		if (element.data('isApplication') && this._wcfPackageListURL) {
+			window.location = WCF.String.unescapeHTML(this._wcfPackageListURL.replace(/{packageID}/, element.data('objectID')));
+			return;
+		}
+		
 		var self = this;
 		WCF.System.Confirmation.show(element.data('confirmMessage'), function(action) {
 			if (action === 'confirm') {
@@ -1604,111 +1618,6 @@ WCF.ACP.Options = Class.extend({
 });
 
 /**
- * Single-option handling for user group options.
- * 
- * @param	boolean		canEditEveryone
- */
-WCF.ACP.Options.Group = Class.extend({
-	/**
-	 * true, if user can edit the 'Everyone' group
-	 * @var	boolean
-	 */
-	_canEditEveryone: false,
-	
-	/**
-	 * Initializes the WCF.ACP.Options.Group class.
-	 * 
-	 * @param	boolean		canEditEveryone
-	 */
-	init: function(canEditEveryone) {
-		// disable 'Everyone' input
-		this._canEditEveryone = (canEditEveryone === true) ? true : false;
-		var $defaultContainer = $('#defaultValueContainer');
-		var $defaultValue = $defaultContainer.find('input, textarea').attr('id', 'optionValue' + $defaultContainer.children('dl').data('groupID')).removeAttr('name');
-		if (!this._canEditEveryone) {
-			$defaultValue.attr('disabled', 'disabled');
-		}
-		
-		// fix id and remove name-attribute from input elements
-		$('#otherValueContainer > dl').each(function(index, container) {
-			var $container = $(container);
-			$container.find('input, textarea').removeAttr('name').attr('id', 'optionValue' + $container.data('groupID'));
-		});
-		
-		// bind event listener
-		$('#submitButton').click($.proxy(this._click, this));
-	},
-	
-	/**
-	 * Handles clicks on the submit button.
-	 */
-	_click: function() {
-		var $values = { };
-		
-		// collect default value
-		if (this._canEditEveryone) {
-			var $container = $('#defaultValueContainer > dl');
-			
-			var $value = this._getValue($container);
-			if ($value !== null) {
-				$values[$container.data('groupID')] = $value;
-			}
-		}
-		
-		// collect values from other groups
-		var self = this;
-		$('#otherValueContainer > dl').each(function(index, container) {
-			var $container = $(container);
-			
-			var $value = self._getValue($container);
-			if ($value !== null) {
-				$values[$container.data('groupID')] = $value;
-			}
-		});
-		
-		var $form = $('#defaultValueContainer').parent('form');
-		var $formSubmit = $form.children('.formSubmit');
-		for (var $groupID in $values) {
-			$('<input type="hidden" name="values[' + $groupID + ']" value="' + $values[$groupID] + '" />').appendTo($formSubmit);
-		}
-		
-		// disable submit button
-		$('#submitButton').attr('disable', 'disable');
-		
-		$form.submit();
-	},
-	
-	/**
-	 * Returns the value of an input or textarea.
-	 * 
-	 * @param	jQuery		container
-	 * @return	string
-	 */
-	_getValue: function(container) {
-		var $textarea = container.find('textarea');
-		if ($textarea.length) {
-			return $textarea.val();
-		}
-		else {
-			var $input = container.find('input');
-			if (!$input.length) {
-				return null;
-			}
-			
-			if ($input.attr('type') == 'checkbox') {
-				if ($input.is(':checked')) {
-					return 1;
-				}
-				
-				return 0;
-			}
-			
-			return $input.val();
-		}
-	}
-});
-
-/**
  * Worker support for ACP.
  * 
  * @param	string		dialogID
@@ -2275,26 +2184,15 @@ WCF.ACP.Import.Manager = Class.extend({
 	_invoke: function() {
 		this._index++;
 		if (this._index >= this._objectTypes.length) {
-			// cleanup
-			new WCF.Action.Proxy({
-				autoSend: true,
-				data: {
-					actionName: 'resetMapping',
-					className: 'wcf\\system\\importer\\ImportHandler'
-				},
-				success: $.proxy(function() {
-					this._dialog.find('.icon-spinner').removeClass('icon-spinner').addClass('icon-ok');
-					this._dialog.find('h1').text(WCF.Language.get('wcf.acp.dataImport.completed'));
-					
-					var $form = $('<div class="formSubmit" />').appendTo(this._dialog.find('#workerContainer'));
-					$('<button>' + WCF.Language.get('wcf.global.button.next') + '</button>').click($.proxy(function() {
-						window.location = this._redirectURL;
-					}, this)).appendTo($form);
-					
-					this._dialog.wcfDialog('render');
-				}, this),
-				url: 'index.php/AJAXInvoke/?t=' + SECURITY_TOKEN + SID_ARG_2ND
-			});
+			this._dialog.find('.icon-spinner').removeClass('icon-spinner').addClass('icon-ok');
+			this._dialog.find('h1').text(WCF.Language.get('wcf.acp.dataImport.completed'));
+			
+			var $form = $('<div class="formSubmit" />').appendTo(this._dialog.find('#workerContainer'));
+			$('<button>' + WCF.Language.get('wcf.global.button.next') + '</button>').click($.proxy(function() {
+				window.location = this._redirectURL;
+			}, this)).appendTo($form);
+			
+			this._dialog.wcfDialog('render');
 		}
 		else {
 			this._run(

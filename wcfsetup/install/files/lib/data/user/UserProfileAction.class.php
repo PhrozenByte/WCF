@@ -243,7 +243,7 @@ class UserProfileAction extends UserAction {
 		// validate user title
 		if ($userTitle !== null) {
 			try {
-				if (StringUtil::length($userTitle) > USER_TITLE_MAX_LENGTH) {
+				if (mb_strlen($userTitle) > USER_TITLE_MAX_LENGTH) {
 					throw new UserInputException('__userTitle', 'tooLong');
 				}
 				if (!StringUtil::executeWordFilter($userTitle, USER_FORBIDDEN_TITLES)) {
@@ -356,6 +356,7 @@ class UserProfileAction extends UserAction {
 			$this->readObjects();
 		}
 		
+		$userToGroup = array();
 		foreach ($this->objects as $user) {
 			$conditionBuilder = new PreparedStatementConditionBuilder();
 			$conditionBuilder->add('groupID IN (?)', array($user->getGroupIDs()));
@@ -368,8 +369,24 @@ class UserProfileAction extends UserAction {
 			$statement->execute($conditionBuilder->getParameters());
 			$row = $statement->fetchArray();
 			if ($row['groupID'] != $user->userOnlineGroupID) {
-				$user->update(array('userOnlineGroupID' => $row['groupID']));
+				$userToGroup[$user->userID] = $row['groupID'];
 			}
+		}
+		
+		if (!empty($userToGroup)) {
+			$sql = "UPDATE	wcf".WCF_N."_user
+				SET	userOnlineGroupID = ?
+				WHERE	userID = ?";
+			$statement = WCF::getDB()->prepareStatement($sql);
+			
+			WCF::getDB()->beginTransaction();
+			foreach ($userToGroup as $userID => $groupID) {
+				$statement->execute(array(
+					$groupID,
+					$userID
+				));
+			}
+			WCF::getDB()->commitTransaction();
 		}
 	}
 	

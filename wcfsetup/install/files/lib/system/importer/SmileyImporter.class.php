@@ -14,7 +14,12 @@ use wcf\util\StringUtil;
  * @subpackage	system.importer
  * @category	Community Framework
  */
-class SmileyImporter implements IImporter {
+class SmileyImporter extends AbstractImporter {
+	/**
+	 * @see wcf\system\importer\AbstractImporter::$className
+	 */
+	protected $className = 'wcf\data\smiley\Smiley';
+	
 	/**
 	 * known smiley codes
 	 * 
@@ -39,7 +44,7 @@ class SmileyImporter implements IImporter {
 			$known[] = $row['smileyCode'];
 				
 			foreach ($known as $smileyCode) {
-				$this->knownCodes[StringUtil::toLowerCase($smileyCode)] = $row['smileyID'];
+				$this->knownCodes[mb_strtolower($smileyCode)] = $row['smileyID'];
 			}
 		}
 	}
@@ -53,7 +58,7 @@ class SmileyImporter implements IImporter {
 		if (!@copy($additionalData['fileLocation'], WCF_DIR.$data['smileyPath'])) return 0;
 		
 		// check smileycode
-		if (isset($this->knownCodes[StringUtil::toLowerCase($data['smileyCode'])])) return $this->knownCodes[StringUtil::toLowerCase($data['smileyCode'])];
+		if (isset($this->knownCodes[mb_strtolower($data['smileyCode'])])) return $this->knownCodes[mb_strtolower($data['smileyCode'])];
 		
 		$data['packageID'] = 1;
 		if (!isset($data['aliases'])) $data['aliases'] = '';
@@ -63,7 +68,7 @@ class SmileyImporter implements IImporter {
 		if (!empty($data['aliases'])) {
 			$aliases = explode("\n", StringUtil::unifyNewlines($data['aliases']));
 			foreach ($aliases as $key => $alias) {
-				if (isset($this->knownCodes[StringUtil::toLowerCase($alias)])) unset($aliases[$key]);
+				if (isset($this->knownCodes[mb_strtolower($alias)])) unset($aliases[$key]);
 			}
 			$data['aliases'] = implode("\n", $aliases);
 		}
@@ -72,9 +77,9 @@ class SmileyImporter implements IImporter {
 		$smiley = SmileyEditor::create($data);
 		
 		// add smileyCode + aliases to knownCodes
-		$this->knownCodes[StringUtil::toLowerCase($data['smileyCode'])] = $smiley->smileyID;
+		$this->knownCodes[mb_strtolower($data['smileyCode'])] = $smiley->smileyID;
 		foreach ($aliases as $alias) {
-			$this->knownCodes[StringUtil::toLowerCase($alias)] = $smiley->smileyID;
+			$this->knownCodes[mb_strtolower($alias)] = $smiley->smileyID;
 		}
 		
 		return $smiley->smileyID;

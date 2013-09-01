@@ -93,7 +93,8 @@ class PackageUpdateDispatcher extends SingletonFactory {
 		catch (SystemException $e) {
 			$reply = $request->getReply();
 			
-			throw new SystemException(WCF::getLanguage()->get('wcf.acp.package.update.error.listNotFound') . ' ('.reset($reply['statusCode']).')');
+			$statusCode = (is_array($reply['statusCode'])) ? reset($reply['statusCode']) : $reply['statusCode'];
+			throw new SystemException(WCF::getLanguage()->get('wcf.acp.package.update.error.listNotFound') . ' ('.$statusCode.')');
 		}
 		
 		// parse given package update xml
@@ -434,6 +435,7 @@ class PackageUpdateDispatcher extends SingletonFactory {
 						(packageUpdateVersionID, package, minversion)
 				VALUES		(?, ?, ?)";
 			$statement = WCF::getDB()->prepareStatement($sql);
+			WCF::getDB()->beginTransaction();
 			foreach ($requirementInserts as $requirement) {
 				$statement->execute(array(
 					$requirement['packageUpdateVersionID'],
@@ -441,6 +443,7 @@ class PackageUpdateDispatcher extends SingletonFactory {
 					$requirement['minversion']
 				));
 			}
+			WCF::getDB()->commitTransaction();
 		}
 		
 		if (!empty($optionalInserts)) {
@@ -459,12 +462,14 @@ class PackageUpdateDispatcher extends SingletonFactory {
 						(packageUpdateVersionID, package)
 				VALUES		(?, ?)";
 			$statement = WCF::getDB()->prepareStatement($sql);
+			WCF::getDB()->beginTransaction();
 			foreach ($optionalInserts as $requirement) {
 				$statement->execute(array(
 					$requirement['packageUpdateVersionID'],
 					$requirement['package']
 				));
 			}
+			WCF::getDB()->commitTransaction();
 		}
 		
 		if (!empty($excludedPackagesParameters)) {
@@ -483,6 +488,7 @@ class PackageUpdateDispatcher extends SingletonFactory {
 						(packageUpdateVersionID, excludedPackage, excludedPackageVersion)
 				VALUES		(?, ?, ?)";
 			$statement = WCF::getDB()->prepareStatement($sql);
+			WCF::getDB()->beginTransaction();
 			foreach ($excludedPackagesParameters as $excludedPackage) {
 				$statement->execute(array(
 					$excludedPackage['packageUpdateVersionID'],
@@ -490,6 +496,7 @@ class PackageUpdateDispatcher extends SingletonFactory {
 					$excludedPackage['excludedPackageVersion']
 				));
 			}
+			WCF::getDB()->commitTransaction();
 		}
 		
 		if (!empty($fromversionInserts)) {
@@ -508,12 +515,14 @@ class PackageUpdateDispatcher extends SingletonFactory {
 						(packageUpdateVersionID, fromversion)
 				VALUES		(?, ?)";
 			$statement = WCF::getDB()->prepareStatement($sql);
+			WCF::getDB()->beginTransaction();
 			foreach ($fromversionInserts as $fromversion) {
 				$statement->execute(array(
 					$fromversion['packageUpdateVersionID'],
 					$fromversion['fromversion']
 				));
 			}
+			WCF::getDB()->commitTransaction();
 		}
 	}
 	

@@ -1,16 +1,21 @@
 /* ### layout globals ### */
 .layoutFluid {
-	padding: 0 @wcfLayoutFluidGap;
+	margin-left: auto;
+	margin-right: auto;
+	min-width: @wcfLayoutMinWidth;
+	max-width: @wcfLayoutMaxWidth;
 }
 
 @media only screen and (max-width: 800px) {
 	.layoutFluid {
-		padding: 0;
+		min-width: 0;
+		max-width: none;
 	}
 }
 
 .layoutFixed {
-	margin: 0 auto;
+	margin-left: auto;
+	margin-right: auto;
 	width: @wcfLayoutFixedWidth;
 }
 
@@ -63,8 +68,6 @@
 		position: relative;
 		
 		> ul.userPanelItems {
-			/*.clearfix();*/
-			
 			> li {
 				float: left;
 				
@@ -163,10 +166,6 @@
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
-		}
-		
-		&.layoutFluid > .searchBar {
-			right: @wcfLayoutFluidGap;
 		}
 	}
 }
@@ -321,7 +320,7 @@
 }
 
 /* main menu */
-@media all and (min-width: 801px) {
+@media screen and (min-width: 801px), print {
 	.mainMenu {
 		> ul {
 			background-color: @wcfMainMenuBackgroundColor;
@@ -589,8 +588,16 @@
 
 /* ### content ### */
 #main {
+	background-color: @wcfContentBackgroundColor;
+	border-right: 1px solid transparent; /* workaround for strange display: table issues in webkit */
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
 	z-index: 110;
 	
+	&.sidebarOrientationRight {
+		background-color: @wcfSidebarBackgroundColor;
+	}
+
 	> div {
 		display: table;
 		table-layout: fixed;
@@ -684,6 +691,7 @@
 @media only screen and (max-width: 800px) {
 	/* hide sidebar */
 	#main {
+		border-right-width: 0;
 		position: relative;
 		margin-top: 7px;
 		
@@ -1407,44 +1415,49 @@
 }
 
 /* sub tabs */
-.tabMenuContainer > .menu {
-	border-bottom: 1px solid @wcfContainerBorderColor;
-	margin: -@wcfGapMedium -@wcfGapLarge @wcfGapMedium -@wcfGapLarge; /* reverse paddings from .containerPadding */
-	padding: @wcfGapTiny @wcfGapSmall;
+.tabMenuContainer {
+	&.containerPadding > .menu {
+		margin: -@wcfGapMedium -@wcfGapLarge @wcfGapMedium -@wcfGapLarge; /* reverse paddings from .containerPadding */
+	}
 	
-	.linearGradient(@wcfContainerBackgroundColor, @wcfContainerBackgroundColor, @wcfContainerAccentBackgroundColor);
-	
-	ul{
-		display: inline-block;
+	> .menu {
+		border-bottom: 1px solid @wcfContainerBorderColor;
+		padding: @wcfGapTiny @wcfGapSmall;
 		
-		li {
+		.linearGradient(@wcfContainerBackgroundColor, @wcfContainerBackgroundColor, @wcfContainerAccentBackgroundColor);
+		
+		ul{
 			display: inline-block;
-			outline: 0;
 			
-			&.ui-state-active a,
-			&.ui-state-active a:hover {
-				background-color: @wcfButtonPrimaryBackgroundColor;
-				border-color: @wcfButtonPrimaryBorderColor;
-				color: @wcfButtonPrimaryColor;
-				cursor: default;
-			}
-			
-			a {
-				background-color: @wcfContainerBackgroundColor;
-				border: 1px solid @wcfContainerBorderColor;
-				border-radius: @wcfButtonBorderRadius;
-				color: @wcfButtonColor;
-				display: block;
-				font-size: @wcfSmallFontSize;
-				margin: @wcfGapTiny 0;
+			li {
+				display: inline-block;
 				outline: 0;
-				padding: @wcfGapTiny @wcfGapSmall;
 				
-				&:hover {
-					background-color: @wcfButtonHoverBackgroundColor;
-					border-color: @wcfButtonHoverBorderColor;
-					color: @wcfButtonHoverColor;
-					text-decoration: none;
+				&.ui-state-active a,
+				&.ui-state-active a:hover {
+					background-color: @wcfButtonPrimaryBackgroundColor;
+					border-color: @wcfButtonPrimaryBorderColor;
+					color: @wcfButtonPrimaryColor;
+					cursor: default;
+				}
+				
+				a {
+					background-color: @wcfContainerBackgroundColor;
+					border: 1px solid @wcfContainerBorderColor;
+					border-radius: @wcfButtonBorderRadius;
+					color: @wcfButtonColor;
+					display: block;
+					font-size: @wcfSmallFontSize;
+					margin: @wcfGapTiny 0;
+					outline: 0;
+					padding: @wcfGapTiny @wcfGapSmall;
+					
+					&:hover {
+						background-color: @wcfButtonHoverBackgroundColor;
+						border-color: @wcfButtonHoverBorderColor;
+						color: @wcfButtonHoverColor;
+						text-decoration: none;
+					}
 				}
 			}
 		}
@@ -1653,7 +1666,7 @@
 		&.columnMark,
 		&.columnStatus {
 			text-align: center;
-			width: 1px !important;
+			width: 1px;
 			white-space: nowrap;
 			word-wrap: normal;
 		}
@@ -1661,14 +1674,14 @@
 		&.columnDigits,
 		&.columnID {
 			text-align: right;
-			width: 1px !important;
+			width: 1px;
 			white-space: nowrap;
 			word-wrap: normal;
 		}
 		
 		&.columnIcon {
 			text-align: left;
-			width: 1px !important;
+			width: 1px;
 			white-space: nowrap;
 			word-wrap: normal;
 		}
@@ -1688,7 +1701,7 @@
 		&.columnRegistrationDate {
 			font-size: @wcfSmallFontSize;
 			text-align: right;
-			width: 1px !important;
+			width: 1px;
 			white-space: nowrap;
 			word-wrap: normal;
 		}
@@ -1763,6 +1776,35 @@
 			a:not(.badge) {
 				color: @wcfSelectedColor;
 			}
+		}
+	}
+}
+
+@media screen and (max-width: 800px) {
+	.responsiveTable {
+		display: block;
+		
+		thead, tbody, th, td, tr {
+			display: block;
+		}
+		
+		thead tr {
+			display: none;
+		}
+		
+		tr {
+			border: 1px solid @wcfContainerBorderColor;
+			border-top-width: 0;
+			
+			&:last-child {
+				border-bottom-width: 0;
+			}
+		}
+		
+		td {
+			text-align: left !important;
+			max-width: none !important;
+			width: auto !important;
 		}
 	}
 }
@@ -2160,4 +2202,54 @@ ul.inlineDataList {
 			text-align: right;
 		}
 	}
+}
+
+/* print version */
+@media print {
+	* {
+		background-color: transparent !important;
+		background-image: none !important;
+		box-shadow: none !important;
+		color: #000 !important;
+		text-shadow: none !important;
+	}
+	
+	body {
+		font-size: 12pt !important;
+	}
+	
+	.badge {
+		&:before {
+			content: "[";
+		}
+		
+		&:after {
+			content: "]";
+		}
+	}
+	
+	.content {
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+	}
+	
+	.logo {
+		margin-top: 14px !important;
+	}
+	
+	a.externalURL:after {
+		content: " (" attr(href) ")";
+		font-size: 85%;
+	}
+	
+	.sidebar,
+	.button,
+	.navigationIcons,
+	.navigationMenuItems,
+	.navigationHeader,
+	.userPanel,
+	.styleChooser {
+		display: none !important;
+	}
+
 }

@@ -2520,6 +2520,13 @@ WCF.Message.Quote.Manager = Class.extend({
 		
 		if ($ckEditor !== null && $ckEditor.mode === 'wysiwyg') {
 			// in design mode
+			
+			// remove the link if the cursor is in a link element
+			$ckEditor.removeStyle(new CKEDITOR.style({
+				element: 'a',
+				type: CKEDITOR.STYLE_INLINE
+			}));
+			
 			$ckEditor.insertText($quote + "\n\n");
 		}
 		else {
@@ -2803,7 +2810,7 @@ WCF.Message.Share.Page = Class.extend({
 	 * @param	boolean		fetchObjectCount
 	 */
 	init: function(fetchObjectCount) {
-		this._pageDescription = encodeURIComponent($('meta[property="og:description"]').prop('content'));
+		this._pageDescription = encodeURIComponent($('meta[property="og:title"]').prop('content'));
 		this._pageURL = encodeURIComponent($('meta[property="og:url"]').prop('content'));
 		
 		var $container = $('.messageShareButtons');
@@ -2833,7 +2840,7 @@ WCF.Message.Share.Page = Class.extend({
 	 * @param	string		url
 	 */
 	_share: function(objectName, url) {
-		window.open(url.replace(/{pageURL}/, this._pageURL).replace(/{text}/, this._pageDescription), 'height=600,width=600');
+		window.open(url.replace(/{pageURL}/, this._pageURL).replace(/{text}/, this._pageDescription + " " + this._pageURL), 'height=600,width=600');
 	},
 	
 	/**

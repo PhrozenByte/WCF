@@ -15,7 +15,7 @@
 	</script>
 	<script data-relocate="true" src="{@$__wcf->getPath()}js/3rdParty/jquery.min.js?v={@$__wcfVersion}"></script>
 	<script data-relocate="true" src="{@$__wcf->getPath()}js/3rdParty/jquery-ui.min.js?v={@$__wcfVersion}"></script>
-	<script data-relocate="true" src="{@$__wcf->getPath()}js/3rdParty/jquery-ui.nestedSortable.js?v={@$__wcfVersion}"></script>
+	<script data-relocate="true" src="{@$__wcf->getPath()}js/3rdParty/jquery-ui.nestedSortable.min.js?v={@$__wcfVersion}"></script>
 	<script data-relocate="true" src="{@$__wcf->getPath()}js/3rdParty/jquery-ui.timepicker.min.js?v={@$__wcfVersion}"></script>
 	<script data-relocate="true" src="{@$__wcf->getPath()}js/WCF.js?v={@$__wcfVersion}"></script>
 	<script data-relocate="true" src="{@$__wcf->getPath()}acp/js/WCF.ACP.js?v={@$__wcfVersion}"></script>
@@ -29,6 +29,10 @@
 	<!-- Stylesheets -->
 	{@$__wcf->getStyleHandler()->getStylesheet()}
 	{event name='stylesheets'}
+	
+	<!-- Icons -->
+	<link rel="shortcut icon" href="{@$__wcf->getPath()}images/favicon.ico" />
+	<link rel="apple-touch-icon" href="{@$__wcf->getPath()}images/apple-touch-icon.png" />
 	
 	<script data-relocate="true">
 		//<![CDATA[

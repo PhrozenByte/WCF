@@ -446,6 +446,10 @@
 	
 	> .messageSignature {
 		color: @wcfDimmedColor;
+		
+		img {
+			max-height: ~"@{wcf_option_signature_max_image_height}px";
+		}
 	}
 	
 	.messageFooter {
@@ -951,7 +955,7 @@ li:nth-child(2n+1) .message {
 	border: 1px solid rgba(0, 0, 0, .2);
 }
 
-@media only screen and (max-width: 800px) {
+@media screen and (max-width: 800px), print {
 	.message.messageSidebarOrientationLeft,
 	.message.messageSidebarOrientationRight {
 		.messageContent {
@@ -961,6 +965,7 @@ li:nth-child(2n+1) .message {
 		
 		.messageSidebar {
 			float: none;
+			min-height: 37px;
 		}
 		
 		.messageHeader {
@@ -1037,7 +1042,7 @@ li:nth-child(2n+1) .message {
 	}
 }
 
-@media only screen and (min-width: 641px) and (max-width: 800px) {
+@media screen and (min-width: 641px) and (max-width: 800px), print {
 	.message .messageSidebar,
 	.message .messageContent .messageHeader,
 	.message .messageBody {

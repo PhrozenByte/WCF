@@ -43,7 +43,7 @@
 {assign var=encodedURL value=$url|rawurlencode}
 {assign var=encodedAction value=$action|rawurlencode}
 <div class="contentNavigation">
-	{pages print=true assign=pagesLinks controller="UserList" link="pageNo=%d&searchID=$searchID&action=$encodedAction&sortField=$sortField&sortOrder=$sortOrder"}
+	{pages print=true assign=pagesLinks controller="UserList" id=$searchID link="pageNo=%d&action=$encodedAction&sortField=$sortField&sortOrder=$sortOrder"}
 	
 	<nav>
 		<ul>
@@ -112,7 +112,7 @@
 						<td class="columnTitle columnUsername">{if $user->editable}<a title="{lang}wcf.acp.user.edit{/lang}" href="{link controller='UserEdit' id=$user->userID}{/link}">{$user->username}</a>{else}{$user->username}{/if}</td>
 						
 						{foreach from=$columnHeads key=column item=columnLanguageVariable}
-							<td class="column{$column|ucfirst}">{if $columnValues[$user->userID][$column]|isset}{@$columnValues[$user->userID][$column]|tableWordwrap}{/if}</td>
+							<td class="column{$column|ucfirst}">{if $columnValues[$user->userID][$column]|isset}{@$columnValues[$user->userID][$column]}{/if}</td>
 						{/foreach}
 						
 						{event name='columns'}
