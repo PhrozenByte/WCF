@@ -163,6 +163,7 @@ class PackageInstallationDispatcher {
 		$this->nodeBuilder->completeNode($node);
 		
 		// assign next node
+		$tmp = $node;
 		$node = $this->nodeBuilder->getNextNode($node);
 		$step->setNode($node);
 		
@@ -388,12 +389,7 @@ class PackageInstallationDispatcher {
 			$statement = WCF::getDB()->prepareStatement($sql);
 			
 			foreach ($requirements as $identifier => $possibleRequirements) {
-				if (count($possibleRequirements) == 1) {
-					$requirement = array_shift($possibleRequirements);
-				}
-				else {
-					$requirement = $possibleRequirements[$this->selectedRequirements[$identifier]];
-				}
+				$requirement = array_shift($possibleRequirements);
 				
 				$statement->execute(array($this->queue->packageID, $requirement['packageID']));
 			}
@@ -857,6 +853,15 @@ class PackageInstallationDispatcher {
 	 * Executes post-setup actions.
 	 */
 	public function completeSetup() {
+		// update package version
+		if ($this->action == 'update') {
+			$packageEditor = new PackageEditor($this->getPackage());
+			$packageEditor->update(array(
+				'updateDate' => TIME_NOW,
+				'packageVersion' => $this->getArchive()->getPackageInfo('version')
+			));
+		}
+		
 		// remove archives
 		$sql = "SELECT	archive
 			FROM	wcf".WCF_N."_package_installation_queue
@@ -872,15 +877,6 @@ class PackageInstallationDispatcher {
 			WHERE		processNo = ?";
 		$statement = WCF::getDB()->prepareStatement($sql);
 		$statement->execute(array($this->queue->processNo));
-		
-		// update package version
-		if ($this->action == 'update') {
-			$packageEditor = new PackageEditor($this->getPackage());
-			$packageEditor->update(array(
-				'updateDate' => TIME_NOW,
-				'packageVersion' => $this->getArchive()->getPackageInfo('version')
-			));
-		}
 		
 		// clear language files once whole installation is completed
 		LanguageEditor::deleteLanguageFiles();

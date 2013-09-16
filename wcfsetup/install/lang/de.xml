@@ -447,10 +447,10 @@
 		<item name="wcf.acp.masterPassword"><![CDATA[Hauptkennwort]]></item>
 		<item name="wcf.acp.masterPassword.confirm"><![CDATA[Hauptkennwort wiederholen]]></item>
 		<item name="wcf.acp.masterPassword.enter"><![CDATA[Hauptkennwort erforderlich]]></item>
-		<item name="wcf.acp.masterPassword.enter.description"><![CDATA[Die aufgerufene Seite oder Aktion erfordert aus Sicherheitsgründen die Eingabe des Hauptkennwortes. Pro Sitzung ist die Eingabe des Hauptkennwortes nur einmal erforderlich. Falls Sie das Hauptkennwort vergessen haben sollten, können Sie es zurücksetzen, indem Sie die Datei <em>{@RELATIVE_WCF_DIR}acp/masterPassword.inc.php</em> löschen.]]></item>
+		<item name="wcf.acp.masterPassword.enter.description"><![CDATA[Die aufgerufene Seite oder Aktion erfordert aus Sicherheitsgründen die Eingabe des Hauptkennwortes. Pro Sitzung ist die Eingabe des Hauptkennwortes nur einmal erforderlich. Falls Sie das Hauptkennwort vergessen haben sollten, können Sie es zurücksetzen, indem Sie die Datei <em>{@$relativeWcfDir}acp/masterPassword.inc.php</em> löschen.]]></item>
 		<item name="wcf.acp.masterPassword.error.notEqual"><![CDATA[Die eingegebenen Kennwörter sind nicht identisch.]]></item>
 		<item name="wcf.acp.masterPassword.error.notSecure"><![CDATA[Das Kennwort wurde als unsicher eingestuft. Das Kennwort sollte mindestens acht Zeichen lang sein, große und kleine lateinische Buchstaben, Zahlen und Sonderzeichen enthalten. Es darf nicht mit den Kennwörtern von anderen Administratoren übereinstimmen.]]></item>
-		<item name="wcf.acp.masterPassword.error.notValid"><![CDATA[Das Hauptkennwort ist nicht korrekt. Falls Sie das Hauptkennwort vergessen haben sollten, können Sie es zurücksetzen, indem Sie die Datei <em>{@RELATIVE_WCF_DIR}acp/masterPassword.inc.php</em> löschen.]]></item>
+		<item name="wcf.acp.masterPassword.error.notValid"><![CDATA[Das Hauptkennwort ist nicht korrekt. Falls Sie das Hauptkennwort vergessen haben sollten, können Sie es zurücksetzen, indem Sie die Datei <em>{@$relativeWcfDir}acp/masterPassword.inc.php</em> löschen.]]></item>
 		<item name="wcf.acp.masterPassword.example"><![CDATA[Vorschlag]]></item>
 		<item name="wcf.acp.masterPassword.example.set"><![CDATA[Vorschlag übernehmen]]></item>
 		<item name="wcf.acp.masterPassword.init"><![CDATA[Hauptkennwort festlegen]]></item>
@@ -867,8 +867,9 @@
 		<item name="wcf.acp.package.installation.packageStatus"><![CDATA[Status]]></item>
 		<item name="wcf.acp.package.installation.packageStatus.delivered"><![CDATA[vom Paket bereitgestellt]]></item>
 		<item name="wcf.acp.package.installation.packageStatus.installed"><![CDATA[bereits installiert]]></item>
+		<item name="wcf.acp.package.installation.packageStatus.invalidDeliveredPackage"><![CDATA[falsches Paket bereitgestellt ({$package.deliveredPackage})]]></item>
 		<item name="wcf.acp.package.installation.packageStatus.missing"><![CDATA[fehlt]]></item>
-		<item name="wcf.acp.package.installation.packageStatus.missingVersion"><![CDATA[fehlende Paket-Version (installierte Version: {$package.existingVersion})]]></item>
+		<item name="wcf.acp.package.installation.packageStatus.missingVersion"><![CDATA[fehlende Paket-Version ({if $package.existingVersion|isset}installierte Version: {$package.existingVersion}{else}bereitgestellte Version: {$package.deliveredVersion}{/if})]]></item>
 		<item name="wcf.acp.package.installation.rollback"><![CDATA[Installation rückgängig machen]]></item>
 		<item name="wcf.acp.package.installation.step.install"><![CDATA[„{$packageName}“ wird installiert …]]></item>
 		<item name="wcf.acp.package.installation.step.install.success"><![CDATA[Installation abgeschlossen]]></item>
@@ -1414,9 +1415,10 @@ Erlaubte Dateiendungen: {', '|implode:$attachmentHandler->getFormattedAllowedExt
 		<item name="wcf.comment.add"><![CDATA[Kommentar schreiben …]]></item>
 		<item name="wcf.comment.delete.confirmMessage"><![CDATA[Wollen Sie diesen Kommentar wirklich löschen?]]></item>
 		<item name="wcf.comment.description"><![CDATA[Drücken Sie die Eingabetaste, um abzusenden oder Escape, um abzubrechen.]]></item>
+		<item name="wcf.comment.error.floodControl"><![CDATA[Sie haben bereits einen Kommentar innerhalb der letzten {#$__wcf->getSession()->getPermission('user.comment.floodControlTime')} Sekunden geschrieben. Sie können erst in {#$lastCommentTime+$__wcf->getSession()->getPermission('user.comment.floodControlTime')-TIME_NOW} Sekunden einen neuen Kommentar erstellen.]]></item>
 		<item name="wcf.comment.more"><![CDATA[Weitere Kommentare]]></item>
 		<item name="wcf.comment.response.add"><![CDATA[Antworten …]]></item>
-		<item name="wcf.comment.response.more"><![CDATA[Weitere Antworten]]></item>
+		<item name="wcf.comment.response.more"><![CDATA[{literal}{if $count == 1}Eine weitere Antwort{else}{#$count} weitere Antworten{/if}{/literal}]]></item>
 		<item name="wcf.comment.button.response.add"><![CDATA[Antworten]]></item>
 	</category>
 	
@@ -1679,6 +1681,7 @@ Erlaubte Dateiendungen: {', '|implode:$attachmentHandler->getFormattedAllowedExt
 		<item name="wcf.global.error.backward"><![CDATA[Zurück zur vorherigen Seite]]></item>
 		<item name="wcf.global.noDeclaration"><![CDATA[Keine Angabe]]></item>
 		<item name="wcf.global.defaultValue"><![CDATA[Standard]]></item>
+		<item name="wcf.global.noSelection"><![CDATA[(Keine Auswahl)]]></item>
 		<item name="wcf.global.acp"><![CDATA[Administrationsoberfläche]]></item>
 		<item name="wcf.global.acp.short"><![CDATA[Administration]]></item>
 		<item name="wcf.global.worker.executing"><![CDATA[Aufgaben werden ausgeführt …]]></item>
@@ -1952,7 +1955,7 @@ Erlaubte Dateiendungen: {', '|implode:$attachmentHandler->getFormattedAllowedExt
 		<item name="wcf.user.button.login"><![CDATA[Anmelden]]></item>
 		<item name="wcf.user.button.register"><![CDATA[Registrieren]]></item>
 		<item name="wcf.user.button.registerNow"><![CDATA[Jetzt registrieren]]></item>
-		<item name="wcf.user.error.username.3rdParty"><![CDATA[Das Benutzerkonto ist mit einem Drittanbieter-Konto verbunden, ein Passwort kann nicht angefordert werden.]]></item>
+		<item name="wcf.user.username.error.3rdParty"><![CDATA[Das Benutzerkonto ist mit einem Drittanbieter-Konto verbunden, ein Passwort kann nicht angefordert werden.]]></item>
 		<item name="wcf.user.login.action"><![CDATA[Sind Sie bereits registriert?]]></item>
 		<item name="wcf.user.login.action.login"><![CDATA[Ja, mein Kennwort lautet:]]></item>
 		<item name="wcf.user.login.action.register"><![CDATA[Nein, ich möchte mich jetzt registrieren.]]></item>
@@ -2105,6 +2108,7 @@ Wenn Sie Probleme mit der Aktivierung haben, wenden Sie sich bitte an den Admini
 		<item name="wcf.user.activityPoint.objectType.com.woltlab.wcf.like.activityPointEvent.receivedLikes"><![CDATA[Erhaltene Likes]]></item>
 		<item name="wcf.user.register.honeyPot"><![CDATA[Bitte ignorieren!]]></item>
 		<item name="wcf.user.register.honeyPot.description"><![CDATA[Falls Sie dies sehen können, füllen Sie bitte die nächsten zwei Eingabfelder <strong>NICHT</strong> aus!]]></item>
+		<item name="wcf.user.searchUserContent"><![CDATA[Inhalte von „{$user->username}“ suchen]]></item>
 	</category>
 	
 	<category name="wcf.user.menu">

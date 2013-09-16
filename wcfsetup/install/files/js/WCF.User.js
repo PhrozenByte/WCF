@@ -1652,6 +1652,15 @@ WCF.User.ProfilePreview = WCF.Popover.extend({
 				// show user profile
 				self._insertContent($elementID, data.returnValues.template, true);
 			});
+			this._proxy.setOption('failure', function(data, jqXHR, textStatus, errorThrown) {
+				// cache user profile
+				self._userProfiles[$userID] = data.message;
+				
+				// show user profile
+				self._insertContent($elementID, data.message, true);
+				
+				return false;
+			});
 			this._proxy.sendRequest();
 		}
 	}
@@ -2298,7 +2307,8 @@ WCF.User.List = Class.extend({
 		if (this._cache[this._pageNo]) {
 			var $dialogCreated = false;
 			if (this._dialog === null) {
-				this._dialog = $('<div id="userList' + this._className.hashCode() + '" style="min-width: 600px;" />').hide().appendTo(document.body);
+				//this._dialog = $('<div id="userList' + this._className.hashCode() + '" style="min-width: 600px;" />').hide().appendTo(document.body);
+				this._dialog = $('<div id="userList' + this._className.hashCode() + '" />').hide().appendTo(document.body);
 				$dialogCreated = true;
 			}
 			

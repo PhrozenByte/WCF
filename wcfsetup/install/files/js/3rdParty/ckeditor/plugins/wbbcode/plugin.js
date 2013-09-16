@@ -55,6 +55,10 @@
 			$insertedText = ev.data;
 		}, null, null, 1);
 		event.editor.on('mode', function(ev) {
+			if ($.browser.mozilla && ev.editor.mode === 'wysiwyg') {
+				fixFirefox();
+			}
+			
 			ev.editor.focus();
 			
 			insertFakeSubmitButton(ev);
@@ -72,7 +76,11 @@
 		insertFakeSubmitButton(event);
 		
 		// remove stupid title tag
-		$(event.editor.container.$).find('.cke_wysiwyg_div').removeAttr('title');
+		$(event.editor.container.$).removeAttr('title');
+		
+		if ($.browser.mozilla) {
+			fixFirefox();
+		}
 	});
 	
 	/**
@@ -88,6 +96,16 @@
 		// place button outside of <body> to prevent it being removed once deleting content
 		$('<button accesskey="s" />').hide().appendTo($(event.editor.container.$).find('.cke_wysiwyg_div'));
 		
+	}
+	
+	/**
+	 * Disables object resizing and table handles in Firefox.
+	 */
+	function fixFirefox() {
+		document.designMode = 'on';
+		document.execCommand('enableObjectResizing', false, false);
+		document.execCommand('enableInlineTableEditing', false, false);
+		document.designMode = 'off';
 	}
 	
 	/**
@@ -283,6 +301,8 @@
 		// [list]
 		data = data.replace(/\[list\]/gi, '<ul>');
 		data = data.replace(/\[list=1\]/gi, '<ul style="list-style-type: decimal">');
+		data = data.replace(/\[list=a\]/gi, '<ul style="list-style-type: lower-latin">');
+		data = data.replace(/\[list=(none|circle|square|disc|decimal|lower-roman|upper-roman|decimal-leading-zero|lower-greek|lower-latin|upper-latin|armenian|georgian)\]/gi, '<ul style="list-style-type: $1">');
 		data = data.replace(/\[\/list]/gi, '</ul>');
 		
 		// [table]
@@ -401,6 +421,7 @@
 		// [list]
 		html = html.replace(/<ul>/gi, '[list]');
 		html = html.replace(/<(ol|ul style="list-style-type: decimal")>/gi, '[list=1]');
+		html = html.replace(/<ul style="list-style-type: (none|circle|square|disc|decimal|lower-roman|upper-roman|decimal-leading-zero|lower-greek|lower-latin|upper-latin|armenian|georgian)">/gi, '[list=$1]');
 		html = html.replace(/<\/(ul|ol)>/gi, '[/list]');
 		
 		// [table]

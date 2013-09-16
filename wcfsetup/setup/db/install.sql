@@ -241,9 +241,10 @@ CREATE TABLE wcf1_comment (
 	username VARCHAR(255) NOT NULL,
 	message TEXT NOT NULL,
 	responses MEDIUMINT(7) NOT NULL DEFAULT '0',
-	lastResponseIDs VARCHAR(255) NOT NULL DEFAULT '',
+	responseIDs VARCHAR(255) NOT NULL DEFAULT '',
 	
-	KEY (objectTypeID, objectID, time)
+	KEY (objectTypeID, objectID, time),
+	KEY lastCommentTime (userID, time)
 );
 
 DROP TABLE IF EXISTS wcf1_comment_response;
@@ -255,7 +256,8 @@ CREATE TABLE wcf1_comment_response (
 	username VARCHAR(255) NOT NULL,
 	message TEXT NOT NULL,
 	
-	KEY (commentID, time)
+	KEY (commentID, time),
+	KEY lastResponseTime (userID, time)
 );
 
 DROP TABLE IF EXISTS wcf1_core_object;
@@ -1615,10 +1617,10 @@ INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfDropdow
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfDropdownBorderColor', '@wcfContainerBorderColor');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfDropdownHoverBackgroundColor', '@wcfContainerHoverBackgroundColor');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfBaseLineHeight', '1.28');
-INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfHeadlineFontSize', '170%');
-INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfSubHeadlineFontSize', '140%');
-INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfTitleFontSize', '120%');
-INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfSmallFontSize', '85%');
+INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfHeadlineFontSize', '1.7rem');
+INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfSubHeadlineFontSize', '1.4rem');
+INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfTitleFontSize', '1.2rem');
+INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfSmallFontSize', '.85rem');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfWarningColor', 'rgba(153, 153, 0, 1)');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfWarningBackgroundColor', 'rgba(255, 255, 221, 1)');
 INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('wcfWarningBorderColor', 'rgba(204, 204, 0, 1)');

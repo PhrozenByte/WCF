@@ -1141,6 +1141,7 @@ WCF.Message.InlineEditor = Class.extend({
 					objectID: this._container[$containerID].data('objectID')
 				}
 			});
+			this._proxy.setOption('failure', $.proxy(function() { this._cancel(); }, this));
 			this._proxy.sendRequest();
 		}
 		else {
@@ -1234,11 +1235,11 @@ WCF.Message.InlineEditor = Class.extend({
 		$('<span class="icon icon48 icon-spinner" />').appendTo($messageBody);
 		
 		var $content = $messageBody.find('.messageText');
-		this._cache = $content.html();
-		$content.empty();
 		
 		// hide unrelated content
 		$content.parent().children('.jsInlineEditorHideContent').hide();
+		
+		this._cache = $content.detach();
 	},
 	
 	/**
@@ -1259,7 +1260,7 @@ WCF.Message.InlineEditor = Class.extend({
 		// restore message
 		var $messageBody = $container.find('.messageBody');
 		$messageBody.children('.icon-spinner').remove();
-		$messageBody.find('.messageText').html(this._cache);
+		$messageBody.children('div:eq(0)').html(this._cache);
 		
 		// show unrelated content
 		$messageBody.find('.jsInlineEditorHideContent').show();
@@ -1299,9 +1300,12 @@ WCF.Message.InlineEditor = Class.extend({
 	 * @param	object		data
 	 */
 	_showEditor: function(data) {
+		// revert failure function
+		this._proxy.setOption('failure', $.proxy(this._failure, this));
+		
 		var $messageBody = this._container[this._activeElementID].addClass('jsInvalidQuoteTarget').find('.messageBody');
 		$messageBody.children('.icon-spinner').remove();
-		var $content = $messageBody.find('.messageText');
+		var $content = $messageBody.children('div:eq(0)');
 		
 		// insert wysiwyg
 		$('' + data.returnValues.template).appendTo($content);
@@ -1338,7 +1342,7 @@ WCF.Message.InlineEditor = Class.extend({
 	_revertEditor: function() {
 		var $messageBody = this._container[this._activeElementID].removeClass('jsInvalidQuoteTarget').find('.messageBody');
 		$messageBody.children('span.icon-spinner').remove();
-		$messageBody.find('.messageText').children().show();
+		$messageBody.children('div:eq(0)').children().show();
 		
 		// show unrelated content
 		$messageBody.find('.jsInlineEditorHideContent').show();
@@ -1420,7 +1424,7 @@ WCF.Message.InlineEditor = Class.extend({
 	_hideEditor: function() {
 		var $messageBody = this._container[this._activeElementID].removeClass('jsInvalidQuoteTarget').find('.messageBody');
 		$('<span class="icon icon48 icon-spinner" />').appendTo($messageBody);
-		$messageBody.find('.messageText').children().hide();
+		$messageBody.children('div:eq(0)').children().hide();
 		
 		// show unrelated content
 		$messageBody.find('.jsInlineEditorHideContent').show();
@@ -1439,7 +1443,7 @@ WCF.Message.InlineEditor = Class.extend({
 		var $container = this._container[this._activeElementID].removeClass('jsInvalidQuoteTarget');
 		var $messageBody = $container.find('.messageBody');
 		$messageBody.children('.icon-spinner').remove();
-		var $content = $messageBody.find('.messageText');
+		var $content = $messageBody.children('div:eq(0)');
 		
 		// show unrelated content
 		$content.parent().children('.jsInlineEditorHideContent').show();
@@ -1456,7 +1460,7 @@ WCF.Message.InlineEditor = Class.extend({
 		$content.empty();
 		
 		// insert new message
-		$content.html(data.returnValues.message);
+		$content.html('<div class="messageText">' + data.returnValues.message + '</div>');
 		
 		this._activeElementID = '';
 		
@@ -3137,6 +3141,10 @@ WCF.Message.UserMention = Class.extend({
 	 * Handles the key event of the CKEditor to select user suggestion on enter.
 	 */
 	_key: function(event) {
+		if (this._ckEditor.mode !== 'wysiwyg') {
+			return true;
+		}
+		
 		if (this._suggestionList.is(':visible')) {
 			if (event.data.keyCode === 13) { // enter
 				this._suggestionList.children('li').eq(this._itemIndex).trigger('click');
@@ -3152,6 +3160,10 @@ WCF.Message.UserMention = Class.extend({
 	 * @param	object		event
 	 */
 	_keydown: function(event) {
+		if (this._ckEditor.mode !== 'wysiwyg') {
+			return true;
+		}
+		
 		if (this._suggestionList.is(':visible')) {
 			switch (event.data.$.keyCode) {
 				case 38: // arrow up
@@ -3175,6 +3187,10 @@ WCF.Message.UserMention = Class.extend({
 	 * @param	object		event
 	 */
 	_keyup: function(event) {
+		if (this._ckEditor.mode !== 'wysiwyg') {
+			return true;
+		}
+		
 		// ignore enter key up event
 		if (event.data.$.keyCode === 13) {
 			return;
@@ -3264,10 +3280,10 @@ WCF.Message.UserMention = Class.extend({
 		var $li = this._suggestionList.children('li');
 		
 		if (itemIndex < 0) {
-			return;
+			itemIndex = $li.length - 1;
 		}
 		else if (itemIndex + 1 > $li.length) {
-			return;
+			itemIndex = 0;
 		}
 		
 		$li.removeClass('dropdownNavigationItem');

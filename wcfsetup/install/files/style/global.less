@@ -1,9 +1,12 @@
 /* ### globals ### */
+html, body {
+	font-size: @wcfBaseFontSize;
+}
+
 body {
 	background-color: @wcfPageBackgroundColor;
 	color: @wcfColor;
 	font-family: @wcfBaseFontFamily;
-	font-size: @wcfBaseFontSize;
 	line-height: @wcfBaseLineHeight;
 	word-wrap: break-word;
 }
@@ -118,8 +121,25 @@ body > iframe[src="about:blank"] {
 	display: none;
 }
 
-.marginTop {
+.marginTopLarge {
+	margin-top: @wcfGapLarge;
+}
+
+.marginTop,
+.marginMedium {
 	margin-top: @wcfGapMedium;
+}
+
+.marginTopSmall {
+	margin-top: @wcfGapSmall;
+}
+
+.marginTopTiny {
+	margin-top: @wcfGapTiny;
+}
+
+.center {
+	text-align: center;
 }
 
 .pointer {
@@ -172,7 +192,7 @@ fieldset {
 	background-color: @wcfTooltipBackgroundColor;
 	border-radius: 6px;
 	color: @wcfTooltipColor;
-	font-size: .85em;
+	font-size: @wcfSmallFontSize;
 	max-width: 300px;
 	padding: 5px 10px 7px;
 	position: absolute;
@@ -267,7 +287,7 @@ fieldset {
 	border-radius: 9px;
 	color: @wcfContentBackgroundColor;
 	display: inline-block;
-	font-size: 11px;
+	font-size: @wcfSmallFontSize;
 	font-weight: bold;
 	padding: 1px 6px 1px;
 	position: relative;
@@ -377,5 +397,19 @@ a.badge:hover {
 	
 	&.pink {
 		background-color: #c09;
+	}
+}
+
+@media only screen and (max-width: 800px) and (-webkit-min-device-pixel-ratio: 2) {
+	// Preserve HTML font-size when iPhone orientation changes from portrait to landscape
+	html {
+		-webkit-text-size-adjust: 100%;
+	}
+	
+	// Fixes zoom when iPhone orientation changes from portrait to landscape
+	html,
+	body {
+		width: 100%;
+		overflow: hidden;
 	}
 }

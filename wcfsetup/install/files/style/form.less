@@ -58,9 +58,15 @@ dl:not(.plain) {
 			white-space: nowrap;
 			width: auto;
 			word-wrap: normal;
+			right: 0;
 			
 			~ dd > input[type='checkbox'], ~ dd > input[type='radio'] {
 				margin-left: 0;
+			}
+			
+			> label {
+				overflow: hidden;
+				text-overflow: ellipsis;
 			}
 		}
 	}
@@ -180,8 +186,17 @@ dl:not(.plain) {
 
 /* submit buttons */
 .formSubmit {
+	font-size: 0;
 	margin-top: @wcfGapMedium;
 	text-align: center;
+	
+	button,
+	input[type='reset'],
+	input[type='submit'],
+	input[type='button'],
+	.button {
+		font-size: 1rem;
+	}
 }
 
 
@@ -217,6 +232,7 @@ select[multiple] {
 
 select {
 	margin: 0;
+	max-width: 100%;
 	min-width: 1px;
 	padding: 3px;
 }
@@ -357,7 +373,7 @@ select[multiple][disabled] {
 
 /* width */
 textarea {
-	width: 99%;
+	width: 100%;
 }
 	
 .tiny {

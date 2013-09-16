@@ -255,7 +255,7 @@
 		h1 {
 			color: @wcfPageLinkHoverColor;
 			float: right;
-			font-size: 160%;
+			font-size: @wcfHeadlineFontSize;
 			padding-top: @wcfGapLarge;
 			
 			.textShadow(@wcfPageBackgroundColor);
@@ -322,6 +322,8 @@
 /* main menu */
 @media screen and (min-width: 801px), print {
 	.mainMenu {
+		font-size: 0;
+		
 		> ul {
 			background-color: @wcfMainMenuBackgroundColor;
 			display: inline-block;
@@ -404,7 +406,7 @@
 		
 		> ul {
 			.dropdownMenu;
-			font-size: 120%;
+			font-size: @wcfTitleFontSize;
 			left: @wcfGapSmall;
 			
 			&:hover {
@@ -414,7 +416,7 @@
 			> li.active {
 				> ul.invisible {
 					display: block;
-					font-size: 85%;
+					font-size: @wcfSmallFontSize;
 					padding-left: 14px;
 					
 					> li > span.badge {
@@ -452,6 +454,7 @@
 	
 	> ul {
 		display: inline-block;
+		font-size: 0;
 		
 		&.navigationItems, &.navigationIcons {
 			float: right;
@@ -467,7 +470,7 @@
 				
 				> a {
 					display: inline-block;
-					padding: 3px;
+					padding: 4px 3px 3px;
 				}
 			}
 		}
@@ -484,11 +487,11 @@
 		
 		&.navigationItems, &.navigationMenuItems {
 			> li {
-				margin: 4px 7px 1px;
+				font-size: 1rem;
+				margin: 4px 7px 2px;
 				
 				> a {
 					color: @wcfLinkColor;
-					padding: 2px 0;
 					
 					&:hover {
 						color: @wcfLinkHoverColor;
@@ -845,21 +848,14 @@
 		margin-top: @wcfGapMedium;
 	}
 	
-	nav ul {
-		text-align: left;
+	> nav.pageNavigation > ul {
+		float: left;
 	}
 	
-	nav > ul {
-		float: left;
-		
-		&:not(.pageNavigation) {
-			float: right;
-			text-align: right;
-		}
-		
-		li {
-			display: inline;
-		}
+	> nav:not(.pageNavigation) > ul {
+		margin-right: 2px;
+		float: right;
+		.buttonList;
 	}
 }
 
@@ -915,7 +911,6 @@
 			color: @wcfDimmedColor;
 			font-weight: normal;
 			text-shadow: none;
-			font-size: 75%;
 			white-space: nowrap;
 			word-wrap: normal;
 		}
@@ -1360,7 +1355,7 @@
 					border-width: 1px;
 					color: @wcfLinkColor;
 					font-weight: bold;
-					font-size: 130%;
+					font-size: 1.3rem;
 					margin-top: -10px;
 					padding: 10px 15px 5px;
 					z-index: 30;
@@ -1379,7 +1374,7 @@
 				bottom: -3px;
 				color: @wcfDimmedColor;
 				display: inline-block;
-				font-size: 110%;
+				font-size: 1.1rem;
 				outline: 0;
 				padding: 1px 10px 3px;
 				position: relative;
@@ -1477,14 +1472,14 @@
 			> li {
 				&.ui-state-active {
 					> a {
-						font-size: 100%;
+						font-size: 1rem;
 						padding-left: 10px;
 						padding-right: 10px;
 					}
 				}
 				
 				> a {
-					font-size: 100%;
+					font-size: 1rem;
 					padding-left: 5px;
 					padding-right: 5px;
 				}
@@ -1824,7 +1819,6 @@ dl.statsDataList {
 		word-wrap: normal;
 		
 		> a {
-			color: @wcfDimmedColor;
 			text-decoration: none;
 		}
 	}
@@ -1842,7 +1836,6 @@ dl.statsDataList {
 		word-wrap: normal;
 		
 		> a {
-			color: @wcfColor;
 			text-decoration: none;
 		}
 	}
@@ -2048,7 +2041,7 @@ ul.inlineDataList {
 			color: @wcfColor;
 			font-family: @wcfBaseFontFamily;
 			font-weight: normal;
-			font-size: 100%;
+			font-size: 1rem;
 			padding: 0;
 			text-transform: uppercase;
 				
@@ -2154,7 +2147,7 @@ ul.inlineDataList {
 			color: @wcfLinkColor;
 			cursor: pointer;
 			font-weight: bold;
-			font-size: 130%;
+			font-size: 1.3rem;
 			padding-left: (@wcfGapLarge + 16px + @wcfGapTiny);
 			position: relative;
 			margin-left: -@wcfGapMedium;
@@ -2214,7 +2207,7 @@ ul.inlineDataList {
 		text-shadow: none !important;
 	}
 	
-	body {
+	html, body {
 		font-size: 12pt !important;
 	}
 	
@@ -2239,7 +2232,7 @@ ul.inlineDataList {
 	
 	a.externalURL:after {
 		content: " (" attr(href) ")";
-		font-size: 85%;
+		font-size: .85rem;
 	}
 	
 	.sidebar,
