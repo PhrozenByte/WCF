@@ -10,7 +10,7 @@ use wcf\system\SingletonFactory;
  * Manages the smiley cache.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.smiley
@@ -25,12 +25,12 @@ class SmileyCache extends SingletonFactory {
 	
 	/**
 	 * cached smiley categories
-	 * @var	array<wcf\data\smiley\category\SmileyCategory>
+	 * @var	array<\wcf\data\smiley\category\SmileyCategory>
 	 */
 	protected $cachedCategories = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		// get smiley cache
@@ -63,7 +63,7 @@ class SmileyCache extends SingletonFactory {
 	/**
 	 * Returns all smiley categories.
 	 * 
-	 * @return	array<wcf\data\smiley\category\SmileyCategory>
+	 * @return	array<\wcf\data\smiley\category\SmileyCategory>
 	 */
 	public function getCategories() {
 		return $this->cachedCategories;

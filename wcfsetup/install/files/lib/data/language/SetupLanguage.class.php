@@ -9,7 +9,7 @@ use wcf\util\XML;
  * SetupLanguage is a modification of Language used during the setup process.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.language
@@ -17,7 +17,7 @@ use wcf\util\XML;
  */
 class SetupLanguage extends Language {
 	/**
-	 * @see	wcf\data\DatabaseObject::__construct()
+	 * @see	\wcf\data\DatabaseObject::__construct()
 	 */
 	public function __construct($languageID, array $row, Language $language = null) {
 		if ($row === null) {
@@ -28,7 +28,7 @@ class SetupLanguage extends Language {
 	}
 	
 	/**
-	 * @see	wcf\data\language\Language::loadCategory()
+	 * @see	\wcf\data\language\Language::loadCategory()
 	 */
 	protected function loadCategory($category) {
 		return false;

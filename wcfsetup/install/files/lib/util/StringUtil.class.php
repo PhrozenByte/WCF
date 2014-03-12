@@ -1,13 +1,14 @@
 <?php
 namespace wcf\util;
 use wcf\system\application\ApplicationHandler;
+use wcf\system\request\RouteHandler;
 use wcf\system\WCF;
 
 /**
  * Contains string-related functions.
  * 
- * @author	Oliver Kliebisch, Marcel Werk 
- * @copyright	2001-2013 WoltLab GmbH
+ * @author	Oliver Kliebisch, Marcel Werk
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	util
@@ -15,7 +16,7 @@ use wcf\system\WCF;
  */
 final class StringUtil {
 	const HTML_PATTERN = '~</?[a-z]+[1-6]?
-			(?:\s*[a-z]+\s*(=\s*(?:
+			(?:\s*[a-z\-]+\s*(=\s*(?:
 			"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"|\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\'|[^\s>]
 			))?)*\s*/?>~ix';
 	const HTML_COMMENT_PATTERN = '~<!--(.*?)-->~';
@@ -368,6 +369,21 @@ final class StringUtil {
 	}
 	
 	/**
+	 * Alias to php str_split() function with multibyte support.
+	 * 
+	 * @param	string		$string
+	 * @param	integer		$length
+	 * @return	array<string>
+	 */
+	public static function split($string, $length = 1) {
+		$result = array();
+		for ($i = 0, $max = mb_strlen($string); $i < $max; $i += $length) {
+			$result[] = mb_substr($string, $i, $length);
+		}
+		return $result;
+	}
+	
+	/**
 	 * Checks wether $haystack starts with $needle, or not.
 	 * 
 	 * @param	string		$haystack	The string to be checked for starting with $needle
@@ -381,7 +397,7 @@ final class StringUtil {
 			$haystack = mb_strtolower($haystack);
 			$needle = mb_strtolower($needle);
 		}
-		// using substring and === is MUCH faster for long strings then using indexOf.
+		// using mb_substr and === is MUCH faster for long strings then using indexOf.
 		return mb_substr($haystack, 0, mb_strlen($needle)) === $needle;
 	}
 	
@@ -389,7 +405,7 @@ final class StringUtil {
 	 * Returns true if $haystack ends with $needle or if the length of $needle is 0.
 	 * 
 	 * @param	string		$haystack
-	 * @param	string		$needle	
+	 * @param	string		$needle
 	 * @param	boolean		$ci		case insensitive
 	 * @return	boolean
 	 */
@@ -401,6 +417,14 @@ final class StringUtil {
 		$length = mb_strlen($needle);
 		if ($length === 0) return true;
 		return (mb_substr($haystack, $length * -1) === $needle);
+	}
+	
+	/**
+	 * Alias to php str_pad function with multibyte support.
+	 */
+	public static function pad($input, $padLength, $padString=' ', $padType=STR_PAD_RIGHT) {
+		$additionalPadding = strlen($input) - mb_strlen($input);
+		return str_pad($input, $padLength + $additionalPadding, $padString, $padType);
 	}
 	
 	/**
@@ -708,7 +732,7 @@ final class StringUtil {
 	
 	/**
 	 * Generates an anchor tag from given URL.
-	 *  
+	 * 
 	 * @param	string		$url
 	 * @param	string		$title
 	 * @param	boolean		$encodeTitle
@@ -718,11 +742,12 @@ final class StringUtil {
 		$external = true;
 		if (ApplicationHandler::getInstance()->isInternalURL($url)) {
 			$external = false;
+			$url = preg_replace('~^https?://~', RouteHandler::getProtocol(), $url);
 		}
 		
 		// cut visible url
 		if (empty($title)) {
-			// use URL and remove protocol and www subdomain 
+			// use URL and remove protocol and www subdomain
 			$title = preg_replace('~^(?:https?|ftps?)://(?:www\.)?~i', '', $url);
 			
 			if (mb_strlen($title) > 60) {
@@ -750,7 +775,7 @@ final class StringUtil {
 	/**
 	 * Simple multi-byte safe wordwrap() function.
 	 * 
-	 * @param 	string		$string
+	 * @param	string		$string
 	 * @param	integer		$width
 	 * @param	string		$break
 	 * @return	string

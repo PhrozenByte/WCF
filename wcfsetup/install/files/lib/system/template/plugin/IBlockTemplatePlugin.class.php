@@ -6,7 +6,7 @@ use wcf\system\template\TemplateEngine;
  * Block functions encloses a template block and operate on the contents of this block.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.template.plugin
@@ -18,7 +18,7 @@ interface IBlockTemplatePlugin {
 	 * 
 	 * @param	array					$tagArgs
 	 * @param	string					$blockContent
-	 * @param	wcf\system\template\TemplateEngine	$tplObj
+	 * @param	\wcf\system\template\TemplateEngine	$tplObj
 	 * @return	string
 	 */
 	public function execute($tagArgs, $blockContent, TemplateEngine $tplObj);
@@ -27,14 +27,14 @@ interface IBlockTemplatePlugin {
 	 * Initialises this template block.
 	 * 
 	 * @param	array					$tagArgs
-	 * @param	wcf\system\template\TemplateEngine	$tplObj
+	 * @param	\wcf\system\template\TemplateEngine	$tplObj
 	 */
 	public function init($tagArgs, TemplateEngine $tplObj);
 	
 	/**
 	 * This function is called before every execution of this block function.
 	 * 
-	 * @param	wcf\system\template\TemplateEngine	$tplObj
+	 * @param	\wcf\system\template\TemplateEngine	$tplObj
 	 * @return	boolean
 	 */
 	public function next(TemplateEngine $tplObj);

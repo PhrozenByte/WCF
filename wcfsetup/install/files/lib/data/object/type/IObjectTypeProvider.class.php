@@ -5,7 +5,7 @@ namespace wcf\data\object\type;
  * Any object type provider should implement this interface.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.object.type
@@ -16,7 +16,7 @@ interface IObjectTypeProvider {
 	 * Gets an object by its ID.
 	 * 
 	 * @param	integer		$objectID
-	 * @return	wcf\data\DatabaseObject
+	 * @return	\wcf\data\DatabaseObject
 	 */
 	public function getObjectByID($objectID);
 	
@@ -24,7 +24,7 @@ interface IObjectTypeProvider {
 	 * Gets like objects by their IDs.
 	 * 
 	 * @param	array<integer>		$objectIDs
-	 * @return	array<wcf\data\DatabaseObject>
+	 * @return	array<\wcf\data\DatabaseObject>
 	 */
 	public function getObjectsByIDs(array $objectIDs);
 }

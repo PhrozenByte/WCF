@@ -6,7 +6,7 @@ use wcf\data\DatabaseObjectDecorator;
  * Provides a viewable page menu item with children support.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.page.menu.item
@@ -14,7 +14,7 @@ use wcf\data\DatabaseObjectDecorator;
  */
 class ViewablePageMenuItem extends DatabaseObjectDecorator implements \Countable, \Iterator {
 	/**
-	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	\wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\page\menu\item\PageMenuItem';
 	
@@ -26,14 +26,14 @@ class ViewablePageMenuItem extends DatabaseObjectDecorator implements \Countable
 	
 	/**
 	 * list of page menu items
-	 * @var	array<wcf\data\page\menu\item\PageMenuItem>
+	 * @var	array<\wcf\data\page\menu\item\PageMenuItem>
 	 */
 	protected $objects = array();
 	
 	/**
 	 * Adds a page menu item to collection.
 	 * 
-	 * @param	wcf\data\page\menu\item\PageMenuItem	$menuItem
+	 * @param	\wcf\data\page\menu\item\PageMenuItem	$menuItem
 	 */
 	public function addChild(PageMenuItem $menuItem) {
 		if ($menuItem->parentMenuItem == $this->menuItem) {

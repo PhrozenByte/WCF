@@ -7,7 +7,7 @@ use wcf\system\WCF;
  * Abstract implementation of a package installation plugin for menu items.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package.plugin
@@ -15,7 +15,7 @@ use wcf\system\WCF;
  */
 abstract class AbstractMenuPackageInstallationPlugin extends AbstractXMLPackageInstallationPlugin {
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::handleDelete()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::handleDelete()
 	 */
 	protected function handleDelete(array $items) {
 		$sql = "DELETE FROM	".$this->application.WCF_N."_".$this->tableName."
@@ -31,7 +31,7 @@ abstract class AbstractMenuPackageInstallationPlugin extends AbstractXMLPackageI
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::prepareImport()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::prepareImport()
 	 */
 	protected function prepareImport(array $data) {
 		// adjust show order
@@ -52,7 +52,7 @@ abstract class AbstractMenuPackageInstallationPlugin extends AbstractXMLPackageI
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::validateImport()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::validateImport()
 	 */
 	protected function validateImport(array $data) {
 		if (empty($data['parentMenuItem'])) {
@@ -72,7 +72,7 @@ abstract class AbstractMenuPackageInstallationPlugin extends AbstractXMLPackageI
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::findExistingItem()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::findExistingItem()
 	 */
 	protected function findExistingItem(array $data) {
 		$sql = "SELECT	*

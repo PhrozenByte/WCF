@@ -1,5 +1,5 @@
 <?php
-namespace wcf\system\Package;
+namespace wcf\system\package;
 use wcf\data\package\installation\queue\PackageInstallationQueue;
 use wcf\system\form\FormDocument;
 use wcf\system\WCF;
@@ -9,7 +9,7 @@ use wcf\util\StringUtil;
  * Handels form documents associated with a queue.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package.form

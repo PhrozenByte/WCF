@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Executes following-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.follow
@@ -17,12 +17,12 @@ use wcf\system\WCF;
  */
 class UserFollowingAction extends UserFollowAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\user\follow\UserFollowEditor';
 	
 	/**
-	 * @see	wcf\data\IGroupedUserListAction::validateGetGroupedUserList()
+	 * @see	\wcf\data\IGroupedUserListAction::validateGetGroupedUserList()
 	 */
 	public function validateGetGroupedUserList() {
 		$this->readInteger('pageNo');
@@ -35,7 +35,7 @@ class UserFollowingAction extends UserFollowAction {
 	}
 	
 	/**
-	 * @see	wcf\data\IGroupedUserListAction::getGroupedUserList()
+	 * @see	\wcf\data\IGroupedUserListAction::getGroupedUserList()
 	 */
 	public function getGroupedUserList() {
 		// resolve page count

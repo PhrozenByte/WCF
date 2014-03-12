@@ -12,7 +12,7 @@ use wcf\util\StringUtil;
  * Handles an AJAX-based package installation.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.action
@@ -27,13 +27,13 @@ class InstallPackageAction extends AbstractDialogAction {
 	
 	/**
 	 * PackageInstallationDispatcher object
-	 * @var	wcf\system\package\PackageInstallationDispatcher
+	 * @var	\wcf\system\package\PackageInstallationDispatcher
 	 */
 	public $installation = null;
 	
 	/**
 	 * PackageInstallationQueue object
-	 * @var	wcf\data\package\installation\queue\PackageInstallationQueue
+	 * @var	\wcf\data\package\installation\queue\PackageInstallationQueue
 	 */
 	public $queue = null;
 	
@@ -44,12 +44,12 @@ class InstallPackageAction extends AbstractDialogAction {
 	public $queueID = 0;
 	
 	/**
-	 * @see	wcf\action\AbstractDialogAction::$templateName
+	 * @see	\wcf\action\AbstractDialogAction::$templateName
 	 */
 	public $templateName = 'packageInstallationStep';
 	
 	/**
-	 * @see	wcf\action\IAction::readParameters()
+	 * @see	\wcf\action\IAction::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -120,6 +120,8 @@ class InstallPackageAction extends AbstractDialogAction {
 				// build redirect location
 				$location = $application->getPageURL() . 'acp/index.php/PackageList/' . SID_ARG_1ST;
 				
+				WCF::resetZendOpcache();
+				
 				// show success
 				$this->data = array(
 					'currentAction' => $this->getCurrentAction(null),
@@ -129,6 +131,8 @@ class InstallPackageAction extends AbstractDialogAction {
 				);
 				return;
 			}
+			
+			WCF::resetZendOpcache();
 			
 			// continue with next node
 			$this->data = array(
@@ -184,7 +188,7 @@ class InstallPackageAction extends AbstractDialogAction {
 	}
 	
 	/**
-	 * @see	wcf\action\AbstractDialogAction\AbstractDialogAction::validateStep()
+	 * @see	\wcf\action\AbstractDialogAction\AbstractDialogAction::validateStep()
 	 */
 	protected function validateStep() {
 		switch ($this->step) {

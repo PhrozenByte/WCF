@@ -3,13 +3,14 @@ namespace wcf\system\application;
 use wcf\data\application\ApplicationAction;
 use wcf\data\application\ApplicationList;
 use wcf\system\cache\builder\ApplicationCacheBuilder;
+use wcf\system\Regex;
 use wcf\system\SingletonFactory;
 
 /**
  * Handles multi-application environments.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.application
@@ -38,7 +39,7 @@ class ApplicationHandler extends SingletonFactory {
 	/**
 	 * Returns the primary application.
 	 * 
-	 * @return	wcf\data\application\Application
+	 * @return	\wcf\data\application\Application
 	 */
 	public function getPrimaryApplication() {
 		$packageID = ($this->cache['primary']) ?: PACKAGE_ID;
@@ -54,7 +55,7 @@ class ApplicationHandler extends SingletonFactory {
 	 * Returns an application based upon it's abbreviation. Will return the
 	 * primary application if $abbreviation equals to 'wcf'
 	 * 
-	 * @return	wcf\data\application\Application
+	 * @return	\wcf\data\application\Application
 	 */
 	public function getApplication($abbreviation) {
 		if ($abbreviation == 'wcf') {
@@ -76,7 +77,7 @@ class ApplicationHandler extends SingletonFactory {
 	 * Returns pseudo-application representing WCF used for special cases,
 	 * e.g. cross-domain files requestable through the webserver.
 	 * 
-	 * @return	wcf\data\application\Application
+	 * @return	\wcf\data\application\Application
 	 */
 	public function getWCF() {
 		return $this->cache['wcf'];
@@ -85,7 +86,7 @@ class ApplicationHandler extends SingletonFactory {
 	/**
 	 * Returns the currently active application.
 	 * 
-	 * @return	wcf\data\application\Application
+	 * @return	\wcf\data\application\Application
 	 */
 	public function getActiveApplication() {
 		// work-around during WCFSetup
@@ -99,7 +100,7 @@ class ApplicationHandler extends SingletonFactory {
 	/**
 	 * Returns a list of dependent applications.
 	 * 
-	 * @return	array<wcf\data\application\Application>
+	 * @return	array<\wcf\data\application\Application>
 	 */
 	public function getDependentApplications() {
 		$applications = $this->getApplications();
@@ -116,7 +117,7 @@ class ApplicationHandler extends SingletonFactory {
 	/**
 	 * Returns a list of all active applications.
 	 * 
-	 * @return	array<wcf\data\application\Application>
+	 * @return	array<\wcf\data\application\Application>
 	 */
 	public function getApplications() {
 		return $this->cache['application'];
@@ -144,14 +145,15 @@ class ApplicationHandler extends SingletonFactory {
 	 * @return	boolean
 	 */
 	public function isInternalURL($url) {
+		$protocolRegex = new Regex('^https(?=://)');
 		if (empty($this->pageURLs)) {
 			foreach ($this->getApplications() as $application) {
-				$this->pageURLs[] = $application->getPageURL();
+				$this->pageURLs[] = $protocolRegex->replace($application->getPageURL(), 'http');
 			}
 		}
 		
 		foreach ($this->pageURLs as $pageURL) {
-			if (stripos($url, $pageURL) === 0) {
+			if (stripos($protocolRegex->replace($url, 'http'), $pageURL) === 0) {
 				return true;
 			}
 		}

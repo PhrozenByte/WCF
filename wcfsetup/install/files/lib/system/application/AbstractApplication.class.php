@@ -8,7 +8,7 @@ use wcf\system\SingletonFactory;
  * Abstract implementation of a community framework application.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.application
@@ -34,7 +34,13 @@ abstract class AbstractApplication extends SingletonFactory implements IApplicat
 	protected $packageID = 0;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * qualified name of application's primary controller
+	 * @var	string
+	 */
+	protected $primaryController = '';
+	
+	/**
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected final function init() {
 		if (empty($this->abbreviation) || $this->abbreviation == 'wcf') {
@@ -55,14 +61,14 @@ abstract class AbstractApplication extends SingletonFactory implements IApplicat
 	}
 	
 	/**
-	 * @see	wcf\system\application\IApplication::__run()
+	 * @see	\wcf\system\application\IApplication::__run()
 	 */
 	public function __run() {
 		// does nothing
 	}
 	
 	/**
-	 * @see	wcf\system\application\IApplication::isActiveApplication()
+	 * @see	\wcf\system\application\IApplication::isActiveApplication()
 	 */
 	public function isActiveApplication() {
 		return $this->isActiveApplication;
@@ -71,14 +77,21 @@ abstract class AbstractApplication extends SingletonFactory implements IApplicat
 	/**
 	 * Returns application package.
 	 * 
-	 * @return	wcf\data\package\Package
+	 * @return	\wcf\data\package\Package
 	 */
 	public function getPackage() {
 		return PackageCache::getInstance()->getPackage($this->packageID);
 	}
 	
 	/**
-	 * @see	wcf\system\application\IApplication::__callStatic()
+	 * @see	\wcf\system\application\IApplication::getPrimaryController()
+	 */
+	public function getPrimaryController() {
+		return $this->primaryController;
+	}
+	
+	/**
+	 * @see	\wcf\system\application\IApplication::__callStatic()
 	 */
 	public static function __callStatic($method, array $arguments) {
 		return call_user_func_array(array('wcf\system\WCF', $method), $arguments);

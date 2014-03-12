@@ -1,6 +1,6 @@
 <?php
 namespace wcf\action;
-use wcf\system\exception\IllegalLinkException;
+use wcf\system\exception\InvalidSecurityTokenException;
 use wcf\system\WCF;
 
 /**
@@ -8,7 +8,7 @@ use wcf\system\WCF;
  * A missing or invalid token will be result in a throw of a IllegalLinkException.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	action
@@ -16,7 +16,7 @@ use wcf\system\WCF;
  */
 abstract class AbstractSecureAction extends AbstractAction {
 	/**
-	 * @see	wcf\action\IAction::readParameters()
+	 * @see	\wcf\action\IAction::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -30,7 +30,7 @@ abstract class AbstractSecureAction extends AbstractAction {
 	 */
 	protected function checkSecurityToken() {
 		if (!isset($_REQUEST['t']) || !WCF::getSession()->checkSecurityToken($_REQUEST['t'])) {
-			throw new IllegalLinkException();
+			throw new InvalidSecurityTokenException();
 		}
 	}
 }

@@ -7,7 +7,7 @@ use wcf\system\io\File;
  * a log file.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.mail
@@ -16,7 +16,7 @@ use wcf\system\io\File;
 class DebugMailSender extends MailSender {
 	/**
 	 * log file
-	 * @var	wcf\system\io\File
+	 * @var	\wcf\system\io\File
 	 */
 	protected $log = null;
 	
@@ -36,7 +36,7 @@ class DebugMailSender extends MailSender {
 	/**
 	 * Prints the given mail.
 	 * 
-	 * @param	wcf\system\mail\Mail	$mail
+	 * @param	\wcf\system\mail\Mail	$mail
 	 * @return	string
 	 */
 	protected static function printMail(Mail $mail) {

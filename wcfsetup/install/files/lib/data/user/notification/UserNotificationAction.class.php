@@ -2,7 +2,6 @@
 namespace wcf\data\user\notification;
 use wcf\data\user\notification\UserNotificationEditor;
 use wcf\data\AbstractDatabaseObjectAction;
-use wcf\system\request\LinkHandler;
 use wcf\system\user\notification\UserNotificationHandler;
 use wcf\system\user\storage\UserStorageHandler;
 use wcf\system\WCF;
@@ -11,7 +10,7 @@ use wcf\system\WCF;
  * Executes user notification-related actions.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.notification
@@ -35,7 +34,7 @@ class UserNotificationAction extends AbstractDatabaseObjectAction {
 	}
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::create()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::create()
 	 */
 	public function create() {
 		// create notification

@@ -10,7 +10,7 @@ use wcf\system\WCF;
  * Executes tagging-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.tag
@@ -18,12 +18,12 @@ use wcf\system\WCF;
  */
 class TagAction extends AbstractDatabaseObjectAction implements ISearchAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction
+	 * @see	\wcf\data\AbstractDatabaseObjectAction
 	 */
 	protected $allowGuestAccess = array('getSearchResultList');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\tag\TagEditor';
 	
@@ -38,7 +38,12 @@ class TagAction extends AbstractDatabaseObjectAction implements ISearchAction {
 	protected $permissionsUpdate = array('admin.content.tag.canManageTag');
 	
 	/**
-	 * @see	wcf\data\ISearchAction::validateGetSearchResultList()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$requireACP
+	 */
+	protected $requireACP = array('delete', 'update');
+	
+	/**
+	 * @see	\wcf\data\ISearchAction::validateGetSearchResultList()
 	 */
 	public function validateGetSearchResultList() {
 		$this->readString('searchString', false, 'data');
@@ -49,7 +54,7 @@ class TagAction extends AbstractDatabaseObjectAction implements ISearchAction {
 	}
 	
 	/**
-	 * @see	wcf\data\ISearchAction::getSearchResultList()
+	 * @see	\wcf\data\ISearchAction::getSearchResultList()
 	 */
 	public function getSearchResultList() {
 		$excludedSearchValues = array();

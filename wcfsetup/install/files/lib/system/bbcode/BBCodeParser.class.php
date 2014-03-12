@@ -3,13 +3,12 @@ namespace wcf\system\bbcode;
 use wcf\data\bbcode\attribute\BBCodeAttribute;
 use wcf\data\bbcode\BBCodeCache;
 use wcf\system\SingletonFactory;
-use wcf\util\StringUtil;
 
 /**
  * Parses bbcode tags in text.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode
@@ -18,7 +17,7 @@ use wcf\util\StringUtil;
 class BBCodeParser extends SingletonFactory {
 	/**
 	 * list of bbcodes
-	 * @var	array<wcf\data\bbcode\BBCode>
+	 * @var	array<\wcf\data\bbcode\BBCode>
 	 */
 	protected $bbcodes = array();
 	
@@ -53,7 +52,7 @@ class BBCodeParser extends SingletonFactory {
 	protected $textArray = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		// get bbcodes
@@ -217,7 +216,7 @@ class BBCodeParser extends SingletonFactory {
 	 * Validates an attributes of a tag.
 	 * 
 	 * @param	array					$tagAttributes
-	 * @param	wcf\data\bbcode\BBCodeAttribute		$definedTagAttribute
+	 * @param	\wcf\data\bbcode\BBCodeAttribute		$definedTagAttribute
 	 * @return	boolean
 	 */
 	protected function isValidTagAttribute(array $tagAttributes, BBCodeAttribute $definedTagAttribute) {
@@ -521,6 +520,7 @@ class BBCodeParser extends SingletonFactory {
 		
 		$this->setText($text);
 		$this->buildTagArray(false);
+		$this->buildXMLStructure();
 		
 		$usedDisallowedBBCodes = array();
 		foreach ($this->tagArray as $tag) {

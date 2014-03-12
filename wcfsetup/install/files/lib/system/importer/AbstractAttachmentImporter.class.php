@@ -1,14 +1,14 @@
 <?php
 namespace wcf\system\importer;
+use wcf\data\attachment\Attachment;
 use wcf\data\attachment\AttachmentEditor;
 use wcf\system\exception\SystemException;
-use wcf\util\StringUtil;
 
 /**
  * Imports attachments.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.importer
@@ -16,18 +16,18 @@ use wcf\util\StringUtil;
  */
 class AbstractAttachmentImporter extends AbstractImporter {
 	/**
-	 * @see wcf\system\importer\AbstractImporter::$className
+	 * @see	\wcf\system\importer\AbstractImporter::$className
 	 */
 	protected $className = 'wcf\data\attachment\Attachment';
 	
 	/**
 	 * object type id for attachments
-	 * @var integer
+	 * @var	integer
 	 */
 	protected $objectTypeID = 0;
 	
 	/**
-	 * @see wcf\system\importer\IImporter::import()
+	 * @see	\wcf\system\importer\IImporter::import()
 	 */
 	public function import($oldID, array $data, array $additionalData = array()) {
 		// check file location
@@ -47,6 +47,12 @@ class AbstractAttachmentImporter extends AbstractImporter {
 		
 		// get user id
 		$data['userID'] = ImportHandler::getInstance()->getNewID('com.woltlab.wcf.user', $data['userID']);
+		
+		// check existing attachment id
+		if (is_numeric($oldID)) {
+			$attachment = new Attachment($oldID);
+			if (!$attachment->attachmentID) $data['attachmentID'] = $oldID;
+		}
 		
 		// save attachment
 		$attachment = AttachmentEditor::create(array_merge($data, array('objectTypeID' => $this->objectTypeID)));

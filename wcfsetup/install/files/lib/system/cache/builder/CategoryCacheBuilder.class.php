@@ -6,7 +6,7 @@ use wcf\data\category\CategoryList;
  * Caches the categories for the active application.
  * 
  * @author	Matthias Schmidt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cache.builder
@@ -14,7 +14,7 @@ use wcf\data\category\CategoryList;
  */
 class CategoryCacheBuilder extends AbstractCacheBuilder {
 	/**
-	 * @see	wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
+	 * @see	\wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
 	 */
 	public function rebuild(array $parameters) {
 		$list = new CategoryList();

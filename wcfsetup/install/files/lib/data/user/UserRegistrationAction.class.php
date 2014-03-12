@@ -1,7 +1,5 @@
 <?php
 namespace wcf\data\user;
-use wcf\system\exception\UserInputException;
-use wcf\util\StringUtil;
 use wcf\util\UserRegistrationUtil;
 use wcf\util\UserUtil;
 
@@ -9,7 +7,7 @@ use wcf\util\UserUtil;
  * Executes user registration-related actions.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user
@@ -17,7 +15,7 @@ use wcf\util\UserUtil;
  */
 class UserRegistrationAction extends UserAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
 	 */
 	protected $allowGuestAccess = array('validateEmailAddress', 'validatePassword', 'validateUsername');
 	

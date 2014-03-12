@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Contains date-related functions.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	util
@@ -136,8 +136,8 @@ final class DateUtil {
 	 * 
 	 * @param	\DateTime			$time
 	 * @param	string				$format
-	 * @param	wcf\data\language\Language	$language
-	 * @param	wcf\data\user\User		$user
+	 * @param	\wcf\data\language\Language	$language
+	 * @param	\wcf\data\user\User		$user
 	 * @return	string
 	 */
 	public static function format(\DateTime $time = null, $format = null, Language $language = null, User $user = null) {
@@ -154,7 +154,7 @@ final class DateUtil {
 		$output = $time->format($language->get($format));
 		
 		// localize output
-		$output = self::localizeDate($output, $format, $language);
+		$output = self::localizeDate($output, $language->get($format), $language);
 		
 		return $output;
 	}
@@ -236,13 +236,13 @@ final class DateUtil {
 	 * 
 	 * @param	string				$date
 	 * @param	string				$format
-	 * @param	wcf\data\language\Language	$language
+	 * @param	\wcf\data\language\Language	$language
 	 * @return	string
 	 */
 	public static function localizeDate($date, $format, Language $language) {
 		if ($language->languageCode != 'en') {
 			// full textual representation of the day of the week (l)
-			if (stripos($format, 'l') !== false) {
+			if (strpos($format, 'l') !== false) {
 				$date = str_replace(array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), array(
 					$language->get('wcf.date.day.sunday'),
 					$language->get('wcf.date.day.monday'),
@@ -255,7 +255,7 @@ final class DateUtil {
 			}
 			
 			// textual representation of a day, three letters (D)
-			if (stripos($format, 'D') !== false) {
+			if (strpos($format, 'D') !== false) {
 				$date = str_replace(array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'), array(
 					$language->get('wcf.date.day.sun'),
 					$language->get('wcf.date.day.mon'),
@@ -268,7 +268,7 @@ final class DateUtil {
 			}
 			
 			// full textual representation of a month (F)
-			if (stripos($format, 'F') !== false) {
+			if (strpos($format, 'F') !== false) {
 				$date = str_replace(array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'), array(
 					$language->get('wcf.date.month.january'),
 					$language->get('wcf.date.month.february'),
@@ -286,20 +286,20 @@ final class DateUtil {
 			}
 			
 			// short textual representation of a month (M)
-			if (stripos($format, 'M') !== false) {
+			if (strpos($format, 'M') !== false) {
 				$date = str_replace(array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'), array(
-					$language->get('wcf.date.month.jan'),
-					$language->get('wcf.date.month.feb'),
-					$language->get('wcf.date.month.mar'),
-					$language->get('wcf.date.month.apr'),
-					$language->get('wcf.date.month.may'),
-					$language->get('wcf.date.month.jun'),
-					$language->get('wcf.date.month.jul'),
-					$language->get('wcf.date.month.aug'),
-					$language->get('wcf.date.month.sep'),
-					$language->get('wcf.date.month.oct'),
-					$language->get('wcf.date.month.nov'),
-					$language->get('wcf.date.month.dec')
+					$language->get('wcf.date.month.short.jan'),
+					$language->get('wcf.date.month.short.feb'),
+					$language->get('wcf.date.month.short.mar'),
+					$language->get('wcf.date.month.short.apr'),
+					$language->get('wcf.date.month.short.may'),
+					$language->get('wcf.date.month.short.jun'),
+					$language->get('wcf.date.month.short.jul'),
+					$language->get('wcf.date.month.short.aug'),
+					$language->get('wcf.date.month.short.sep'),
+					$language->get('wcf.date.month.short.oct'),
+					$language->get('wcf.date.month.short.nov'),
+					$language->get('wcf.date.month.short.dec')
 				), $date);
 			}
 		}
@@ -357,20 +357,13 @@ final class DateUtil {
 	 * @param	string		$date
 	 */
 	public static function validateDate($date) {
-		// matches almost any valid date between year 2000 and 2038
-		if (!preg_match('~^(20[0-2][0-9]|203[0-8])\-(0[1-9]|1[0-2])\-(0[1-9]|[1-2][0-9]|3[0-1])$~', $date)) {
-			throw new SystemException("date '".$date."' is invalid, violating ISO-8601 date format.");
+		if (preg_match('~^(?<year>[0-9]{4})-(?<month>[0-9]{2})-(?<day>[0-9]{2})~', $date, $matches)) {
+			if (!checkdate($matches['month'], $matches['day'], $matches['year'])) {
+				throw new SystemException("Date '".$date."' is invalid");
+			}
 		}
-		
-		// try to convert $date into a UNIX timestamp
-		$time = @strtotime($date." GMT");
-		if ($time === false) {
-			throw new SystemException("date '".$date."' is invalid");
-		}
-		
-		// convert back to ISO-8601, if date was bogus (e.g. 2000-02-31) data() returns a different date than $date
-		if (gmdate('Y-m-d', $time) != $date) {
-			throw new SystemException("date '".$date."' is invalid");
+		else {
+			throw new SystemException("Date '".$date."' is not a valid ISO-8601 date");
 		}
 	}
 	

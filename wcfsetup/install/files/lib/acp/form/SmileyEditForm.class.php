@@ -1,6 +1,5 @@
 <?php
 namespace wcf\acp\form;
-use wcf\data\package\PackageCache;
 use wcf\data\smiley\Smiley;
 use wcf\data\smiley\SmileyAction;
 use wcf\form\AbstractForm;
@@ -12,7 +11,7 @@ use wcf\system\WCF;
  * Shows the smiley edit form.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -20,12 +19,12 @@ use wcf\system\WCF;
  */
 class SmileyEditForm extends SmileyAddForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.smiley';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.content.smiley.canManageSmiley');
 	
@@ -37,12 +36,12 @@ class SmileyEditForm extends SmileyAddForm {
 	
 	/**
 	 * smiley object
-	 * @var	wcf\data\smiley\Smiley
+	 * @var	\wcf\data\smiley\Smiley
 	 */
 	public $smiley = null;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -55,7 +54,7 @@ class SmileyEditForm extends SmileyAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
@@ -70,14 +69,14 @@ class SmileyEditForm extends SmileyAddForm {
 		}
 		
 		// update bbcode
-		$this->objectAction = new SmileyAction(array($this->smileyID), 'update', array('data' => array(
+		$this->objectAction = new SmileyAction(array($this->smileyID), 'update', array('data' => array_merge($this->additionalFields, array(
 			'smileyTitle' => $this->smileyTitle,
 			'smileyCode' => $this->smileyCode,
 			'aliases' => $this->aliases,
 			'smileyPath' => $this->smileyPath,
 			'showOrder' => $this->showOrder,
 			'categoryID' => $this->categoryID ?: null
-		)));
+		))));
 		$this->objectAction->executeAction();
 		
 		$this->saved();
@@ -89,7 +88,7 @@ class SmileyEditForm extends SmileyAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -107,7 +106,7 @@ class SmileyEditForm extends SmileyAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

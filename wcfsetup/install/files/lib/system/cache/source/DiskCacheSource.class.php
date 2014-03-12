@@ -4,6 +4,7 @@ use wcf\system\exception\SystemException;
 use wcf\system\io\File;
 use wcf\system\Callback;
 use wcf\system\Regex;
+use wcf\system\WCF;
 use wcf\util\DirectoryUtil;
 use wcf\util\FileUtil;
 
@@ -11,7 +12,7 @@ use wcf\util\FileUtil;
  * DiskCacheSource is an implementation of CacheSource that stores the cache as simple files in the file system.
  * 
  * @author	Alexander Ebert, Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cache.source
@@ -20,12 +21,12 @@ use wcf\util\FileUtil;
 class DiskCacheSource implements ICacheSource {
 	/**
 	 * up-to-date directory util object for the cache folder
-	 * @var	wcf\util\DirectoryUtil
+	 * @var	\wcf\util\DirectoryUtil
 	 */
 	protected $directoryUtil = null;
 	
 	/**
-	 * @see	wcf\system\cache\source\ICacheSource::flush()
+	 * @see	\wcf\system\cache\source\ICacheSource::flush()
 	 */
 	public function flush($cacheName, $useWildcard) {
 		if ($useWildcard) {
@@ -37,14 +38,16 @@ class DiskCacheSource implements ICacheSource {
 	}
 	
 	/**
-	 * @see	wcf\system\cache\source\ICacheSource::flushAll()
+	 * @see	\wcf\system\cache\source\ICacheSource::flushAll()
 	 */
 	public function flushAll() {
 		$this->getDirectoryUtil()->removePattern(new Regex('.*\.php$'));
+		
+		WCF::resetZendOpcache();
 	}
 	
 	/**
-	 * @see	wcf\system\cache\source\ICacheSource::get()
+	 * @see	\wcf\system\cache\source\ICacheSource::get()
 	 */
 	public function get($cacheName, $maxLifetime) {
 		$filename = $this->getFilename($cacheName);
@@ -62,7 +65,7 @@ class DiskCacheSource implements ICacheSource {
 	}
 	
 	/**
-	 * @see	wcf\system\cache\source\ICacheSource::set()
+	 * @see	\wcf\system\cache\source\ICacheSource::set()
 	 */
 	public function set($cacheName, $value, $maxLifetime) {
 		$file = new File($this->getFilename($cacheName));
@@ -73,6 +76,8 @@ class DiskCacheSource implements ICacheSource {
 		// unset current DirectoryUtil object to make sure new cache file
 		// can be deleted in the same request
 		$this->directoryUtil = null;
+		
+		WCF::resetZendOpcache($this->getFilename($cacheName));
 	}
 	
 	/**
@@ -97,6 +102,8 @@ class DiskCacheSource implements ICacheSource {
 		$this->getDirectoryUtil()->executeCallback(new Callback(function ($filename) {
 			if (!@touch($filename, 1)) {
 				@unlink($filename);
+				
+				WCF::resetZendOpcache($filename);
 			}
 		}), new Regex('^'.$directory.$pattern.'$', Regex::CASE_INSENSITIVE));
 	}
@@ -165,7 +172,7 @@ class DiskCacheSource implements ICacheSource {
 	/**
 	 * Returns an up-to-date directory util object for the cache folder.
 	 * 
-	 * @return	wcf\util\DirectoryUtil
+	 * @return	\wcf\util\DirectoryUtil
 	 */
 	protected function getDirectoryUtil() {
 		if ($this->directoryUtil === null) {

@@ -2,7 +2,7 @@
 namespace wcf\form;
 use wcf\data\user\avatar\Gravatar;
 use wcf\data\user\avatar\UserAvatarAction;
-use wcf\data\user\UserEditor;
+use wcf\data\user\UserAction;
 use wcf\system\exception\PermissionDeniedException;
 use wcf\system\exception\UserInputException;
 use wcf\system\menu\user\UserMenu;
@@ -12,7 +12,7 @@ use wcf\system\WCF;
  * Shows the avatar edit form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	form
@@ -20,17 +20,17 @@ use wcf\system\WCF;
  */
 class AvatarEditForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$enableTracking
+	 * @see	\wcf\page\AbstractPage::$enableTracking
 	 */
 	public $enableTracking = true;
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$loginRequired
+	 * @see	\wcf\page\AbstractPage::$loginRequired
 	 */
 	public $loginRequired = true;
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$templateName
+	 * @see	\wcf\page\AbstractPage::$templateName
 	 */
 	public $templateName = 'avatarEdit';
 	
@@ -41,7 +41,7 @@ class AvatarEditForm extends AbstractForm {
 	public $avatarType = 'none';
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -50,7 +50,7 @@ class AvatarEditForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -81,7 +81,7 @@ class AvatarEditForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
@@ -97,35 +97,36 @@ class AvatarEditForm extends AbstractForm {
 		// update user
 		switch ($this->avatarType) {
 			case 'none':
-				$editor = new UserEditor(WCF::getUser());
-				$editor->update(array(
+				$data = array(
 					'avatarID' => null,
 					'enableGravatar' => 0
-				));
+				);
 			break;
 				
 			case 'custom':
-				$editor = new UserEditor(WCF::getUser());
-				$editor->update(array(
+				$data = array(
 					'enableGravatar' => 0
-				));
+				);
 			break;
 				
 			case 'gravatar':
-				$editor = new UserEditor(WCF::getUser());
-				$editor->update(array(
+				$data = array(
 					'avatarID' => null,
 					'enableGravatar' => 1
-				));
+				);
 			break;
 		}
+		$this->objectAction = new UserAction(array(WCF::getUser()), 'update', array(
+			'data' => array_merge($this->additionalFields, $data)
+		));
+		$this->objectAction->executeAction();
 		
 		$this->saved();
 		WCF::getTPL()->assign('success', true);
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -137,7 +138,7 @@ class AvatarEditForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -148,7 +149,7 @@ class AvatarEditForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::show()
+	 * @see	\wcf\page\IPage::show()
 	 */
 	public function show() {
 		// set active tab

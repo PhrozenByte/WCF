@@ -2,7 +2,7 @@
  * Message related classes for WCF
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
 WCF.Message = { };
@@ -60,7 +60,6 @@ WCF.Message.BBCode.CodeViewer = Class.extend({
 			// do *not* use $.trim here, as we want to preserve whitespaces
 			$content += $(listItem).text().replace(/\n+$/, '');
 		});
-		
 		
 		if (this._dialog === null) {
 			this._dialog = $('<div><textarea cols="60" rows="12" readonly="readonly" /></div>').hide().appendTo(document.body);
@@ -231,7 +230,7 @@ WCF.Message.Preview = Class.extend({
 	 * @return	string
 	 */
 	_getMessage: function() {
-		if ($.browser.mobile) {
+		if (!$.browser.ckeditor) {
 			return this._messageField.val();
 		}
 		else if (this._messageField.data('ckeditorInstance')) {
@@ -325,6 +324,8 @@ WCF.Message.DefaultPreview = WCF.Message.Preview.extend({
 		}
 		
 		$preview.find('div:eq(0)').html(data.returnValues.message);
+		
+		new WCF.Effect.Scroll().scrollTo($preview);
 	},
 	
 	/**
@@ -543,11 +544,10 @@ WCF.Message.Smilies = Class.extend({
 	_smileyClick: function(event) {
 		var $target = $(event.currentTarget);
 		var $smileyCode = $target.data('smileyCode');
+		var $smileyPath = $target.data('smileyPath');
 		
 		// get ckEditor
 		var $ckEditor = this._ckEditor.ckeditorGet();
-		// get smiley path
-		var $smileyPath = $target.find('img').attr('src');
 		
 		// add smiley to config
 		if (!WCF.inArray($smileyCode, $ckEditor.config.smiley_descriptions)) {
@@ -559,7 +559,7 @@ WCF.Message.Smilies = Class.extend({
 			// in design mode
 			var $img = $ckEditor.document.createElement('img', {
 				attributes: {
-					src: $smileyPath,
+					src: $ckEditor.config.smiley_path + $smileyPath,
 					'class': 'smiley',
 					alt: $smileyCode
 				}
@@ -689,28 +689,19 @@ WCF.Message.QuickReply = Class.extend({
 			if (this._quoteManager) {
 				// check if message field is empty
 				var $empty = true;
-				if ($.browser.touch) {
-					$empty = (!this._messageField.val().length);
+				if ($.browser.ckeditor) {
+					var self = this;
+					this._messageField.ckeditor(function() {
+						$empty = (!$.trim(this.getData()).length);
+						self._ckeditorCallback($empty);
+					});
+					
 				}
 				else {
-					$empty = (!$.trim(this._messageField.ckeditorGet().getData()).length);
-				}
-				
-				if ($empty) {
-					this._quoteManager.insertQuotes(this._getClassName(), this._getObjectID(), $.proxy(this._insertQuotes, this));
+					$empty = (!this._messageField.val().length);
+					this._ckeditorCallback($empty);
 				}
 			}
-			
-			new WCF.PeriodicalExecuter($.proxy(function(pe) {
-				pe.stop();
-				
-				if ($.browser.mobile) {
-					this._messageField.focus();
-				}
-				else {
-					this._messageField.ckeditorGet().ui.editor.focus();
-				}
-			}, this), 250);
 		}
 		
 		// discard event
@@ -720,9 +711,22 @@ WCF.Message.QuickReply = Class.extend({
 		}
 	},
 	
+	_ckeditorCallback: function(isEmpty) {
+		if (isEmpty) {
+			this._quoteManager.insertQuotes(this._getClassName(), this._getObjectID(), $.proxy(this._insertQuotes, this));
+		}
+		
+		if ($.browser.ckeditor) {
+			this._messageField.ckeditorGet().ui.editor.focus();
+		}
+		else {
+			this._messageField.focus();
+		}
+	},
+	
 	/**
 	 * Returns container element.
-	 *
+	 * 
 	 * @return	jQuery
 	 */
 	getContainer: function() {
@@ -739,11 +743,21 @@ WCF.Message.QuickReply = Class.extend({
 			return;
 		}
 		
-		if ($.browser.mobile) {
-			this._messageField.val(data.returnValues.template);
+		if ($.browser.ckeditor) {
+			var $ckEditor = this._messageField.ckeditorGet();
+			
+			// work-around for a strange selection bug in Firefox: http://www.woltlab.com/forum/index.php/Thread/220522-Zitat-Fehler/
+			if ($ckEditor.getSelection().getStartElement() === null) {
+				// range is broken, set it to end of text: http://stackoverflow.com/a/16308194
+				var $range = $ckEditor.createRange();
+				$range.moveToPosition($range.root, CKEDITOR.POSITION_BEFORE_END);
+				$ckEditor.getSelection().selectRanges([ $range ]);
+			}
+			
+			$ckEditor.insertText(data.returnValues.template);
 		}
 		else {
-			this._messageField.ckeditorGet().insertText(data.returnValues.template);
+			this._messageField.val(data.returnValues.template);
 		}
 	},
 	
@@ -757,12 +771,12 @@ WCF.Message.QuickReply = Class.extend({
 		
 		var $message = '';
 		
-		if ($.browser.mobile) {
-			$message = $.trim(this._messageField.val());
-		}
-		else {
+		if ($.browser.ckeditor) {
 			var $ckEditor = this._messageField.ckeditorGet();
 			$message = $.trim($ckEditor.getData());
+		}
+		else {
+			$message = $.trim(this._messageField.val());
 		}
 		
 		// check if message is empty
@@ -824,12 +838,12 @@ WCF.Message.QuickReply = Class.extend({
 	_cancel: function() {
 		this._revertQuickReply(true);
 		
-		if ($.browser.mobile) {
-			this._messageField.val('');
-		}
-		else {
+		if ($.browser.ckeditor) {
 			// revert CKEditor
 			this._messageField.ckeditorGet().setData('');
+		}
+		else {
+			this._messageField.val('');
 		}
 	},
 	
@@ -869,12 +883,12 @@ WCF.Message.QuickReply = Class.extend({
 		
 		var $message = '';
 		
-		if ($.browser.mobile) {
-			$message = this._messageField.val();
-		}
-		else {
+		if ($.browser.ckeditor) {
 			var $ckEditor = this._messageField.ckeditorGet();
 			$message = $ckEditor.getData();
+		}
+		else {
+			$message = this._messageField.val();
 		}
 		
 		new WCF.Action.Proxy({
@@ -910,7 +924,12 @@ WCF.Message.QuickReply = Class.extend({
 			if (data.returnValues.template) {
 				// insert HTML
 				var $message = $('' + data.returnValues.template);
-				$message.insertBefore(this._container);
+				if (this._container.data('sortOrder') == 'DESC') {
+					$message.insertAfter(this._container);
+				}
+				else {
+					$message.insertBefore(this._container);
+				}
 				
 				// update last post time
 				this._container.data('lastPostTime', data.returnValues.lastPostTime);
@@ -926,12 +945,12 @@ WCF.Message.QuickReply = Class.extend({
 				this._notification.show(undefined, 5000, WCF.Language.get($message));
 			}
 			
-			if ($.browser.mobile) {
-				this._messageField.val('');
-			}
-			else {
+			if ($.browser.ckeditor) {
 				// remove CKEditor contents
 				this._messageField.ckeditorGet().setData('');
+			}
+			else {
+				this._messageField.val('');
 			}
 			
 			// hide quick reply and revert it
@@ -1127,7 +1146,6 @@ WCF.Message.InlineEditor = Class.extend({
 	 */
 	_click: function(event, containerID) {
 		var $containerID = (event === null) ? containerID : $(event.currentTarget).data('containerID');
-		
 		if (this._activeElementID === '') {
 			this._activeElementID = $containerID;
 			this._prepare();
@@ -1324,16 +1342,21 @@ WCF.Message.InlineEditor = Class.extend({
 		// hide message options
 		this._container[this._activeElementID].find('.messageOptions').addClass('forceHidden');
 		
-		new WCF.PeriodicalExecuter($.proxy(function(pe) {
-			pe.stop();
-			
-			var $ckEditor = $('#' + this._messageEditorIDPrefix + this._container[this._activeElementID].data('objectID'));
-			$ckEditor.ckeditorGet().ui.editor.focus();
-			
-			if (this._quoteManager) {
-				this._quoteManager.setAlternativeCKEditor($ckEditor);
-			}
-		}, this), 250);
+		if ($.browser.ckeditor) {
+			new WCF.PeriodicalExecuter($.proxy(function(pe) {
+				pe.stop();
+				
+				var $ckEditor = $('#' + this._messageEditorIDPrefix + this._container[this._activeElementID].data('objectID'));
+				$ckEditor.ckeditor(function() { this.ui.editor.focus(); });
+				
+				if (this._quoteManager) {
+					this._quoteManager.setAlternativeCKEditor($ckEditor);
+				}
+			}, this), 250);
+		}
+		else {
+			$('#' + this._messageEditorIDPrefix + this._container[this._activeElementID].data('objectID')).focus();
+		}
 	},
 	
 	/**
@@ -1360,12 +1383,12 @@ WCF.Message.InlineEditor = Class.extend({
 		var $objectID = $container.data('objectID');
 		var $message = '';
 		
-		if ($.browser.mobile) {
-			$message = $('#' + this._messageEditorIDPrefix + $objectID).val();
-		}
-		else {
+		if ($.browser.ckeditor) {
 			var $ckEditor = $('#' + this._messageEditorIDPrefix + $objectID).ckeditorGet();
 			$message = $ckEditor.getData();
+		}
+		else {
+			$message = $('#' + this._messageEditorIDPrefix + $objectID).val();
 		}
 		
 		this._proxy.setOption('data', {
@@ -1393,12 +1416,12 @@ WCF.Message.InlineEditor = Class.extend({
 		var $objectID = $container.data('objectID');
 		var $message = '';
 		
-		if ($.browser.mobile) {
-			$message = $('#' + this._messageEditorIDPrefix + $objectID).val();
-		}
-		else {
+		if ($.browser.ckeditor) {
 			var $ckEditor = $('#' + this._messageEditorIDPrefix + $objectID).ckeditorGet();
 			$message = $ckEditor.getData();
+		}
+		else {
+			$message = $('#' + this._messageEditorIDPrefix + $objectID).val();
 		}
 		
 		new WCF.Action.Proxy({
@@ -1452,7 +1475,7 @@ WCF.Message.InlineEditor = Class.extend({
 		this._container[this._activeElementID].find('.messageOptions').removeClass('forceHidden');
 		
 		// remove editor
-		if (!$.browser.mobile) {
+		if ($.browser.ckeditor) {
 			var $ckEditor = $('#' + this._messageEditorIDPrefix + $container.data('objectID')).ckeditorGet();
 			$ckEditor.destroy();
 		}
@@ -1738,6 +1761,10 @@ WCF.Message.Quote.Handler = Class.extend({
 				nodeText += node.childNodes[i].nodeValue;
 			}
 			else {
+				if (!node.childNodes[i].tagName) {
+					continue;
+				}
+				
 				var $tagName = node.childNodes[i].tagName.toLowerCase();
 				if ($tagName === 'li') {
 					nodeText += "\r\n";
@@ -1879,6 +1906,9 @@ WCF.Message.Quote.Handler = Class.extend({
 				// the coordinates returned by getBoundingClientRect() is relative to the window, not the document!
 				//var $rect = selection.getRangeAt(0).getBoundingClientRect();
 				var $rects = selection.getRangeAt(0).getClientRects();
+				var $rect = selection.getRangeAt(0).getBoundingClientRect();
+				
+				/*
 				var $rect = { };
 				if (!$.browser.mozilla && $rects.length > 1) {
 					// save current selection to restore it later
@@ -1890,9 +1920,9 @@ WCF.Message.Quote.Handler = Class.extend({
 					var $position2 = this._getOffset($range, false);
 					
 					$rect = {
-						left: ($position1.left > $position2.left) ? $position2.left : $position1.left,
-						right: ($position1.left > $position2.left) ? $position1.left : $position2.left,
-						top: ($position1.top > $position2.top) ? $position2.top : $position1.top
+						left: Math.min($position1.left, $position2.left),
+						right: Math.max($position1.left, $position2.left),
+						top: Math.max($position1.top, $position2.top)
 					};
 					
 					// restore selection
@@ -1901,6 +1931,7 @@ WCF.Message.Quote.Handler = Class.extend({
 				else {
 					$rect = selection.getRangeAt(0).getBoundingClientRect();
 				}
+				*/
 				
 				var $document = $(document);
 				var $offsetTop = $document.scrollTop();
@@ -2391,7 +2422,7 @@ WCF.Message.Quote.Manager = Class.extend({
 		
 		// add 'insert' and 'delete' buttons
 		var $formSubmit = $('<div class="formSubmit" />').appendTo(this._dialog);
-		if (this._supportPaste) this._buttons.insert = $('<button>' + WCF.Language.get('wcf.message.quote.insertAllQuotes') + '</button>').click($.proxy(this._insertSelected, this)).appendTo($formSubmit);
+		if (this._supportPaste) this._buttons.insert = $('<button class="buttonPrimary">' + WCF.Language.get('wcf.message.quote.insertAllQuotes') + '</button>').click($.proxy(this._insertSelected, this)).appendTo($formSubmit);
 		this._buttons.remove = $('<button>' + WCF.Language.get('wcf.message.quote.removeAllQuotes') + '</button>').click($.proxy(this._removeSelected, this)).appendTo($formSubmit);
 		
 		// show dialog
@@ -2513,7 +2544,7 @@ WCF.Message.Quote.Manager = Class.extend({
 		
 		// insert into ckEditor
 		var $ckEditor = null;
-		if (!$.browser.mobile) {
+		if ($.browser.ckeditor) {
 			if (this._ckEditorAlternative === null) {
 				$ckEditor = this._ckEditor.ckeditorGet();
 			}
@@ -2537,10 +2568,10 @@ WCF.Message.Quote.Manager = Class.extend({
 			// in source mode
 			var $textarea = null;
 			if (this._ckEditorAlternative === null) {
-				$textarea = ($.browser.mobile) ? this._ckEditor : this._ckEditor.next('.cke_editor_text').find('textarea');
+				$textarea = ($.browser.ckeditor) ? this._ckEditor.next('.cke_editor_text').find('textarea') : this._ckEditor;
 			}
 			else {
-				$textarea = ($.browser.mobile) ? this._ckEditorAlternative : this._ckEditorAlternative.next('.cke_editor_text').find('textarea');
+				$textarea = ($.browser.ckeditor) ? this._ckEditorAlternative.next('.cke_editor_text').find('textarea') : this._ckEditorAlternative;
 			}
 			
 			var $value = $textarea.val();
@@ -2741,7 +2772,6 @@ WCF.Message.Share.Content = Class.extend({
 		var $title = ($target.data('linkTitle') ? $target.data('linkTitle') : $link);
 		var $key = $link.hashCode();
 		if (this._cache[$key] === undefined) {
-			
 			// remove dialog contents
 			var $dialogInitialized = false;
 			if (this._dialog === null) {
@@ -2776,11 +2806,22 @@ WCF.Message.Share.Content = Class.extend({
 			}
 		}
 		else {
-			
 			this._dialog.html(this._cache[$key]).wcfDialog('open');
 		}
 		
-		this._dialog.find('input').click(function() { $(this).select(); });
+		this._enableSelection();
+	},
+	
+	/**
+	 * Enables text selection.
+	 */
+	_enableSelection: function() {
+		var $inputElements = this._dialog.find('input').click(function() { $(this).select(); });
+		
+		// Safari on iOS can only select the text if it is not readonly and setSelectionRange() is used
+		if (navigator.userAgent.match(/iP(ad|hone|od)/)) {
+			$inputElements.keydown(function() { return false; }).removeAttr('readonly').click(function() { this.setSelectionRange(0, 9999); });
+		}
 	}
 });
 
@@ -2842,37 +2883,38 @@ WCF.Message.Share.Page = Class.extend({
 	 * 
 	 * @param	string		objectName
 	 * @param	string		url
+	 * @param	boolean		appendURL
 	 */
-	_share: function(objectName, url) {
-		window.open(url.replace(/{pageURL}/, this._pageURL).replace(/{text}/, this._pageDescription + " " + this._pageURL), 'height=600,width=600');
+	_share: function(objectName, url, appendURL) {
+		window.open(url.replace(/{pageURL}/, this._pageURL).replace(/{text}/, this._pageDescription + (appendURL ? " " + this._pageURL : "")), 'height=600,width=600');
 	},
 	
 	/**
 	 * Shares current page with Facebook.
 	 */
 	_shareFacebook: function() {
-		this._share('facebook', 'https://www.facebook.com/sharer.php?u={pageURL}&t={text}');
+		this._share('facebook', 'https://www.facebook.com/sharer.php?u={pageURL}&t={text}', true);
 	},
 	
 	/**
 	 * Shares current page with Google Plus.
 	 */
 	_shareGoogle: function() {
-		this._share('google', 'https://plus.google.com/share?url={pageURL}');
+		this._share('google', 'https://plus.google.com/share?url={pageURL}', true);
 	},
 	
 	/**
 	 * Shares current page with Reddit.
 	 */
 	_shareReddit: function() {
-		this._share('reddit', 'https://ssl.reddit.com/submit?url={pageURL}');
+		this._share('reddit', 'https://ssl.reddit.com/submit?url={pageURL}', true);
 	},
 	
 	/**
 	 * Shares current page with Twitter.
 	 */
 	_shareTwitter: function() {
-		this._share('twitter', 'https://twitter.com/share?url={pageURL}&text={text}');
+		this._share('twitter', 'https://twitter.com/share?url={pageURL}&text={text}', false);
 	},
 	
 	/**
@@ -2947,22 +2989,34 @@ WCF.Message.UserMention = Class.extend({
 	_className: 'wcf\\data\\user\\UserAction',
 	
 	/**
+	 * dropdown object
+	 * @var	jQuery
+	 */
+	_dropdown: null,
+	
+	/**
+	 * dropdown menu object
+	 * @var	jQuery
+	 */
+	_dropdownMenu: null,
+	
+	/**
 	 * suggestion item index, -1 if none is selected
 	 * @var	integer
 	 */
 	_itemIndex: -1,
 	
 	/**
+	 * line height
+	 * @var	integer
+	 */
+	_lineHeight: null,
+	
+	/**
 	 * current beginning of the mentioning
 	 * @var	string
 	 */
 	_mentionStart: '',
-	
-	/**
-	 * list with user name suggestions
-	 * @var	jQuery
-	 */
-	_suggestionList: null,
 	
 	/**
 	 * Initalizes user suggestions for the CKEditor with the given textarea id.
@@ -2981,9 +3035,6 @@ WCF.Message.UserMention = Class.extend({
 		
 		this._textarea = $('#' + editorID);
 		
-		this._suggestionList = $('<ul class="dropdownMenu userSuggestionList" />').appendTo(this._textarea.parent());
-		WCF.Dropdown.initDropdownFragment(this._textarea.parent(), this._suggestionList);
-		
 		// get associated (ready) CKEditor object and add event listeners
 		CKEDITOR.on('instanceReady', $.proxy(function(event) {
 			if (event.editor.name === this._textarea.wcfIdentify()) {
@@ -2991,6 +3042,10 @@ WCF.Message.UserMention = Class.extend({
 				this._ckEditor.container.on('keyup', $.proxy(this._keyup, this));
 				this._ckEditor.container.on('keydown', $.proxy(this._keydown, this));
 				this._ckEditor.on('key', $.proxy(this._key, this));
+				
+				this._dropdown = $(this._ckEditor.editable().$);
+				this._dropdownMenu = $('<ul class="dropdownMenu userSuggestionList" />').appendTo(this._textarea.parent());
+				WCF.Dropdown.initDropdownFragment(this._dropdown, this._dropdownMenu);
 			}
 		}, this));
 		
@@ -3005,7 +3060,7 @@ WCF.Message.UserMention = Class.extend({
 	_clearList: function() {
 		this._hideList();
 		
-		this._suggestionList.empty();
+		this._dropdownMenu.empty();
 	},
 	
 	/**
@@ -3023,7 +3078,7 @@ WCF.Message.UserMention = Class.extend({
 	 * @return	object
 	 */
 	_createListItem: function(listItemData) {
-		var $listItem = $('<li />').data('username', listItemData.label).click($.proxy(this._click, this)).appendTo(this._suggestionList);
+		var $listItem = $('<li />').data('username', listItemData.label).click($.proxy(this._click, this)).appendTo(this._dropdownMenu);
 		
 		var $box16 = $('<div />').addClass('box16').appendTo($listItem);
 		$box16.append($(listItemData.icon).addClass('framed'));
@@ -3036,7 +3091,7 @@ WCF.Message.UserMention = Class.extend({
 	 * 
 	 * @return	object
 	 */
-	_getDropdownOffsets: function() {
+	_getDropdownMenuPosition: function() {
 		var $range = this._ckEditor.getSelection().getRanges()[0];
 		var $orgRange = $range.clone();
 		var $startOffset = $range.startOffset;
@@ -3058,7 +3113,9 @@ WCF.Message.UserMention = Class.extend({
 			$jElement.text(' ');
 		}
 		var $offsets = $jElement.offset();
-		$offsets.top += $jElement.height(); // add line height to top offset
+		if (this._lineHeight === null) {
+			this._lineHeight = $jElement.height();
+		}
 		
 		// merge text nodes before and after the temporary span element
 		// to avoid split text nodes which were one node before inserting
@@ -3115,12 +3172,15 @@ WCF.Message.UserMention = Class.extend({
 		$text = '';
 		for (var $i = 0; $i < $textBackup.length; $i++) {
 			var $byte = $textBackup.charCodeAt($i).toString(16);
-			if ($byte != '200b' && $byte != 'a0') {
-				if ($textBackup[$i] === '@' && $i && $textBackup[$i - 1].match(/\s/)) {
+			if ($byte != '200b' && !/\s/.test($textBackup[$i])) {
+				if ($textBackup[$i] === '@' && $i && /\s/.test($textBackup[$i - 1])) {
 					$text = '';
 				}
 				
 				$text += $textBackup[$i];
+			}
+			else {
+				$text = '';
 			}
 		}
 		
@@ -3131,8 +3191,8 @@ WCF.Message.UserMention = Class.extend({
 	 * Hides the suggestion list.
 	 */
 	_hideList: function() {
-		WCF.Dropdown.getDropdown(this._textarea.parent().wcfIdentify()).removeClass('dropdownOpen');
-		WCF.Dropdown.getDropdownMenu(this._textarea.parent().wcfIdentify()).removeClass('dropdownOpen');
+		this._dropdown.removeClass('dropdownOpen');
+		this._dropdownMenu.removeClass('dropdownOpen');
 		
 		this._itemIndex = -1;
 	},
@@ -3145,9 +3205,9 @@ WCF.Message.UserMention = Class.extend({
 			return true;
 		}
 		
-		if (this._suggestionList.is(':visible')) {
+		if (this._dropdownMenu.is(':visible')) {
 			if (event.data.keyCode === 13) { // enter
-				this._suggestionList.children('li').eq(this._itemIndex).trigger('click');
+				this._dropdownMenu.children('li').eq(this._itemIndex).trigger('click');
 				
 				event.cancel();
 			}
@@ -3164,7 +3224,7 @@ WCF.Message.UserMention = Class.extend({
 			return true;
 		}
 		
-		if (this._suggestionList.is(':visible')) {
+		if (this._dropdownMenu.is(':visible')) {
 			switch (event.data.$.keyCode) {
 				case 38: // arrow up
 					event.data.$.preventDefault();
@@ -3197,7 +3257,7 @@ WCF.Message.UserMention = Class.extend({
 		}
 		
 		// ignore event if suggestion list and user pressed enter, arrow up or arrow down
-		if (this._suggestionList.is(':visible') && event.data.$.keyCode in { 13:1, 38:1, 40:1 }) {
+		if (this._dropdownMenu.is(':visible') && event.data.$.keyCode in { 13:1, 38:1, 40:1 }) {
 			return;
 		}
 		
@@ -3277,7 +3337,7 @@ WCF.Message.UserMention = Class.extend({
 	 * @param	integer		itemIndex
 	 */
 	_selectItem: function(itemIndex) {
-		var $li = this._suggestionList.children('li');
+		var $li = this._dropdownMenu.children('li');
 		
 		if (itemIndex < 0) {
 			itemIndex = $li.length - 1;
@@ -3296,8 +3356,8 @@ WCF.Message.UserMention = Class.extend({
 	 * Shows the suggestion list.
 	 */
 	_showList: function() {
-		WCF.Dropdown.getDropdown(this._textarea.parent().wcfIdentify()).addClass('dropdownOpen');
-		WCF.Dropdown.getDropdownMenu(this._textarea.parent().wcfIdentify()).addClass('dropdownOpen');
+		this._dropdown.addClass('dropdownOpen');
+		this._dropdownMenu.addClass('dropdownOpen');
 	},
 	
 	/**
@@ -3326,11 +3386,22 @@ WCF.Message.UserMention = Class.extend({
 	 */
 	_updateSuggestionListPosition: function() {
 		try {
-			var $caretPosition = this._getDropdownOffsets();
-			$caretPosition.top += 5; // add little vertical gap
-			$caretPosition.left -= 16; // make sure dropdown arrow is at correct position
-			this._suggestionList.css($caretPosition);
+			var $dropdownMenuPosition = this._getDropdownMenuPosition();
+			$dropdownMenuPosition.top += 5 + this._lineHeight; // add little vertical gap
+			$dropdownMenuPosition.left -= 16; // make sure dropdown arrow is at correct position
+			this._dropdownMenu.css($dropdownMenuPosition);
 			this._selectItem(0);
+			
+			if ($dropdownMenuPosition.top + this._dropdownMenu.outerHeight() + 10 > $(window).height() + $(document).scrollTop()) {
+				this._dropdownMenu.addClass('dropdownArrowBottom');
+				
+				this._dropdownMenu.css({
+					top: $dropdownMenuPosition.top - this._dropdownMenu.outerHeight() - 2 * this._lineHeight + 5
+				});
+			}
+			else {
+				this._dropdownMenu.removeClass('dropdownArrowBottom');
+			}
 		}
 		catch (e) {
 			// ignore errors that are caused by pressing enter to

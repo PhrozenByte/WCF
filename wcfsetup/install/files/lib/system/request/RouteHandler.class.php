@@ -12,7 +12,7 @@ use wcf\util\FileUtil;
  * the Microsoft Public License (MS-PL) http://www.opensource.org/licenses/ms-pl.html
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.request
@@ -57,7 +57,7 @@ class RouteHandler extends SingletonFactory {
 	
 	/**
 	 * list of available routes
-	 * @var	array<wcf\system\request\Route>
+	 * @var	array<\wcf\system\request\Route>
 	 */
 	protected $routes = array();
 	
@@ -68,7 +68,7 @@ class RouteHandler extends SingletonFactory {
 	protected $routeData = null;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$this->addDefaultRoutes();
@@ -97,7 +97,7 @@ class RouteHandler extends SingletonFactory {
 	/**
 	 * Adds a new route to the beginning of all routes.
 	 * 
-	 * @param	wcf\system\request\Route	$route
+	 * @param	\wcf\system\request\Route	$route
 	 */
 	public function addRoute(Route $route) {
 		array_unshift($this->routes, $route);
@@ -191,7 +191,7 @@ class RouteHandler extends SingletonFactory {
 		if (self::$secure === null) {
 			self::$secure = false;
 			
-			if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' || $_SERVER['SERVER_PORT'] == 443) {
+			if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443 || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) {
 				self::$secure = true;
 			}
 		}
@@ -273,11 +273,11 @@ class RouteHandler extends SingletonFactory {
 					if (isset($_SERVER['SCRIPT_NAME']) && (self::$pathInfo == $_SERVER['SCRIPT_NAME'])) {
 						self::$pathInfo = '';
 					}
-			
+					
 					if (isset($_SERVER['PHP_SELF']) && (self::$pathInfo == $_SERVER['PHP_SELF'])) {
 						self::$pathInfo = '';
 					}
-			
+					
 					if (isset($_SERVER['SCRIPT_URL']) && (self::$pathInfo == $_SERVER['SCRIPT_URL'])) {
 						self::$pathInfo = '';
 					}

@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Contains header-related functions.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	util
@@ -48,6 +48,10 @@ final class HeaderUtil {
 		// send no cache headers
 		if (HTTP_ENABLE_NO_CACHE_HEADERS && !WCF::getSession()->spiderID) {
 			self::sendNoCacheHeaders();
+		}
+		else if (!empty($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox') !== false) {
+			// Firefox serves pages from cache, causing certain HTML elements to stay in an outdated state
+			@header('Cache-Control: no-store');
 		}
 		
 		if (HTTP_ENABLE_GZIP && HTTP_GZIP_LEVEL > 0 && HTTP_GZIP_LEVEL < 10 && !defined('HTTP_DISABLE_GZIP')) {

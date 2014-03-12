@@ -7,7 +7,7 @@ use wcf\system\WCF;
  * Provides a grouped list of users.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.user
@@ -16,7 +16,7 @@ use wcf\system\WCF;
 class GroupedUserList implements \Countable, \Iterator {
 	/**
 	 * list of user profiles shared across all instances of GroupedUserList
-	 * @var	array<wcf\data\user\UserProfile>
+	 * @var	array<\wcf\data\user\UserProfile>
 	 */
 	protected static $users = array();
 	
@@ -74,7 +74,7 @@ class GroupedUserList implements \Countable, \Iterator {
 	}
 	
 	/**
-	 * @see	wcf\system\user\GroupedUserList::getGroupName()
+	 * @see	\wcf\system\user\GroupedUserList::getGroupName()
 	 */
 	public function __toString() {
 		return $this->getGroupName();

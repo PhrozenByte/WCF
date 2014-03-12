@@ -5,7 +5,7 @@ namespace wcf\util;
  * Contains image-related functions.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	util
@@ -36,7 +36,7 @@ final class ImageUtil {
 	 * Return the file extension for an image with the given mime type.
 	 * 
 	 * @param	string		$mimeType
-	 * @return	string		
+	 * @return	string
 	 * @see	http://www.php.net/manual/en/function.image-type-to-mime-type.php
 	 */
 	public static function getExtensionByMimeType($mimeType) {

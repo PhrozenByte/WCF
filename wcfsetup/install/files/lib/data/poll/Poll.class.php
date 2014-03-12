@@ -10,7 +10,7 @@ use wcf\system\WCF;
  * Represents a poll.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.poll
@@ -18,12 +18,12 @@ use wcf\system\WCF;
  */
 class Poll extends DatabaseObject {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'poll';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseIndexName
 	 */
 	protected static $databaseTableIndexName = 'pollID';
 	
@@ -35,20 +35,20 @@ class Poll extends DatabaseObject {
 	
 	/**
 	 * list of poll options
-	 * @var	array<wcf\data\poll\option\PollOption>
+	 * @var	array<\wcf\data\poll\option\PollOption>
 	 */
 	protected $options = array();
 	
 	/**
 	 * related object
-	 * @var	wcf\data\IPollObject
+	 * @var	\wcf\data\IPollObject
 	 */
 	protected $relatedObject = null;
 	
 	/**
 	 * Adds an option to current poll.
 	 * 
-	 * @param	wcf\data\poll\option\PollOption		$option
+	 * @param	\wcf\data\poll\option\PollOption		$option
 	 */
 	public function addOption(PollOption $option) {
 		if ($option->pollID == $this->pollID) {
@@ -64,7 +64,7 @@ class Poll extends DatabaseObject {
 	 * Returns a list of poll options.
 	 * 
 	 * @param	boolean		$isResultDisplay
-	 * @return	array<wcf\data\poll\option\PollOption>
+	 * @return	array<\wcf\data\poll\option\PollOption>
 	 */
 	public function getOptions($isResultDisplay = false) {
 		$this->loadOptions();
@@ -76,6 +76,12 @@ class Poll extends DatabaseObject {
 				}
 				
 				return ($a->votes > $b->votes) ? -1 : 1;
+			});
+		}
+		else {
+			// order options by show order
+			uasort($this->options, function($a, $b) {
+				return ($a->showOrder < $b->showOrder) ? -1 : 1;
 			});
 		}
 		
@@ -181,7 +187,7 @@ class Poll extends DatabaseObject {
 	/**
 	 * Sets related object for this poll.
 	 * 
-	 * @param	wcf\data\IPollObject		$object
+	 * @param	\wcf\data\IPollObject		$object
 	 */
 	public function setRelatedObject(IPollObject $object) {
 		$this->relatedObject = $object;
@@ -190,7 +196,7 @@ class Poll extends DatabaseObject {
 	/**
 	 * Returns related object.
 	 * 
-	 * @return	wcf\data\IPollObject
+	 * @return	\wcf\data\IPollObject
 	 */
 	public function getRelatedObject() {
 		return $this->relatedObject;

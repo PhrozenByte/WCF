@@ -7,7 +7,7 @@ use wcf\data\user\User;
  * Any user option output class should implement this interface.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.option.user
@@ -17,8 +17,8 @@ interface IUserOptionOutput {
 	/**
 	 * Returns the html code for the output of the given user option.
 	 * 
-	 * @param	wcf\data\user\User			$user
-	 * @param	wcf\data\user\option\UserOption		$option
+	 * @param	\wcf\data\user\User			$user
+	 * @param	\wcf\data\user\option\UserOption		$option
 	 * @param	string					$value
 	 * @return	string
 	 */

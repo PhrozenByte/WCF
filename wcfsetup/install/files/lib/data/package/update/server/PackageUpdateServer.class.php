@@ -3,13 +3,12 @@ namespace wcf\data\package\update\server;
 use wcf\data\DatabaseObject;
 use wcf\system\Regex;
 use wcf\system\WCF;
-use wcf\util\StringUtil;
 
 /**
  * Represents a package update server.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.package.update.server
@@ -17,12 +16,12 @@ use wcf\util\StringUtil;
  */
 class PackageUpdateServer extends DatabaseObject {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'package_update_server';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'packageUpdateServerID';
 	
@@ -53,7 +52,7 @@ class PackageUpdateServer extends DatabaseObject {
 		if (trim($serverURL)) {
 			if (!$parsedURL = @parse_url($serverURL))
 				return false;
-			if (!isset($parsedURL['scheme']) || $parsedURL['scheme'] != 'http')
+			if (!isset($parsedURL['scheme']) || ($parsedURL['scheme'] != 'http' && $parsedURL['scheme'] != 'https'))
 				return false;
 			if (!isset($parsedURL['host']))
 				return false;
@@ -119,8 +118,8 @@ class PackageUpdateServer extends DatabaseObject {
 	}
 	
 	/**
-	 * Returns true, if update server requires license data instead of username/password.
-	 *
+	 * Returns true if update server requires license data instead of username/password.
+	 * 
 	 * @return	integer
 	 */
 	public final function requiresLicense() {

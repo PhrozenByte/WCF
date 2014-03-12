@@ -28,9 +28,9 @@ use wcf\system\WCF;
  * LikeHandler::getInstance()->loadLikeObjects($objectType, $objectIDs);
  * // get like data
  * $likeObjects = LikeHandler::getInstance()->getLikeObjects($objectType);
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.like
@@ -60,7 +60,7 @@ class LikeHandler extends SingletonFactory {
 	/**
 	 * Returns an object type from cache.
 	 * 
-	 * @return	wcf\data\object\type\ObjectType
+	 * @return	\wcf\data\object\type\ObjectType
 	 */
 	public function getObjectType($objectName) {
 		if (isset($this->cache[$objectName])) {
@@ -73,9 +73,9 @@ class LikeHandler extends SingletonFactory {
 	/**
 	 * Gets a like object.
 	 * 
-	 * @param	wcf\data\object\type\ObjectType		$objectType
+	 * @param	\wcf\data\object\type\ObjectType		$objectType
 	 * @param	integer					$objectID
-	 * @return	wcf\data\like\object\LikeObject
+	 * @return	\wcf\data\like\object\LikeObject
 	 */
 	public function getLikeObject(ObjectType $objectType, $objectID) {
 		if (isset($this->likeObjectCache[$objectType->objectTypeID][$objectID])) {
@@ -88,8 +88,8 @@ class LikeHandler extends SingletonFactory {
 	/**
 	 * Gets the like objects of a specific object type.
 	 * 
-	 * @param	wcf\data\object\type\ObjectType		$objectType
-	 * @return	array<wcf\data\like\object\LikeObject>
+	 * @param	\wcf\data\object\type\ObjectType		$objectType
+	 * @return	array<\wcf\data\like\object\LikeObject>
 	 */
 	public function getLikeObjects(ObjectType $objectType) {
 		if (isset($this->likeObjectCache[$objectType->objectTypeID])) {
@@ -103,7 +103,7 @@ class LikeHandler extends SingletonFactory {
 	 * Loads the like data for a set of objects and returns the number of loaded
 	 * like objects
 	 * 
-	 * @param	wcf\data\object\type\ObjectType		$objectType
+	 * @param	\wcf\data\object\type\ObjectType		$objectType
 	 * @param	array					$objectIDs
 	 * @return	integer
 	 */
@@ -150,8 +150,8 @@ class LikeHandler extends SingletonFactory {
 	/**
 	 * Saves the like of an object.
 	 * 
-	 * @param	wcf\data\like\object\ILikeObject	$likeable
-	 * @param	wcf\data\user\User			$user
+	 * @param	\wcf\data\like\object\ILikeObject	$likeable
+	 * @param	\wcf\data\user\User			$user
 	 * @param	integer					$likeValue
 	 * @param	integer					$time
 	 * @return	array
@@ -294,7 +294,10 @@ class LikeHandler extends SingletonFactory {
 					'likeValue' => $likeValue
 				));
 				
-				if ($likeValue == Like::DISLIKE) UserActivityPointHandler::getInstance()->removeEvents('com.woltlab.wcf.like.activityPointEvent.receivedLikes', array($user->userID => 1));
+				if ($likeable->getUserID()) {
+					if ($likeValue == Like::DISLIKE) UserActivityPointHandler::getInstance()->removeEvents('com.woltlab.wcf.like.activityPointEvent.receivedLikes', array($likeable->getUserID() => 1));
+					else UserActivityPointHandler::getInstance()->fireEvent('com.woltlab.wcf.like.activityPointEvent.receivedLikes', $like->likeID, $likeable->getUserID());
+				}
 			}
 			
 			// update object's like counter
@@ -318,10 +321,10 @@ class LikeHandler extends SingletonFactory {
 	/**
 	 * Reverts the like of an object.
 	 * 
-	 * @param	wcf\data\like\Like			$like
-	 * @param	wcf\data\like\object\ILikeObject	$likeable
-	 * @param	wcf\data\like\object\LikeObject		$likeObject
-	 * @param	wcf\data\user\User			$user
+	 * @param	\wcf\data\like\Like			$like
+	 * @param	\wcf\data\like\object\ILikeObject	$likeable
+	 * @param	\wcf\data\like\object\LikeObject	$likeObject
+	 * @param	\wcf\data\user\User			$user
 	 * @return	array
 	 */
 	public function revertLike(Like $like, ILikeObject $likeable, LikeObject $likeObject, User $user) {
@@ -381,9 +384,9 @@ class LikeHandler extends SingletonFactory {
 					$userEditor->updateCounters(array(
 						'likesReceived' => -1
 					));
+					
+					UserActivityPointHandler::getInstance()->removeEvents('com.woltlab.wcf.like.activityPointEvent.receivedLikes', array($likeable->getUserID() => 1));
 				}
-				
-				UserActivityPointHandler::getInstance()->removeEvents('com.woltlab.wcf.like.activityPointEvent.receivedLikes', array($likeable->getUserID() => 1));
 			}
 			
 			// update object's like counter
@@ -468,8 +471,8 @@ class LikeHandler extends SingletonFactory {
 	/**
 	 * Returns current like object status.
 	 * 
-	 * @param	wcf\data\like\object\LikeObject		$likeObject
-	 * @param	wcf\data\user\User			$user
+	 * @param	\wcf\data\like\object\LikeObject		$likeObject
+	 * @param	\wcf\data\user\User			$user
 	 * @return	array
 	 */
 	protected function loadLikeStatus(LikeObject $likeObject, User $user) {

@@ -6,9 +6,9 @@ use wcf\util\StringUtil;
 
 /**
  * Imports smilies.
- *
+ * 
  * @author	Tim Duesterhus, Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.importer
@@ -16,14 +16,14 @@ use wcf\util\StringUtil;
  */
 class SmileyImporter extends AbstractImporter {
 	/**
-	 * @see wcf\system\importer\AbstractImporter::$className
+	 * @see	\wcf\system\importer\AbstractImporter::$className
 	 */
 	protected $className = 'wcf\data\smiley\Smiley';
 	
 	/**
 	 * known smiley codes
 	 * 
-	 * @var array<string>
+	 * @var	array<string>
 	 */
 	public $knownCodes = array();
 	
@@ -50,7 +50,7 @@ class SmileyImporter extends AbstractImporter {
 	}
 	
 	/**
-	 * @see wcf\system\importer\IImporter::import()
+	 * @see	\wcf\system\importer\IImporter::import()
 	 */
 	public function import($oldID, array $data, array $additionalData = array()) {
 		// copy smiley
@@ -72,6 +72,9 @@ class SmileyImporter extends AbstractImporter {
 			}
 			$data['aliases'] = implode("\n", $aliases);
 		}
+		
+		// get category id
+		if (!empty($data['categoryID'])) $data['categoryID'] = ImportHandler::getInstance()->getNewID('com.woltlab.wcf.smiley.category', $data['categoryID']);
 		
 		// save smiley
 		$smiley = SmileyEditor::create($data);

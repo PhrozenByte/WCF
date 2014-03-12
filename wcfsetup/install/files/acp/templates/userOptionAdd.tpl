@@ -4,9 +4,7 @@
 	<h1>{lang}wcf.acp.user.option.{$action}{/lang}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $success|isset}
 	<p class="success">{lang}wcf.global.success.{$action}{/lang}</p>
@@ -31,11 +29,11 @@
 				<dl{if $errorField == 'optionName'} class="formError"{/if}>
 					<dt><label for="optionName">{lang}wcf.global.name{/lang}</label></dt>
 					<dd>
-						<input type="text" id="optionName" name="optionName" value="{$optionName}" required="required" autofocus="autofocus" class="long" />
+						<input type="text" id="optionName" name="optionName" value="{$i18nPlainValues['optionName']}" required="required" autofocus="autofocus" class="long" />
 						{if $errorField == 'optionName'}
 							<small class="innerError">
-								{if $errorType == 'empty'}
-									{lang}wcf.global.form.error.empty{/lang}
+								{if $errorType == 'multilingual'}
+									{lang}wcf.global.form.error.multilingual{/lang}
 								{else}
 									{lang}wcf.acp.user.option.name.error.{@$errorType}{/lang}
 								{/if}
@@ -48,7 +46,7 @@
 				<dl{if $errorField == 'optionDescription'} class="formError"{/if}>
 					<dt><label for="optionDescription">{lang}wcf.acp.user.option.description{/lang}</label></dt>
 					<dd>
-						<textarea name="optionDescription" id="optionDescription" cols="40" rows="10">{$optionDescription}</textarea>
+						<textarea name="optionDescription" id="optionDescription" cols="40" rows="10">{lang __optional=true}{$i18nPlainValues['optionDescription']}{/lang}</textarea>
 						{if $errorField == 'optionDescription'}
 							<small class="innerError">
 								{if $errorType == 'empty'}
@@ -180,6 +178,7 @@
 					<dt><label for="visible">{lang}wcf.acp.user.option.visible{/lang}</label></dt>
 					<dd>
 						<select name="visible" id="visible">
+							<option value="0"{if $visible == 0} selected="selected"{/if}>{lang}wcf.acp.user.option.visible.0{/lang}</option>
 							<option value="1"{if $visible == 1} selected="selected"{/if}>{lang}wcf.acp.user.option.visible.1{/lang}</option>
 							<option value="2"{if $visible == 2} selected="selected"{/if}>{lang}wcf.acp.user.option.visible.2{/lang}</option>
 							<option value="3"{if $visible == 3} selected="selected"{/if}>{lang}wcf.acp.user.option.visible.3{/lang}</option>
@@ -214,7 +213,7 @@
 						<label><input type="checkbox" name="searchable" id="searchable" value="1" {if $searchable == 1}checked="checked" {/if}/> {lang}wcf.acp.user.option.searchable{/lang}</label>
 					</dd>
 				</dl>
-					
+				
 				{event name='accessFields'}
 			</fieldset>
 			
@@ -223,10 +222,11 @@
 		
 		<div class="formSubmit">
 			<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+			{@SECURITY_TOKEN_INPUT_TAG}
 		</div>
 	</form>
 {else}
-	<p class="info">{lang}wcf.acp.user.option.add.noCategories{/lang}</p>
+	<p class="error">{lang}wcf.acp.user.option.error.noCategories{/lang}</p>
 {/if}
 
 {include file='footer'}

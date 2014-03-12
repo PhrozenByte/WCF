@@ -6,7 +6,7 @@ use wcf\page\SortablePage;
  * Shows a list of installed template groups.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.page
@@ -14,32 +14,32 @@ use wcf\page\SortablePage;
  */
 class TemplateGroupListPage extends SortablePage {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.template.group.list';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.template.canManageTemplate');
 	
 	/**
-	 * @see wcf\page\SortablePage::$defaultSortField
+	 * @see	\wcf\page\SortablePage::$defaultSortField
 	 */
 	public $defaultSortField = 'templateGroupName';
 	
 	/**
-	 * @see wcf\page\MultipleLinkPage::$objectListClassName
+	 * @see	\wcf\page\MultipleLinkPage::$objectListClassName
 	 */
 	public $objectListClassName = 'wcf\data\template\group\TemplateGroupList';
 	
 	/**
-	 * @see wcf\page\SortablePage::$defaultSortField
+	 * @see	\wcf\page\SortablePage::$defaultSortField
 	 */
 	public $validSortFields = array('templateGroupID', 'templateGroupName', 'templateGroupFolderName', 'templates');
 	
 	/**
-	 * @see wcf\page\MultipleLinkPage::initObjectList
+	 * @see	\wcf\page\MultipleLinkPage::initObjectList
 	 */
 	protected function initObjectList() {
 		parent::initObjectList();

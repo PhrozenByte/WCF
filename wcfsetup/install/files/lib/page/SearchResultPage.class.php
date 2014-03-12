@@ -1,8 +1,11 @@
 <?php
 namespace wcf\page;
+use wcf\data\search\ISearchResultObject;
 use wcf\data\search\Search;
 use wcf\system\event\EventHandler;
 use wcf\system\exception\IllegalLinkException;
+use wcf\system\exception\SystemException;
+use wcf\system\menu\page\PageMenu;
 use wcf\system\search\SearchEngine;
 use wcf\system\WCF;
 
@@ -10,7 +13,7 @@ use wcf\system\WCF;
  * Shows the result of a search request.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	page
@@ -18,7 +21,7 @@ use wcf\system\WCF;
  */
 class SearchResultPage extends MultipleLinkPage {
 	/**
-	 * @see	wcf\page\MultipleLinkPage::$itemsPerPage
+	 * @see	\wcf\page\MultipleLinkPage::$itemsPerPage
 	 */
 	public $itemsPerPage = SEARCH_RESULTS_PER_PAGE;
 	
@@ -36,7 +39,7 @@ class SearchResultPage extends MultipleLinkPage {
 	
 	/**
 	 * search object
-	 * @var	wcf\data\search\Search
+	 * @var	\wcf\data\search\Search
 	 */
 	public $search = null;
 	
@@ -53,19 +56,19 @@ class SearchResultPage extends MultipleLinkPage {
 	public $searchData = null;
 	
 	/**
-	 *  result list template
-	 * @var string
+	 * result list template
+	 * @var	string
 	 */
 	public $resultListTemplateName = 'searchResultList';
 	
 	/**
 	 * result list template's application
-	 * @var string
+	 * @var	string
 	 */
 	public $resultListApplication = 'wcf';
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -82,15 +85,10 @@ class SearchResultPage extends MultipleLinkPage {
 		
 		// get search data
 		$this->searchData = unserialize($this->search->searchData);
-		
-		// check package id of this search
-		if (!empty($this->searchData['packageID']) && $this->searchData['packageID'] != PACKAGE_ID) {
-			throw new IllegalLinkException();
-		}
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -100,6 +98,14 @@ class SearchResultPage extends MultipleLinkPage {
 		
 		// get messages
 		$this->readMessages();
+		
+		// set active menu item
+		if (isset($this->searchData['selectedObjectTypes']) && count($this->searchData['selectedObjectTypes']) == 1) {
+			$objectType = SearchEngine::getInstance()->getObjectType($this->searchData['selectedObjectTypes'][0]);
+			if (($activeMenuItem = $objectType->getActiveMenuItem())) {
+				PageMenu::getInstance()->setActiveMenuItem($activeMenuItem);
+			}
+		}
 	}
 	
 	/**
@@ -124,7 +130,7 @@ class SearchResultPage extends MultipleLinkPage {
 	}
 	
 	/**
-	 * Gets the data of the messages.
+	 * Reads the data of the search result messages.
 	 */
 	protected function readMessages() {
 		for ($i = $this->startIndex - 1; $i < $this->endIndex; $i++) {
@@ -133,13 +139,17 @@ class SearchResultPage extends MultipleLinkPage {
 			
 			$objectType = SearchEngine::getInstance()->getObjectType($type);
 			if (($message = $objectType->getObject($objectID)) !== null) {
+				if (!($message instanceof ISearchResultObject)) {
+					throw new SystemException("'".get_class($message)."' does not implement 'wcf\data\search\ISearchResultObject'");
+				}
+				
 				$this->messages[] = $message;
 			}
 		}
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -160,7 +170,7 @@ class SearchResultPage extends MultipleLinkPage {
 	}
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::countItems()
+	 * @see	\wcf\page\MultipleLinkPage::countItems()
 	 */
 	public function countItems() {
 		// call countItems event
@@ -170,12 +180,12 @@ class SearchResultPage extends MultipleLinkPage {
 	}
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::initObjectList()
+	 * @see	\wcf\page\MultipleLinkPage::initObjectList()
 	 */
 	protected function initObjectList() { }
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::readObjects()
+	 * @see	\wcf\page\MultipleLinkPage::readObjects()
 	 */
 	protected function readObjects() { }
 }

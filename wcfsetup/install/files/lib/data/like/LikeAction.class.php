@@ -12,7 +12,7 @@ use wcf\system\WCF;
  * Executes like-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.like
@@ -20,30 +20,30 @@ use wcf\system\WCF;
  */
 class LikeAction extends AbstractDatabaseObjectAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
 	 */
 	protected $allowGuestAccess = array('getLikeDetails');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\like\LikeEditor';
 	
 	/**
 	 * likeable object
-	 * @var	wcf\data\like\object\ILikeObject
+	 * @var	\wcf\data\like\object\ILikeObject
 	 */
 	public $likeableObject = null;
 	
 	/**
 	 * object type object
-	 * @var	wcf\data\object\type\ObjectType
+	 * @var	\wcf\data\object\type\ObjectType
 	 */
 	public $objectType = null;
 	
 	/**
 	 * like object type provider object
-	 * @var	wcf\data\like\ILikeObjectTypeProvider
+	 * @var	\wcf\data\like\ILikeObjectTypeProvider
 	 */
 	public $objectTypeProvider = null;
 	
@@ -60,10 +60,11 @@ class LikeAction extends AbstractDatabaseObjectAction {
 	 * @return	array<string>
 	 */
 	public function getLikeDetails() {
-		$sql = "SELECT	userID, likeValue
-			FROM	wcf".WCF_N."_like
-			WHERE	objectID = ?
-				AND objectTypeID = ?";
+		$sql = "SELECT		userID, likeValue
+			FROM		wcf".WCF_N."_like
+			WHERE		objectID = ?
+					AND objectTypeID = ?
+			ORDER BY	time DESC";
 		$statement = WCF::getDB()->prepareStatement($sql);
 		$statement->execute(array(
 			$this->parameters['data']['objectID'],
@@ -120,21 +121,21 @@ class LikeAction extends AbstractDatabaseObjectAction {
 	}
 	
 	/**
-	 * @see	wcf\data\like\LikeAction::updateLike()
+	 * @see	\wcf\data\like\LikeAction::updateLike()
 	 */
 	public function like() {
 		return $this->updateLike(Like::LIKE);
 	}
 	
 	/**
-	 * @see	wcf\data\like\LikeAction::validateLike()
+	 * @see	\wcf\data\like\LikeAction::validateLike()
 	 */
 	public function validateDislike() {
 		$this->validateLike();
 	}
 	
 	/**
-	 * @see	wcf\data\like\LikeAction::updateLike()
+	 * @see	\wcf\data\like\LikeAction::updateLike()
 	 */
 	public function dislike() {
 		return $this->updateLike(Like::DISLIKE);

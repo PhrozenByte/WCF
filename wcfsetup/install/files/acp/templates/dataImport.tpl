@@ -24,18 +24,11 @@
 				$section.parent().next().find('input[type=checkbox]').prop('checked', false);
 			}
 		});
-
+		
 		$('.jsImportItem').change(function(event) {
 			var $item = $(event.currentTarget);
 			if ($item.is(':checked')) {
 				$item.parents('.jsImportCollection').find('.jsImportSection').prop('checked', 'checked');
-			}
-			else {
-				var $collection = $item.parents('.jsImportCollection');
-				var $checkedItems = $collection.find('.jsImportItem:checked');
-				if (!$checkedItems.length) {
-					$collection.find('.jsImportSection').prop('checked', false);
-				}
 			}
 		});
 	});
@@ -49,9 +42,7 @@
 	{/if}
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $showInnoDBWarning}
 	<p class="warning">{lang}wcf.acp.index.innoDBWarning{/lang}</p>
@@ -128,10 +119,11 @@
 					{event name='selectExporterFields'}
 				</fieldset>
 			</div>
-		
+			
 			<div class="formSubmit">
-				{@SID_INPUT_TAG}
 				<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+				{@SID_INPUT_TAG}
+				{@SECURITY_TOKEN_INPUT_TAG}
 			</div>
 		</form>
 	{/if}
@@ -168,6 +160,7 @@
 						<label><input type="radio" id="userMergeMode" name="userMergeMode" value="1" {if $userMergeMode == 1}checked="checked" {/if}/> {lang}wcf.acp.dataImport.configure.settings.userMergeMode.1{/lang}</label>
 						<label><input type="radio" name="userMergeMode" value="2" {if $userMergeMode == 2}checked="checked" {/if}/> {lang}wcf.acp.dataImport.configure.settings.userMergeMode.2{/lang}</label>
 						<label><input type="radio" name="userMergeMode" value="3" {if $userMergeMode == 3}checked="checked" {/if}/> {lang}wcf.acp.dataImport.configure.settings.userMergeMode.3{/lang}</label>
+						<label><input type="radio" name="userMergeMode" value="4" {if $userMergeMode == 4}checked="checked" {/if}/> {lang}wcf.acp.dataImport.configure.settings.userMergeMode.4{/lang}</label>
 					</dd>
 				</dl>
 				
@@ -237,10 +230,11 @@
 			
 			{event name='fieldsets'}
 		</div>
-	
+		
 		<div class="formSubmit">
 			<input type="hidden" name="exporterName" value="{$exporterName}" />
 			<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+			{@SECURITY_TOKEN_INPUT_TAG}
 		</div>
 	</form>
 {/if}

@@ -13,7 +13,7 @@ use wcf\util\ClassUtil;
  * Handles clipboard-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.clipboard
@@ -51,7 +51,7 @@ class ClipboardHandler extends SingletonFactory {
 	protected $pageObjectID = 0;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$this->cache = array(
@@ -151,7 +151,7 @@ class ClipboardHandler extends SingletonFactory {
 	 * Returns a type by object type id.
 	 * 
 	 * @param	integer				$objectTypeID
-	 * @return	wcf\data\object\type\ObjectType
+	 * @return	\wcf\data\object\type\ObjectType
 	 */
 	public function getObjectType($objectTypeID) {
 		if (isset($this->cache['objectTypes'][$objectTypeID])) {

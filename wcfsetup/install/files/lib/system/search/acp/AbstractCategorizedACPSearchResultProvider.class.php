@@ -7,7 +7,7 @@ use wcf\util\ClassUtil;
  * Abstract implementation of a ACP search result provider with nested categories.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.search.acp
@@ -16,7 +16,7 @@ use wcf\util\ClassUtil;
 abstract class AbstractCategorizedACPSearchResultProvider extends AbstractACPSearchResultProvider {
 	/**
 	 * list of categories
-	 * @var	array<wcf\data\DatabaseObject>
+	 * @var	array<\wcf\data\DatabaseObject>
 	 */
 	protected $categories = array();
 	
@@ -67,7 +67,7 @@ abstract class AbstractCategorizedACPSearchResultProvider extends AbstractACPSea
 	 * Returns a level 1 or 2 category for given category name.
 	 * 
 	 * @param	string			$categoryName
-	 * @return	wcf\data\DatabaseObject
+	 * @return	\wcf\data\DatabaseObject
 	 */
 	protected function getTopCategory($categoryName) {
 		if (!$this->isValid($categoryName)) {

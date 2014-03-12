@@ -6,7 +6,7 @@ use wcf\system\WCF;
  * Represents a comment notification object type.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.user.notification.object.type
@@ -14,22 +14,22 @@ use wcf\system\WCF;
  */
 class UserProfileCommentUserNotificationObjectType extends AbstractUserNotificationObjectType implements ICommentUserNotificationObjectType {
 	/**
-	 * @see	wcf\system\user\notification\object\type\AbstractUserNotificationObjectType::$decoratorClassName
+	 * @see	\wcf\system\user\notification\object\type\AbstractUserNotificationObjectType::$decoratorClassName
 	 */
 	protected static $decoratorClassName = 'wcf\system\user\notification\object\CommentUserNotificationObject';
 	
 	/**
-	 * @see	wcf\system\user\notification\object\type\AbstractUserNotificationObjectType::$objectClassName
+	 * @see	\wcf\system\user\notification\object\type\AbstractUserNotificationObjectType::$objectClassName
 	 */
 	protected static $objectClassName = 'wcf\data\comment\Comment';
 	
 	/**
-	 * @see	wcf\system\user\notification\object\type\AbstractUserNotificationObjectType::$objectListClassName
+	 * @see	\wcf\system\user\notification\object\type\AbstractUserNotificationObjectType::$objectListClassName
 	 */
 	protected static $objectListClassName = 'wcf\data\comment\CommentList';
 	
 	/**
-	 * @see	wcf\system\user\notification\object\type\ICommentUserNotificationObjectType::getOwnerID()
+	 * @see	\wcf\system\user\notification\object\type\ICommentUserNotificationObjectType::getOwnerID()
 	 */
 	public function getOwnerID($objectID) {
 		$sql = "SELECT	objectID

@@ -8,7 +8,7 @@ use wcf\util\StringUtil;
  * Finds censored words.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.message.censorship
@@ -17,7 +17,7 @@ use wcf\util\StringUtil;
 class Censorship extends SingletonFactory {
 	/**
 	 * censored words
-	 * @var array<string>
+	 * @var	array<string>
 	 */
 	protected $censoredWords = array();
 	
@@ -40,7 +40,7 @@ class Censorship extends SingletonFactory {
 	protected $matches = array();
 	
 	/**
-	 * @see wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		// get words which should be censored

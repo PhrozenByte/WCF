@@ -1,13 +1,12 @@
 <?php
 namespace wcf\system\sitemap;
-use wcf\system\sitemap\ISitemapProvider;
 use wcf\system\WCF;
 
 /**
  * Provides a sitemap for user account.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.sitemap
@@ -15,7 +14,7 @@ use wcf\system\WCF;
  */
 class UserAccountSitemapProvider implements ISitemapProvider {
 	/**
-	 * @see	wcf\system\sitemap\ISitemapProvider::getTemplate()
+	 * @see	\wcf\system\sitemap\ISitemapProvider::getTemplate()
 	 */
 	public function getTemplate() {
 		return WCF::getTPL()->fetch('sitemapUserAccount');

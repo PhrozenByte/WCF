@@ -8,13 +8,12 @@ use wcf\system\Callback;
 use wcf\system\Regex;
 use wcf\system\SingletonFactory;
 use wcf\util\StringStack;
-use wcf\util\StringUtil;
 
 /**
  * Parses message before inserting them into the database.
  * 
  * @author	Tim Duesterhus, Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode
@@ -46,7 +45,7 @@ class PreParser extends SingletonFactory {
 	public $text = '';
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$sourceCodeTags = array();
@@ -107,7 +106,7 @@ class PreParser extends SingletonFactory {
 			@
 			(?:'.self::$illegalChars.'\.)+		# hostname
 			(?:[a-z]{2,4}(?=\b))
-			(?!"|\'|\[|\-|\.[a-z])', Regex::IGNORE_WHITESPACE | Regex::CASE_INSENSITIVE);
+			(?!"|\'|\[|\-|\]|\.[a-z])', Regex::IGNORE_WHITESPACE | Regex::CASE_INSENSITIVE);
 		}
 		
 		$this->text = $emailPattern->replace($this->text, '[email]\\0[/email]');
@@ -121,7 +120,7 @@ class PreParser extends SingletonFactory {
 		static $callback = null;
 		if ($urlPattern === null) {
 			$urlPattern = new Regex('
-			(?<!\B|"|\'|=|/|\]|,|\?)
+			(?<!\B|"|\'|=|/|\]|,|\?|\.)
 			(?:						# hostname
 				(?:ftp|https?)://'.static::$illegalChars.'(?:\.'.static::$illegalChars.')*
 				|

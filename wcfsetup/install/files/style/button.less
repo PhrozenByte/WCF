@@ -128,17 +128,20 @@ button.small,
 /* button list */
 .buttonList {
 	font-size: 0;
+	margin-bottom: -@wcfGapSmall;
 	
 	> li {
 		display: inline-block;
 		font-size: 1rem;
+		margin-bottom: @wcfGapSmall;
 		
 		&:not(:last-child) {
 			margin-right: 8px;
 		}
 		
 		.button {
-			margin: 0;
+			margin-left: 0;
+			margin-right: 0;
 		}
 	}
 	
@@ -190,58 +193,56 @@ button.small,
 	}
 }
 
+nav.buttonGroupNavigation > a.dropdownLabel {
+	display: none;
+}
+
 @media only screen and (max-width: 800px) {
 	nav.buttonGroupNavigation {
-		> a:first-child {
+		> a.dropdownLabel {
 			display: inline-block;
 			outline: 0;
 			
-			> span.icon {
+			span.icon {
 				font-size: 21px;
 				height: 24px;
 				width: 24px;
-			}
-			
-			+ a {
-				height: 100%;
-				left: 0;
-				position: absolute;
-				top: 0;
-				width: 100%;
-				z-index:100;
-			}
-			
-			&:focus {
-				+ a {
-					display: block;
-				}
-				
-				~ ul {
-					display: block;
-				}
 			}
 		}
 		
 		> ul {
 			display: none;
-			opacity: 1;
+			font-size: 0;
 			position: absolute;
-			right: 0;
-			z-index: 350;
+			right: -3px;
+			top: 24px;
+			z-index: 450;
 			
-			&:hover {
+			&.open {
 				display: block;
+			}
+			
+			&.buttonGroup > li > .button {
+				margin: 0;
 			}
 			
 			> li {
 				display: block;
 				float: none;
+				font-size: 0 !important;
+				margin-bottom: 0;
 				opacity: 1 !important;
+				overflow: hidden;
+				
+				&:not(:last-child) > a {
+					border-bottom-width: 0;
+				}
 				
 				> a {
 					.button;
 					
 					border-radius: 0 !important;
+					font-size: @wcfSmallFontSize;
 					overflow: hidden;
 					text-overflow: ellipsis;
 					width: 124px;

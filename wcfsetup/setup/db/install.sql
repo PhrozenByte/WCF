@@ -206,6 +206,14 @@ CREATE TABLE wcf1_category (
 	additionalData TEXT
 );
 
+DROP TABLE IF EXISTS wcf1_cli_history;
+CREATE TABLE wcf1_cli_history (
+	historyItem INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	userID INT(10) NOT NULL,
+	command VARCHAR(255) NOT NULL,
+	KEY (userID)
+);
+
 DROP TABLE IF EXISTS wcf1_clipboard_action;
 CREATE TABLE wcf1_clipboard_action (
 	actionID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -773,7 +781,8 @@ CREATE TABLE wcf1_search_index (
 	UNIQUE KEY (objectTypeID, objectID, languageID),
 	FULLTEXT INDEX fulltextIndex (subject, message, metaData),
 	FULLTEXT INDEX fulltextIndexSubjectOnly (subject),
-	KEY (userID, objectTypeID, time)
+	KEY (userID, objectTypeID, time),
+	KEY (objectTypeID)
 );
 
 DROP TABLE IF EXISTS wcf1_search_keyword;
@@ -1034,7 +1043,7 @@ CREATE TABLE wcf1_user_avatar (
 DROP TABLE IF EXISTS wcf1_user_collapsible_content;
 CREATE TABLE wcf1_user_collapsible_content (
 	objectTypeID INT(10) NOT NULL,
-	objectID VARCHAR(50) NOT NULL,
+	objectID VARCHAR(255) NOT NULL,
 	userID INT(10) NOT NULL,
 	UNIQUE KEY (objectTypeID, objectID, userID)
 );
@@ -1247,7 +1256,7 @@ CREATE TABLE wcf1_user_profile_visitor (
 DROP TABLE IF EXISTS wcf1_user_rank;
 CREATE TABLE wcf1_user_rank (
 	rankID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	groupID INT(10),
+	groupID INT(10) NOT NULL,
 	requiredPoints INT(10) NOT NULL DEFAULT 0,
 	rankTitle VARCHAR(255) NOT NULL DEFAULT '',
 	cssClassName VARCHAR(255) NOT NULL DEFAULT '',
@@ -1260,7 +1269,7 @@ DROP TABLE IF EXISTS wcf1_user_storage;
 CREATE TABLE wcf1_user_storage (
 	userID INT(10) NOT NULL,
 	field VARCHAR(80) NOT NULL DEFAULT '',
-	fieldValue TEXT,
+	fieldValue MEDIUMTEXT,
 	UNIQUE KEY userStorageData (userID, field)
 );
 
@@ -1315,6 +1324,8 @@ ALTER TABLE wcf1_bbcode ADD FOREIGN KEY (packageID) REFERENCES wcf1_package (pac
 ALTER TABLE wcf1_bbcode_attribute ADD FOREIGN KEY (bbcodeID) REFERENCES wcf1_bbcode (bbcodeID) ON DELETE CASCADE;
 
 ALTER TABLE wcf1_category ADD FOREIGN KEY (objectTypeID) REFERENCES wcf1_object_type (objectTypeID) ON DELETE CASCADE;
+
+ALTER TABLE wcf1_cli_history ADD FOREIGN KEY (userID) REFERENCES wcf1_user (userID) ON DELETE CASCADE;
 
 ALTER TABLE wcf1_clipboard_action ADD FOREIGN KEY (packageID) REFERENCES wcf1_package (packageID) ON DELETE CASCADE;
 
@@ -1473,7 +1484,7 @@ ALTER TABLE wcf1_user_profile_menu_item ADD FOREIGN KEY (packageID) REFERENCES w
 
 /* SQL_PARSER_OFFSET */
 
-ALTER TABLE wcf1_user_rank ADD FOREIGN KEY (groupID) REFERENCES wcf1_user_group (groupID) ON DELETE SET NULL;
+ALTER TABLE wcf1_user_rank ADD FOREIGN KEY (groupID) REFERENCES wcf1_user_group (groupID) ON DELETE CASCADE;
 
 ALTER TABLE wcf1_user_activity_event ADD FOREIGN KEY (objectTypeID) REFERENCES wcf1_object_type (objectTypeID) ON DELETE CASCADE;
 ALTER TABLE wcf1_user_activity_event ADD FOREIGN KEY (userID) REFERENCES wcf1_user (userID) ON DELETE CASCADE;
@@ -1537,17 +1548,17 @@ ALTER TABLE wcf1_poll_option_vote ADD FOREIGN KEY (userID) REFERENCES wcf1_user 
 
 /* default inserts */
 -- default user groups
-INSERT INTO wcf1_user_group (groupName, groupType) VALUES ('wcf.acp.group.group1', 1);
-INSERT INTO wcf1_user_group (groupName, groupType) VALUES ('wcf.acp.group.group2', 2);
-INSERT INTO wcf1_user_group (groupName, groupType) VALUES ('wcf.acp.group.group3', 3);
-INSERT INTO wcf1_user_group (groupName, groupType) VALUES ('wcf.acp.group.group4', 4);
-INSERT INTO wcf1_user_group (groupName, groupType) VALUES ('wcf.acp.group.group5', 4);
-INSERT INTO wcf1_user_group (groupName, groupType) VALUES ('wcf.acp.group.group6', 4);
+INSERT INTO wcf1_user_group (groupID, groupName, groupType) VALUES (1, 'wcf.acp.group.group1', 1); -- Everyone
+INSERT INTO wcf1_user_group (groupID, groupName, groupType) VALUES (2, 'wcf.acp.group.group2', 2); -- Guests
+INSERT INTO wcf1_user_group (groupID, groupName, groupType) VALUES (3, 'wcf.acp.group.group3', 3); -- Registered Users
+INSERT INTO wcf1_user_group (groupID, groupName, groupType) VALUES (4, 'wcf.acp.group.group4', 4); -- Administrators
+INSERT INTO wcf1_user_group (groupID, groupName, groupType) VALUES (5, 'wcf.acp.group.group5', 4); -- Moderators
+INSERT INTO wcf1_user_group (groupID, groupName, groupType) VALUES (6, 'wcf.acp.group.group6', 4); -- Super-Moderators
 
 -- default user group options
-INSERT INTO wcf1_user_group_option (optionName, categoryName, optionType, defaultValue, showOrder) VALUES ('admin.general.canUseAcp', 'admin.general', 'boolean', '0', 1);
-INSERT INTO wcf1_user_group_option (optionName, categoryName, optionType, defaultValue, showOrder) VALUES ('admin.system.package.canInstallPackage', 'admin.system.package', 'boolean', '0', 1);
-INSERT INTO wcf1_user_group_option (optionName, categoryName, optionType, defaultValue, showOrder) VALUES ('admin.user.canEditGroup', 'admin.user.group', 'boolean', '0', 1);
+INSERT INTO wcf1_user_group_option (optionID, optionName, categoryName, optionType, defaultValue, showOrder) VALUES (1, 'admin.general.canUseAcp', 'admin.general', 'boolean', '0', 1);
+INSERT INTO wcf1_user_group_option (optionID, optionName, categoryName, optionType, defaultValue, showOrder) VALUES (2, 'admin.system.package.canInstallPackage', 'admin.system.package', 'boolean', '0', 1);
+INSERT INTO wcf1_user_group_option (optionID, optionName, categoryName, optionType, defaultValue, showOrder) VALUES (3, 'admin.user.canEditGroup', 'admin.user.group', 'boolean', '0', 1);
 
 -- default user group option values
 INSERT INTO wcf1_user_group_option_value (groupID, optionID, optionValue) VALUES (1, 1, '0');	-- Everyone
@@ -1668,15 +1679,13 @@ INSERT INTO wcf1_style_variable (variableName, defaultValue) VALUES ('messageSid
 	-- Vimeo
 	INSERT INTO wcf1_bbcode_media_provider (title, regex, html) VALUES ('Vimeo', 'http://vimeo\\.com/(?P<ID>\\d+)', '<iframe src="http://player.vimeo.com/video/{$ID}" width="400" height="225" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>');
 	-- MyVideo
-	INSERT INTO wcf1_bbcode_media_provider (title, regex, html) VALUES ('MyVideo', 'http://(?:www\\.)?myvideo\\.de/watch/(?P<ID>\\d+)', '<object style="width:611px;height:383px;" width="611" height="383"><embed src="http://www.myvideo.de/movie/{$ID}" width="611" height="383" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true"></embed><param name="movie" value="http://www.myvideo.de/movie/{$ID}"></param><param name="AllowFullscreen" value="true"></param><param name="AllowScriptAccess" value="always"></param></object>');
+	INSERT INTO wcf1_bbcode_media_provider (title, regex, html) VALUES ('MyVideo', 'http://(?:www\\.)?myvideo\\.de/watch/(?P<ID>\\d+)', '<object width="611" height="383" type="application/x-shockwave-flash" data="http://www.myvideo.de/movie/{$ID}"><param name="movie" value="http://www.myvideo.de/movie/{$ID}" /><param name="AllowFullscreen" value="true" /><param name="AllowScriptAccess" value="always" /><param name="wmode" value="transparent" /></object>');
 	-- Clipfish
 	INSERT INTO wcf1_bbcode_media_provider (title, regex, html) VALUES ('Clipfish', 'http://(?:www\\.)?clipfish\\.de/(?:.*?/)?video/(?P<ID>\\d+)/', '<div style="width:464px; height:404px;"><div style="width:464px; height:384px;"><iframe src="http://www.clipfish.de/embed_video/?vid={$ID}&amp;as=0&amp;col=990000" name="Clipfish Embedded Video" width="464" height="384" align="left" marginheight="0" marginwidth="0" scrolling="no"></iframe></div></div>');
 	-- Veoh
-	INSERT INTO wcf1_bbcode_media_provider (title, regex, html) VALUES ('Veoh', 'http://(?:www\\.)?veoh\\.com/watch/v(?P<ID>\\d+[a-zA-Z0-9]+)', '<object width="410" height="341" id="veohFlashPlayer" name="veohFlashPlayer"><param name="movie" value="http://www.veoh.com/swf/webplayer/WebPlayer.swf?version=AFrontend.5.7.0.1308&amp;permalinkId=v{$ID}&amp;player=videodetailsembedded&amp;videoAutoPlay=0&amp;id=anonymous"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.veoh.com/swf/webplayer/WebPlayer.swf?version=AFrontend.5.7.0.1308&amp;permalinkId=v{$ID}&amp;player=videodetailsembedded&amp;videoAutoPlay=0&amp;id=anonymous" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="410" height="341" id="veohFlashPlayerEmbed" name="veohFlashPlayerEmbed"></embed></object>');
+	INSERT INTO wcf1_bbcode_media_provider (title, regex, html) VALUES ('Veoh', 'http://(?:www\\.)?veoh\\.com/watch/v(?P<ID>\\d+[a-zA-Z0-9]+)', '<object width="410" height="341" id="veohFlashPlayer" name="veohFlashPlayer" type="application/x-shockwave-flash" data="http://www.veoh.com/swf/webplayer/WebPlayer.swf?version=AFrontend.5.7.0.1308&amp;permalinkId=v{$ID}&amp;player=videodetailsembedded&amp;videoAutoPlay=0&amp;id=anonymous"><param name="movie" value="http://www.veoh.com/swf/webplayer/WebPlayer.swf?version=AFrontend.5.7.0.1308&amp;permalinkId=v{$ID}&amp;player=videodetailsembedded&amp;videoAutoPlay=0&amp;id=anonymous" /><param name="allowFullScreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="wmode" value="transparent" /></object>');
 	-- DailyMotion
 	INSERT INTO wcf1_bbcode_media_provider (title, regex, html) VALUES ('DailyMotion', 'https?://(?:www\\.)?dailymotion\\.com/video/(?P<ID>[a-zA-Z0-9]+)', '<iframe width="480" height="208" src="http://www.dailymotion.com/embed/video/{$ID}"></iframe>');
-	-- YouKu
-	INSERT INTO wcf1_bbcode_media_provider (title, regex, html) VALUES ('YouKu', 'https?://(?:.+?\\.)?youku\\.com/v_show/id_(?P<ID>[a-zA-Z0-9_-]+)(?:\\.html)?', '<iframe height=498 width=510 src="http://player.youku.com/embed/{$ID}" allowfullscreen></iframe>');
 -- Misc
 	-- github gist
 	INSERT INTO wcf1_bbcode_media_provider (title, regex, html) VALUES ('github gist', 'https://gist.github.com/(?P<ID>[^/]+/[0-9a-zA-Z]+)', '<script src="https://gist.github.com/{$ID}.js"> </script>');

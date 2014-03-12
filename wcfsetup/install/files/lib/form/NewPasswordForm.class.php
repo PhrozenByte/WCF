@@ -1,7 +1,7 @@
 <?php
 namespace wcf\form;
 use wcf\data\user\User;
-use wcf\data\user\UserEditor;
+use wcf\data\user\UserAction;
 use wcf\page\AbstractPage;
 use wcf\system\exception\UserInputException;
 use wcf\system\mail\Mail;
@@ -15,7 +15,7 @@ use wcf\util\StringUtil;
  * Shows the new password form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	form
@@ -25,7 +25,7 @@ class NewPasswordForm extends AbstractForm {
 	const AVAILABLE_DURING_OFFLINE_MODE = true;
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$enableTracking
+	 * @see	\wcf\page\AbstractPage::$enableTracking
 	 */
 	public $enableTracking = true;
 	
@@ -43,7 +43,7 @@ class NewPasswordForm extends AbstractForm {
 	
 	/**
 	 * User object
-	 * @var	wcf\data\user\User
+	 * @var	\wcf\data\user\User
 	 */
 	public $user;
 	
@@ -54,17 +54,22 @@ class NewPasswordForm extends AbstractForm {
 	public $newPassword = '';
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
 		
 		if (isset($_REQUEST['u'])) $this->userID = intval($_REQUEST['u']);
 		if (isset($_REQUEST['k'])) $this->lostPasswordKey = StringUtil::trim($_REQUEST['k']);
+		
+		// disable check for security token for GET requests
+		if ($this->userID || $this->lostPasswordKey) {
+			$_POST['t'] = WCF::getSession()->getSecurityToken();
+		}
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -85,7 +90,7 @@ class NewPasswordForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
@@ -94,12 +99,14 @@ class NewPasswordForm extends AbstractForm {
 		$this->newPassword = PasswordUtil::getRandomPassword((REGISTER_PASSWORD_MIN_LENGTH > 9 ? REGISTER_PASSWORD_MIN_LENGTH : 9));
 		
 		// update user
-		$userEditor = new UserEditor($this->user);
-		$userEditor->update(array(
-			'password' => $this->newPassword,
-			'lastLostPasswordRequestTime' => 0,
-			'lostPasswordKey' => ''
+		$this->objectAction = new UserAction(array($this->user), 'update', array(
+			'data' => array_merge($this->additionalFields, array(
+				'password' => $this->newPassword,
+				'lastLostPasswordRequestTime' => 0,
+				'lostPasswordKey' => ''
+			))
 		));
+		$this->objectAction->executeAction();
 		
 		// send mail
 		$mail = new Mail(array($this->user->username => $this->user->email), WCF::getLanguage()->getDynamicVariable('wcf.user.newPassword.mail.subject'), WCF::getLanguage()->getDynamicVariable('wcf.user.newPassword.mail', array(
@@ -116,7 +123,7 @@ class NewPasswordForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -128,7 +135,7 @@ class NewPasswordForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		AbstractPage::readData();

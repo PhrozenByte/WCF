@@ -11,7 +11,7 @@ use wcf\system\WCF;
  * Shows the form for editing user option categories.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -19,24 +19,24 @@ use wcf\system\WCF;
  */
 class UserOptionCategoryEditForm extends UserOptionCategoryAddForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.user.option';
 	
 	/**
 	 * category id
-	 * @var integer
+	 * @var	integer
 	 */
 	public $categoryID = 0;
 	
 	/**
 	 * category object
-	 * @var	wcf\data\user\option\category\UserOptionCategory
+	 * @var	\wcf\data\user\option\category\UserOptionCategory
 	 */
 	public $category = null;
 	
 	/**
-	 * @see wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -49,16 +49,16 @@ class UserOptionCategoryEditForm extends UserOptionCategoryAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
 		
 		I18nHandler::getInstance()->save('categoryName', 'wcf.user.option.category.'.$this->category->categoryName, 'wcf.user.option');
 		
-		$this->objectAction = new UserOptionCategoryAction(array($this->category), 'update', array('data' => array(
+		$this->objectAction = new UserOptionCategoryAction(array($this->category), 'update', array('data' => array_merge($this->additionalFields, array(
 			'showOrder' => $this->showOrder
-		)));
+		))));
 		$this->objectAction->executeAction();
 		$this->saved();
 		
@@ -66,7 +66,7 @@ class UserOptionCategoryEditForm extends UserOptionCategoryAddForm {
 	}
 	
 	/**
-	 * @see wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -79,7 +79,7 @@ class UserOptionCategoryEditForm extends UserOptionCategoryAddForm {
 	}
 	
 	/**
-	 * @see wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

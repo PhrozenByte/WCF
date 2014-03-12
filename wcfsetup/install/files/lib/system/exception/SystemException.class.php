@@ -1,13 +1,14 @@
 <?php
 namespace wcf\system\exception;
 use wcf\system\WCF;
+use wcf\util\FileUtil;
 use wcf\util\StringUtil;
 
 /**
  * A SystemException is thrown when an unexpected error occurs.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.exception
@@ -56,7 +57,7 @@ class SystemException extends LoggedException implements IPrintableException {
 	}
 	
 	/**
-	 * @see	wcf\system\exception\IPrintableException::show()
+	 * @see	\wcf\system\exception\IPrintableException::show()
 	 */
 	public function show() {
 		// send status code
@@ -145,7 +146,7 @@ class SystemException extends LoggedException implements IPrintableException {
 			</head>
 			<body>
 				<div class="systemException">
-					<h1>Fatal error: <?php echo StringUtil::encodeHTML($this->_getMessage()); ?></h1>
+					<h1>Fatal error: <?php if(!$this->getExceptionID()) { ?>Unable to write log file, please make &quot;<?php echo FileUtil::unifyDirSeparator(WCF_DIR); ?>log/&quot; writable!<?php } else { echo StringUtil::encodeHTML($this->_getMessage()); } ?></h1>
 					
 					<?php if (WCF::debugModeIsEnabled()) { ?>
 						<div>
@@ -172,8 +173,12 @@ class SystemException extends LoggedException implements IPrintableException {
 						<div>
 							<h2>Information:</h2>
 							<p>
-								<b>ID:</b> <code><?php echo $this->getExceptionID(); ?></code><br>
-								<?php echo $innerMessage; ?>
+								<?php if (!$this->getExceptionID()) { ?>
+									Unable to write log file, please make &quot;<?php echo FileUtil::unifyDirSeparator(WCF_DIR); ?>log/&quot; writable!
+								<?php } else { ?>
+									<b>ID:</b> <code><?php echo $this->getExceptionID(); ?></code><br>
+									<?php echo $innerMessage; ?>
+								<?php } ?>
 							</p>
 						</div>
 					<?php } ?>

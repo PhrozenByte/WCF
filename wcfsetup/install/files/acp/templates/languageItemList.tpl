@@ -13,11 +13,13 @@
 	<h1>{lang}wcf.acp.language.item.list{/lang}</h1>
 </header>
 
+{include file='formError'}
+
 <form method="post" action="{link controller='LanguageItemList'}{/link}">
 	<div class="container containerPadding marginTop">
 		<fieldset>
 			<legend>{lang}wcf.global.filter{/lang}</legend>
-		
+			
 			<dl>
 				<dt><label for="languageID">{lang}wcf.user.language{/lang}</label></dt>
 				<dd>
@@ -66,6 +68,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 
@@ -89,7 +92,7 @@
 					<div>
 						<div class="details">
 							<div class="containerHeadline">
-								<h3><a class="jsLanguageItem" data-language-item-id="{@$item->languageItemID}">{$item->languageItem}</a>{if $item->languageCustomItemValue} <span class="icon icon16 icon-bookmark jsTooltip" title="{lang}wcf.acp.language.item.hasCustomValue{/lang}"></span>{/if}</h3>
+								<h3><a class="jsLanguageItem" data-language-item-id="{@$item->languageItemID}">{$item->languageItem}</a>{if $item->languageCustomItemValue !== null} <span class="icon icon16 icon-bookmark jsTooltip" title="{lang}wcf.acp.language.item.hasCustomValue{/lang}"></span>{/if}</h3>
 							</div>
 							
 							<p>{if $item->languageUseCustomValue}{$item->languageCustomItemValue|truncate:255}{else}{$item->languageItemValue|truncate:255}{/if}</p>

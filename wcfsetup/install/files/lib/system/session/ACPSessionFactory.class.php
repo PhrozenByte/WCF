@@ -6,7 +6,7 @@ use wcf\system\event\EventHandler;
  * Handles the ACP session of the active user.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.session
@@ -50,15 +50,19 @@ class ACPSessionFactory {
 	/**
 	 * Returns the session id from request (GET/POST). Returns an empty string,
 	 * if no session id was given.
-	 *
+	 * 
 	 * @return	string
 	 */
 	protected function readSessionID() {
 		if (isset($_GET['s'])) {
-			return $_GET['s'];
+			if (is_string($_GET['s'])) {
+				return $_GET['s'];
+			}
 		}
 		else if (isset($_POST['s'])) {
-			return $_POST['s'];
+			if (is_string($_POST['s'])) {
+				return $_POST['s'];
+			}
 		}
 		
 		return '';

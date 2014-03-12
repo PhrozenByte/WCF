@@ -8,7 +8,7 @@ use wcf\system\WCF;
  * Wrapper for the profile of the active user to be used as a core object.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.user
@@ -17,12 +17,12 @@ use wcf\system\WCF;
 class UserProfileHandler extends SingletonFactory {
 	/**
 	 * user profile object
-	 * @var	wcf\data\user\UserProfile
+	 * @var	\wcf\data\user\UserProfile
 	 */
 	protected $userProfile = null;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$this->userProfile = new UserProfile(WCF::getUser());

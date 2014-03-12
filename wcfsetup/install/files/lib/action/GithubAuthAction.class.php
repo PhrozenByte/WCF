@@ -17,7 +17,7 @@ use wcf\util\StringUtil;
  * Handles github auth.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	action
@@ -25,12 +25,12 @@ use wcf\util\StringUtil;
  */
 class GithubAuthAction extends AbstractAction {
 	/**
-	 * @see	wcf\action\AbstractAction::$neededModules
+	 * @see	\wcf\action\AbstractAction::$neededModules
 	 */
 	public $neededModules = array('GITHUB_PUBLIC_KEY', 'GITHUB_PRIVATE_KEY');
 	
 	/**
-	 * @see	wcf\action\IAction::execute()
+	 * @see	\wcf\action\IAction::execute()
 	 */
 	public function execute() {
 		parent::execute();
@@ -50,6 +50,8 @@ class GithubAuthAction extends AbstractAction {
 				$content = $reply['body'];
 			}
 			catch (SystemException $e) {
+				// force logging
+				$e->getExceptionID();
 				throw new IllegalLinkException();
 			}
 			
@@ -97,6 +99,8 @@ class GithubAuthAction extends AbstractAction {
 					$userData = JSON::decode(StringUtil::trim($reply['body']));
 				}
 				catch (SystemException $e) {
+					// force logging
+					$e->getExceptionID();
 					throw new IllegalLinkException();
 				}
 				
@@ -171,7 +175,7 @@ class GithubAuthAction extends AbstractAction {
 	 * Fetches the User with the given access-token.
 	 * 
 	 * @param	string			$token
-	 * @return	wcf\data\user\User
+	 * @return	\wcf\data\user\User
 	 */
 	public function getUser($token) {
 		$sql = "SELECT	userID

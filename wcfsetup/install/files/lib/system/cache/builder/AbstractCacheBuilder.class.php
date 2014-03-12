@@ -8,7 +8,7 @@ use wcf\system\SingletonFactory;
  * Default implementation for cache builders.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cache.builder
@@ -28,7 +28,7 @@ abstract class AbstractCacheBuilder extends SingletonFactory implements ICacheBu
 	protected $maxLifetime = 0;
 	
 	/**
-	 * @see	wcf\system\cache\builder\ICacheBuilder::getData()
+	 * @see	\wcf\system\cache\builder\ICacheBuilder::getData()
 	 */
 	public function getData(array $parameters = array(), $arrayIndex = '') {
 		$index = CacheHandler::getInstance()->getCacheIndex($parameters);
@@ -56,14 +56,14 @@ abstract class AbstractCacheBuilder extends SingletonFactory implements ICacheBu
 	}
 	
 	/**
-	 * @see	wcf\system\cache\builder\ICacheBuilder::getMaxLifetime()
+	 * @see	\wcf\system\cache\builder\ICacheBuilder::getMaxLifetime()
 	 */
 	public function getMaxLifetime() {
 		return $this->maxLifetime;
 	}
 	
 	/**
-	 * @see	wcf\system\cache\builder\ICacheBuilder::reset()
+	 * @see	\wcf\system\cache\builder\ICacheBuilder::reset()
 	 */
 	public function reset(array $parameters = array()) {
 		CacheHandler::getInstance()->flush($this, $parameters);

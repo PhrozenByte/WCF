@@ -11,7 +11,7 @@ use wcf\util\XML;
  * Installs, updates and deletes languages, their categories and items.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package.plugin
@@ -19,12 +19,12 @@ use wcf\util\XML;
  */
 class LanguagePackageInstallationPlugin extends AbstractXMLPackageInstallationPlugin {
 	/**
-	 * @see	wcf\system\package\plugin\AbstractPackageInstallationPlugin::$tableName
+	 * @see	\wcf\system\package\plugin\AbstractPackageInstallationPlugin::$tableName
 	 */
 	public $tableName = 'language_item';
 	
 	/**
-	 * @see	wcf\system\package\plugin\IPackageInstallationPlugin::install()
+	 * @see	\wcf\system\package\plugin\IPackageInstallationPlugin::install()
 	 */
 	public function install() {
 		AbstractPackageInstallationPlugin::install();
@@ -81,10 +81,14 @@ class LanguagePackageInstallationPlugin extends AbstractXMLPackageInstallationPl
 		// install language
 		foreach ($installedLanguages as $installedLanguage) {
 			$languageFile = null;
+			$updateExistingItems = true;
 			if (isset($languageFiles[$installedLanguage['languageCode']])) {
 				$languageFile = $languageFiles[$installedLanguage['languageCode']];
 			}
 			else if ($multipleFiles) {
+				// do not update existing items, only add new ones
+				$updateExistingItems = false;
+				
 				// use default language
 				if (isset($languageFiles[$installedLanguages[0]['languageCode']])) {
 					$languageFile = $languageFiles[$installedLanguages[0]['languageCode']];
@@ -125,14 +129,14 @@ class LanguagePackageInstallationPlugin extends AbstractXMLPackageInstallationPl
 					
 					// import xml
 					// don't update language files if package is an application
-					$languageEditor->updateFromXML($xml, $this->installation->getPackageID(), !$this->installation->getPackage()->isApplication);
+					$languageEditor->updateFromXML($xml, $this->installation->getPackageID(), !$this->installation->getPackage()->isApplication, $updateExistingItems);
 				}
 			}
 		}
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\IPackageInstallationPlugin::uninstall()
+	 * @see	\wcf\system\package\plugin\IPackageInstallationPlugin::uninstall()
 	 */
 	public function uninstall() {
 		parent::uninstall();
@@ -176,7 +180,7 @@ class LanguagePackageInstallationPlugin extends AbstractXMLPackageInstallationPl
 	 * was not found, an exception message is thrown.
 	 * 
 	 * @param	string		$filename
-	 * @return	wcf\util\XML
+	 * @return	\wcf\util\XML
 	 */
 	protected function readLanguage($filename) {
 		// search language files in package archive
@@ -234,17 +238,17 @@ class LanguagePackageInstallationPlugin extends AbstractXMLPackageInstallationPl
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::handleDelete()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::handleDelete()
 	 */
 	protected function handleDelete(array $items) { }
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::prepareImport()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::prepareImport()
 	 */
 	protected function prepareImport(array $data) { }
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::findExistingItem()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::findExistingItem()
 	 */
 	protected function findExistingItem(array $data) { }
 }

@@ -8,7 +8,7 @@ use wcf\system\exception\SystemException;
  * does not support using nicknames (prefixed by the '@' character).
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	util
@@ -157,7 +157,7 @@ final class CronjobUtil {
 	 * command will be run when either field matches the current time. -- crontab(5)
 	 * 
 	 * @param	array		$values
-	 * @see		wcf\util\CronjobUtil::getDom()
+	 * @see		\wcf\util\CronjobUtil::getDom()
 	 */
 	protected static function calculateDay(array &$values) {
 		$addAnDay = self::calculateHour($values, self::$timeBase);

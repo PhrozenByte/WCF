@@ -6,15 +6,15 @@
 	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
 >
 	<channel>
-		<title><![CDATA[{if $title}{$title} - {/if}{@PAGE_TITLE|language|escapeCDATA}]]></title>
+		<title><![CDATA[{if $title}{@$title|escapeCDATA} - {/if}{@PAGE_TITLE|language|escapeCDATA}]]></title>
 		<link><![CDATA[{@$baseHref|escapeCDATA}]]></link>
-		<description><![CDATA[{@PAGE_DESCRIPTION|escapeCDATA}]]></description>
+		<description><![CDATA[{@PAGE_DESCRIPTION|language|escapeCDATA}]]></description>
 		<language>{@$__wcf->language->getFixedLanguageCode()}</language>
 		<pubDate>{'r'|gmdate:TIME_NOW}</pubDate>
 {assign var='dummy' value=$items->rewind()}
 		<lastBuildDate>{if $items->valid()}{'r'|gmdate:$items->current()->getTime()}{else}{'r'|gmdate:TIME_NOW}{/if}</lastBuildDate>
 		<ttl>60</ttl>
-		<generator><![CDATA[WoltLab Community Framework {@WCF_VERSION}]]></generator>
+		<generator><![CDATA[WoltLab Community Framework{if SHOW_VERSION_NUMBER} {@WCF_VERSION}{/if}]]></generator>
 		<atom:link href="{$__wcf->getRequestURI()}" rel="self" type="application/rss+xml" />
 {*		*}{foreach from=$items item='item'}
 		<item>
@@ -22,13 +22,13 @@
 			<link><![CDATA[{@$item->getLink()|escapeCDATA}]]></link>
 			{hascontent}<description><![CDATA[{content}{@$item->getExcerpt()|escapeCDATA}{/content}]]></description>{/hascontent}
 			<pubDate>{'r'|gmdate:$item->getTime()}</pubDate>
-			<dc:creator>{@$item->getUsername()|escapeCDATA}</dc:creator>
+			<dc:creator><![CDATA[{@$item->getUsername()|escapeCDATA}]]></dc:creator>
 			<guid><![CDATA[{@$item->getLink()|escapeCDATA}]]></guid>
 			{foreach from=$item->getCategories() item='category'}
 				<category><![CDATA[{@$category|escapeCDATA}]]></category>
 			{/foreach}
 			{hascontent}<content:encoded><![CDATA[{content}{@$item->getFormattedMessage()|escapeCDATA}{/content}]]></content:encoded>{/hascontent}
-			<slash:comments>{@$item->getComments()|escapeCDATA}</slash:comments>
+			<slash:comments><![CDATA[{@$item->getComments()|escapeCDATA}]]></slash:comments>
 		</item>
 {*		*}{/foreach}
 	</channel>

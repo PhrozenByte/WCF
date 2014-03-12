@@ -8,7 +8,7 @@ use wcf\system\WCF;
  * Represents a user option.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.option
@@ -17,71 +17,71 @@ use wcf\system\WCF;
 class UserOption extends Option {
 	/**
 	 * visible for no one (no valid bit)
-	 * @var integer
+	 * @var	integer
 	 */
 	const VISIBILITY_NONE = 0;
 	
 	/**
 	 * visible for the owner
-	 * @var integer
+	 * @var	integer
 	 */
 	const VISIBILITY_OWNER = 1;
 	
 	/**
 	 * visible for admins
-	 * @var integer
+	 * @var	integer
 	 */
 	const VISIBILITY_ADMINISTRATOR = 2;
 	
 	/**
 	 * visible for users
-	 * @var integer
+	 * @var	integer
 	 */
 	const VISIBILITY_REGISTERED = 4;
 	
 	/**
 	 * visible for guests
-	 * @var integer
+	 * @var	integer
 	 */
 	const VISIBILITY_GUEST = 8;
 	
 	/**
 	 * visible for all (no valid bit)
-	 * @var integer
+	 * @var	integer
 	 */
 	const VISIBILITY_ALL = 15;
 	
 	/**
 	 * editable for no one (no valid bit)
-	 * @var integer
+	 * @var	integer
 	 */
 	const EDITABILITY_NONE = 0;
 	
 	/**
 	 * editable for the owner
-	 * @var integer
+	 * @var	integer
 	 */
 	const EDITABILITY_OWNER = 1;
 	
 	/**
 	 * editable for admins
-	 * @var integer
+	 * @var	integer
 	 */
 	const EDITABILITY_ADMINISTRATOR = 2;
 	
 	/**
 	 * editable for all (no valid bit)
-	 * @var integer
+	 * @var	integer
 	 */
 	const EDITABILITY_ALL = 3;
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'user_option';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'optionID';
 	
@@ -93,21 +93,21 @@ class UserOption extends Option {
 	
 	/**
 	 * user object
-	 * @var	wcf\data\user\User
+	 * @var	\wcf\data\user\User
 	 */
 	public $user = null;
 	
 	/**
 	 * Sets target user object.
 	 * 
-	 * @param	wcf\data\user\User	$user
+	 * @param	\wcf\data\user\User	$user
 	 */
 	public function setUser(User $user) {
 		$this->user = $user;
 	}
 	
 	/**
-	 * @see	wcf\data\option\Option::isVisible()
+	 * @see	\wcf\data\option\Option::isVisible()
 	 */
 	public function isVisible() {
 		// proceed if option is visible for all

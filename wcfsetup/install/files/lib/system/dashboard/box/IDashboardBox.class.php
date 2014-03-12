@@ -7,7 +7,7 @@ use wcf\page\IPage;
  * Default interface for dashboard boxes.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.dashboard.box
@@ -17,8 +17,8 @@ interface IDashboardBox {
 	/**
 	 * Initializes this box.
 	 * 
-	 * @param	wcf\data\dashboard\box\DashboardBox	$box
-	 * @param	wcf\page\IPage				$page
+	 * @param	\wcf\data\dashboard\box\DashboardBox	$box
+	 * @param	\wcf\page\IPage				$page
 	 */
 	public function init(DashboardBox $box, IPage $page);
 	

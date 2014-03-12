@@ -12,6 +12,8 @@
 	<script data-relocate="true">
 		//<![CDATA[
 		$(function() {
+			WCF.Language.add('wcf.acp.worker.abort.confirmMessage', '{lang}wcf.acp.worker.abort.confirmMessage{/lang}');
+			
 			new WCF.ACP.Worker('mail', 'wcf\\system\\worker\\MailWorker', '', {
 				mailID: {@$mailID}
 			});
@@ -24,9 +26,7 @@
 	<h1>{lang}{@$pageTitle}{/lang}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 <div class="contentNavigation">
 	<nav>
@@ -145,6 +145,7 @@
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
 		<input type="hidden" name="action" value="{@$action}" />
 		<input type="hidden" name="userIDs" value="{implode from=$userIDs item=userID glue=','}{@$userID}{/implode}" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

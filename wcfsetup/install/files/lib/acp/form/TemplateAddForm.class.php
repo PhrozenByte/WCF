@@ -3,11 +3,11 @@ namespace wcf\acp\form;
 use wcf\data\package\Package;
 use wcf\data\package\PackageCache;
 use wcf\data\template\group\TemplateGroup;
-use wcf\data\template\group\TemplateGroupAction;
 use wcf\data\template\group\TemplateGroupList;
 use wcf\data\template\Template;
 use wcf\data\template\TemplateAction;
 use wcf\form\AbstractForm;
+use wcf\system\database\util\PreparedStatementConditionBuilder;
 use wcf\system\exception\IllegalLinkException;
 use wcf\system\exception\UserInputException;
 use wcf\system\WCF;
@@ -15,9 +15,9 @@ use wcf\util\StringUtil;
 
 /**
  * Shows the form for adding new templates.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -25,54 +25,54 @@ use wcf\util\StringUtil;
  */
 class TemplateAddForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.template.add';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.template.canManageTemplate');
 	
 	/**
 	 * template name
-	 * @var string
+	 * @var	string
 	 */
 	public $tplName = '';
 	
 	/**
 	 * template group id
-	 * @var integer
+	 * @var	integer
 	 */
 	public $templateGroupID = 0;
 	
 	/**
 	 * template source code
-	 * @var string
+	 * @var	string
 	 */
 	public $templateSource = '';
 	
 	/**
 	 * available template groups
-	 * @var array
+	 * @var	array
 	 */
 	public $availableTemplateGroups = array();
 	
 	/**
 	 * template's package id
-	 * @var integer
+	 * @var	integer
 	 */
 	public $packageID = 1;
 	
 	/**
 	 * id of copied template
-	 * @var integer
+	 * @var	integer
 	 */
 	public $copy = 0;
 	
 	/**
 	 * copied template object
-	 * @var wcf\data\template\Template
+	 * @var	\wcf\data\template\Template
 	 */
 	public $copiedTemplate = null;
 	
@@ -83,11 +83,11 @@ class TemplateAddForm extends AbstractForm {
 	public $application = '';
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
-	
+		
 		if (!empty($_REQUEST['copy'])) {
 			$this->copy = intval($_REQUEST['copy']);
 			$this->copiedTemplate = new Template($this->copy);
@@ -101,7 +101,7 @@ class TemplateAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -111,20 +111,22 @@ class TemplateAddForm extends AbstractForm {
 		if (isset($_POST['templateGroupID'])) $this->templateGroupID = intval($_POST['templateGroupID']);
 		
 		// get package id for this template
-		$sql = "SELECT	packageID
-			FROM	wcf".WCF_N."_template
-			WHERE	templateName = ?
-				AND templateGroupID IS NULL";
-		$statement = WCF::getDB()->prepareStatement($sql);
-		$statement->execute(array($this->tplName));
-		$row = $statement->fetchArray();
-		if ($row !== false) {
-			$this->packageID = $row['packageID'];
+		if (!$this->packageID) {
+			$sql = "SELECT	packageID
+				FROM	wcf".WCF_N."_template
+				WHERE	templateName = ?
+					AND templateGroupID IS NULL";
+			$statement = WCF::getDB()->prepareStatement($sql);
+			$statement->execute(array($this->tplName));
+			$row = $statement->fetchArray();
+			if ($row !== false) {
+				$this->packageID = $row['packageID'];
+			}
 		}
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -140,22 +142,27 @@ class TemplateAddForm extends AbstractForm {
 		if (empty($this->tplName)) {
 			throw new UserInputException('tplName');
 		}
-	
+		
 		if (!preg_match('/^[a-z0-9_\-]+$/i', $this->tplName)) {
 			throw new UserInputException('tplName', 'notValid');
 		}
 		
+		$conditionBuilder = new PreparedStatementConditionBuilder();
+		$conditionBuilder->add('templateName = ?', array($this->tplName));
+		$conditionBuilder->add('templateGroupID = ?', array($this->templateGroupID));
+		
+		if ($this->copiedTemplate !== null) {
+			$conditionBuilder->add('(packageID = ? OR application = ?)', array($this->packageID, $this->copiedTemplate->application));
+		}
+		else {
+			$conditionBuilder->add('packageID = ?', array($this->packageID));
+		}
+		
 		$sql = "SELECT	COUNT(*) AS count
 			FROM	wcf".WCF_N."_template
-			WHERE	templateName = ?
-				AND packageID = ?
-				AND templateGroupID = ?";
+			".$conditionBuilder;
 		$statement = WCF::getDB()->prepareStatement($sql);
-		$statement->execute(array(
-			$this->tplName,
-			$this->packageID,
-			$this->templateGroupID
-		));
+		$statement->execute($conditionBuilder->getParameters());
 		$row = $statement->fetchArray();
 		if ($row['count']) {
 			throw new UserInputException('tplName', 'notUnique');
@@ -177,7 +184,7 @@ class TemplateAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
@@ -186,12 +193,12 @@ class TemplateAddForm extends AbstractForm {
 			$this->application = Package::getAbbreviation(PackageCache::getInstance()->getPackage($this->packageID)->package);
 		}
 		
-		$this->objectAction = new TemplateAction(array(), 'create', array('data' => array(
+		$this->objectAction = new TemplateAction(array(), 'create', array('data' => array_merge($this->additionalFields, array(
 			'application' => $this->application,
 			'templateName' => $this->tplName,
 			'packageID' => $this->packageID,
 			'templateGroupID' => $this->templateGroupID
-		), 'source' => $this->templateSource));
+		)), 'source' => $this->templateSource));
 		$this->objectAction->executeAction();
 		$this->saved();
 		
@@ -206,12 +213,13 @@ class TemplateAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
-	
+		
 		$templateGroupList = new TemplateGroupList();
+		$templateGroupList->sqlOrderBy = "templateGroupName";
 		$templateGroupList->readObjects();
 		$this->availableTemplateGroups = $templateGroupList->getObjects();
 		
@@ -222,7 +230,7 @@ class TemplateAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

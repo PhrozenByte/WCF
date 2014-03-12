@@ -11,7 +11,7 @@ use wcf\system\WCF;
  * Shows the user option edit form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -19,24 +19,24 @@ use wcf\system\WCF;
  */
 class UserOptionEditForm extends UserOptionAddForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.user.option';
 	
 	/**
 	 * user option id
-	 * @var integer
+	 * @var	integer
 	 */
 	public $optionID = 0;
 	
 	/**
 	 * user option object
-	 * @var wcf\data\user\option\UserOption
+	 * @var	\wcf\data\user\option\UserOption
 	 */
 	public $userOption = null;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -49,7 +49,7 @@ class UserOptionEditForm extends UserOptionAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
@@ -57,7 +57,7 @@ class UserOptionEditForm extends UserOptionAddForm {
 		I18nHandler::getInstance()->save('optionName', 'wcf.user.option.'.$this->userOption->optionName, 'wcf.user.option');
 		I18nHandler::getInstance()->save('optionDescription', 'wcf.user.option.'.$this->userOption->optionName.'.description', 'wcf.user.option');
 		
-		$this->objectAction = new UserOptionAction(array($this->userOption), 'update', array('data' => array(
+		$this->objectAction = new UserOptionAction(array($this->userOption), 'update', array('data' => array_merge($this->additionalFields, array(
 			'categoryName' => $this->categoryName,
 			'optionType' => $this->optionType,
 			'defaultValue' => $this->defaultValue,
@@ -70,7 +70,7 @@ class UserOptionEditForm extends UserOptionAddForm {
 			'searchable' => $this->searchable,
 			'editable' => $this->editable,
 			'visible' => $this->visible
-		)));
+		))));
 		$this->objectAction->executeAction();
 		$this->saved();
 		
@@ -78,7 +78,7 @@ class UserOptionEditForm extends UserOptionAddForm {
 	}
 	
 	/**
-	 * @see wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -103,7 +103,7 @@ class UserOptionEditForm extends UserOptionAddForm {
 	}
 	
 	/**
-	 * @see wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

@@ -7,7 +7,7 @@ use wcf\system\WCF;
  * ACP search provider implementation for menu items.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.search.acp
@@ -15,7 +15,7 @@ use wcf\system\WCF;
  */
 class MenuItemACPSearchResultProvider extends AbstractACPSearchResultProvider implements IACPSearchResultProvider {
 	/**
-	 * @see	wcf\system\search\acp\IACPSearchResultProvider::search()
+	 * @see	\wcf\system\search\acp\IACPSearchResultProvider::search()
 	 */
 	public function search($query) {
 		$results = array();

@@ -17,7 +17,7 @@ use wcf\util\StringUtil;
  * Handles facebook auth.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	action
@@ -25,12 +25,12 @@ use wcf\util\StringUtil;
  */
 class FacebookAuthAction extends AbstractAction {
 	/**
-	 * @see	wcf\action\AbstractAction::$neededModules
+	 * @see	\wcf\action\AbstractAction::$neededModules
 	 */
 	public $neededModules = array('FACEBOOK_PUBLIC_KEY', 'FACEBOOK_PRIVATE_KEY');
 	
 	/**
-	 * @see	wcf\action\IAction::execute()
+	 * @see	\wcf\action\IAction::execute()
 	 */
 	public function execute() {
 		parent::execute();
@@ -47,6 +47,8 @@ class FacebookAuthAction extends AbstractAction {
 				$content = $reply['body'];
 			}
 			catch (SystemException $e) {
+				// force logging
+				$e->getExceptionID();
 				throw new IllegalLinkException();
 			}
 			
@@ -65,6 +67,8 @@ class FacebookAuthAction extends AbstractAction {
 				$content = $reply['body'];
 			}
 			catch (SystemException $e) {
+				// force logging
+				$e->getExceptionID();
 				throw new IllegalLinkException();
 			}
 			
@@ -139,7 +143,7 @@ class FacebookAuthAction extends AbstractAction {
 	 * Fetches the User with the given userID.
 	 * 
 	 * @param	integer			$userID
-	 * @return	wcf\data\user\User
+	 * @return	\wcf\data\user\User
 	 */
 	public function getUser($userID) {
 		$sql = "SELECT	userID

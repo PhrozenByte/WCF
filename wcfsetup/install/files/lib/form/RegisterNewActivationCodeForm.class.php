@@ -1,7 +1,7 @@
 <?php
 namespace wcf\form;
 use wcf\data\user\User;
-use wcf\data\user\UserEditor;
+use wcf\data\user\UserAction;
 use wcf\system\exception\IllegalLinkException;
 use wcf\system\exception\UserInputException;
 use wcf\system\mail\Mail;
@@ -16,7 +16,7 @@ use wcf\util\UserUtil;
  * Shows the new activation code form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	form
@@ -43,12 +43,12 @@ class RegisterNewActivationCodeForm extends AbstractForm {
 	
 	/**
 	 * user object
-	 * @var	wcf\data\user\User
+	 * @var	\wcf\data\user\User
 	 */
 	public $user = null;
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -59,7 +59,7 @@ class RegisterNewActivationCodeForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -122,9 +122,8 @@ class RegisterNewActivationCodeForm extends AbstractForm {
 		}
 	}
 	
-	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
@@ -133,10 +132,12 @@ class RegisterNewActivationCodeForm extends AbstractForm {
 		$activationCode = UserRegistrationUtil::getActivationCode();
 		
 		// save user
-		$userEditor = new UserEditor($this->user);
 		$parameters = array('activationCode' => $activationCode);
 		if (!empty($this->email)) $parameters['email'] = $this->email;
-		$userEditor->update($parameters);
+		$this->objectAction = new UserAction(array($this->user), 'update', array(
+			'data' => array_merge($this->additionalFields, $parameters)
+		));
+		$this->objectAction->executeAction();
 		
 		// reload user to reflect changes
 		$this->user = new User($this->user->userID);
@@ -152,7 +153,7 @@ class RegisterNewActivationCodeForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -163,7 +164,7 @@ class RegisterNewActivationCodeForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -176,7 +177,7 @@ class RegisterNewActivationCodeForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::show()
+	 * @see	\wcf\page\IPage::show()
 	 */
 	public function show() {
 		if (REGISTER_ACTIVATION_METHOD != 1) {

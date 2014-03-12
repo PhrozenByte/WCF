@@ -4,7 +4,6 @@ use wcf\data\bbcode\attribute\BBCodeAttribute;
 use wcf\data\bbcode\attribute\BBCodeAttributeAction;
 use wcf\data\bbcode\BBCode;
 use wcf\data\bbcode\BBCodeAction;
-use wcf\data\package\PackageCache;
 use wcf\form\AbstractForm;
 use wcf\system\exception\IllegalLinkException;
 use wcf\system\language\I18nHandler;
@@ -14,7 +13,7 @@ use wcf\system\WCF;
  * Shows the bbcode edit form.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -22,12 +21,12 @@ use wcf\system\WCF;
  */
 class BBCodeEditForm extends BBCodeAddForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.bbcode';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.content.bbcode.canManageBBCode');
 	
@@ -39,18 +38,18 @@ class BBCodeEditForm extends BBCodeAddForm {
 	
 	/**
 	 * bbcode object
-	 * @var	wcf\data\bbcode\BBCode
+	 * @var	\wcf\data\bbcode\BBCode
 	 */
 	public $bbcode = null;
 	
 	/**
 	 * list of native bbcodes
-	 * @var array<string>
+	 * @var	array<string>
 	 */
 	public static $nativeBBCodes = array('b', 'i', 'u', 's', 'sub', 'sup', 'list', 'align', 'color', 'size', 'font', 'url', 'img', 'email', 'table');
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		AbstractForm::readParameters();
@@ -67,7 +66,7 @@ class BBCodeEditForm extends BBCodeAddForm {
 	}
 	
 	/**
-	 * @see	wcf\acp\form\BBCodeAddForm::readButtonLabelFormParameter()
+	 * @see	\wcf\acp\form\BBCodeAddForm::readButtonLabelFormParameter()
 	 */
 	protected function readButtonLabelFormParameter() {
 		if (!in_array($this->bbcode->bbcodeTag, self::$nativeBBCodes)) {
@@ -76,7 +75,7 @@ class BBCodeEditForm extends BBCodeAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
@@ -93,7 +92,7 @@ class BBCodeEditForm extends BBCodeAddForm {
 		}
 		
 		// update bbcode
-		$this->objectAction = new BBCodeAction(array($this->bbcodeID), 'update', array('data' => array(
+		$this->objectAction = new BBCodeAction(array($this->bbcodeID), 'update', array('data' => array_merge($this->additionalFields, array(
 			'allowedChildren' => $this->allowedChildren,
 			'bbcodeTag' => $this->bbcodeTag,
 			'buttonLabel' => $this->buttonLabel,
@@ -103,7 +102,7 @@ class BBCodeEditForm extends BBCodeAddForm {
 			'isSourceCode' => ($this->isSourceCode ? 1 : 0),
 			'showButton' => ($this->showButton ? 1 : 0),
 			'wysiwygIcon' => $this->wysiwygIcon
-		)));
+		))));
 		$this->objectAction->executeAction();
 		
 		// clear existing attributes
@@ -133,7 +132,7 @@ class BBCodeEditForm extends BBCodeAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -155,7 +154,7 @@ class BBCodeEditForm extends BBCodeAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

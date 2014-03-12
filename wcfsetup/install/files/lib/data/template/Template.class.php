@@ -1,7 +1,8 @@
 <?php
 namespace wcf\data\template;
-use wcf\data\package\Package;
+use wcf\data\package\PackageCache;
 use wcf\data\DatabaseObject;
+use wcf\system\application\ApplicationHandler;
 use wcf\system\database\util\PreparedStatementConditionBuilder;
 use wcf\system\WCF;
 use wcf\util\FileUtil;
@@ -11,7 +12,7 @@ use wcf\util\StringUtil;
  * Represents a template.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.template
@@ -19,22 +20,22 @@ use wcf\util\StringUtil;
  */
 class Template extends DatabaseObject {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'template';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'templateID';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::__construct()
+	 * @see	\wcf\data\DatabaseObject::__construct()
 	 */
 	public function __construct($id, $row = null, DatabaseObject $object = null) {
 		if ($id !== null) {
 			$sql = "SELECT		template.*, template_group.templateGroupFolderName,
-						package.package, package.packageDir
+						package.package
 				FROM		wcf".WCF_N."_template template
 				LEFT JOIN	wcf".WCF_N."_template_group template_group
 				ON		(template_group.templateGroupID = template.templateGroupID)
@@ -44,6 +45,16 @@ class Template extends DatabaseObject {
 			$statement = WCF::getDB()->prepareStatement($sql);
 			$statement->execute(array($id));
 			$row = $statement->fetchArray();
+			
+			// get relative directory of the template the application
+			// belongs to
+			if ($row['application'] != 'wcf') {
+				$application = ApplicationHandler::getInstance()->getApplication($row['application']);
+			}
+			else {
+				$application = ApplicationHandler::getInstance()->getWCF();
+			}
+			$row['packageDir'] = PackageCache::getInstance()->getPackage($application->packageID)->packageDir;
 			
 			// enforce data type 'array'
 			if ($row === false) $row = array();
@@ -84,7 +95,7 @@ class Template extends DatabaseObject {
 	 * @param	boolean		$useRegex
 	 * @param	boolean		$caseSensitive
 	 * @param	boolean		$invertSearch
-	 * @return	array		results 
+	 * @return	array
 	 */
 	public static function search($search, $replace = null, $templateIDs = null, $invertTemplates = 0, $useRegex = 0, $caseSensitive = 0, $invertSearch = 0) {
 		// get available template ids

@@ -5,7 +5,7 @@ namespace wcf\system\form\container;
  * Provides a multiple selection form element container.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.form.container
@@ -28,7 +28,7 @@ class MultipleSelectionFormElementContainer extends SelectionFormElementContaine
 	}
 	
 	/**
-	 * @see	wcf\system\form\IFormElementContainer::getHTML()
+	 * @see	\wcf\system\form\IFormElementContainer::getHTML()
 	 */
 	public function getHTML($formName) {
 		$content = '';

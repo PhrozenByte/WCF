@@ -12,7 +12,7 @@ use wcf\util\StringUtil;
  * Handles relative links within the wcf.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.request
@@ -21,15 +21,37 @@ use wcf\util\StringUtil;
 class LinkHandler extends SingletonFactory {
 	/**
 	 * regex object to filter title
-	 * @var	wcf\system\RegEx
+	 * @var	\wcf\system\RegEx
 	 */
 	protected $titleRegex = null;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * title search strings
+	 * @var	array<string>
+	 */
+	protected $titleSearch = array();
+	
+	/**
+	 * title replacement strings
+	 * @var	array<string>
+	 */
+	protected $titleReplace = array();
+	
+	/**
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$this->titleRegex = new Regex('[\x0-\x2F\x3A-\x40\x5B-\x60\x7B-\x7F]+');
+		
+		if (defined('URL_TITLE_COMPONENT_REPLACEMENT') && URL_TITLE_COMPONENT_REPLACEMENT) {
+			$replacements = explode("\n", StringUtil::unifyNewlines(StringUtil::trim(URL_TITLE_COMPONENT_REPLACEMENT)));
+			foreach ($replacements as $replacement) {
+				if (strpos($replacement, '=') === false) continue;
+				$components = explode('=', $replacement);
+				$this->titleSearch[] = $components[0];
+				$this->titleReplace[] = $components[1];
+			}
+		}
 	}
 	
 	/**
@@ -46,9 +68,16 @@ class LinkHandler extends SingletonFactory {
 		$isACP = $originIsACP = RequestHandler::getInstance()->isACPRequest();
 		$encodeTitle = $forceWCF = $isRaw = false;
 		$appendSession = true;
+		
+		// enforce a certain level of sanitation and protection for links embedded in emails
+		if (isset($parameters['isEmail']) && (bool)$parameters['isEmail']) {
+			$parameters['forceFrontend'] = true;
+			$parameters['appendSession'] = false;
+			unset($parameters['isEmail']);
+		}
+		
 		if (isset($parameters['application'])) {
 			$abbreviation = $parameters['application'];
-			unset($parameters['application']);
 		}
 		if (isset($parameters['isRaw'])) {
 			$isRaw = $parameters['isRaw'];
@@ -97,11 +126,7 @@ class LinkHandler extends SingletonFactory {
 				$controller = 'Index';
 			}
 			else {
-				// build link to landing page
-				$landingPage = PageMenu::getInstance()->getLandingPage();
-				$controller = $landingPage->getController();
-				$abbreviation = $landingPage->getApplication();
-				$url = $landingPage->menuItemLink;
+				return PageMenu::getInstance()->getLandingPage()->getProcessor()->getLink();
 			}
 		}
 		
@@ -119,6 +144,11 @@ class LinkHandler extends SingletonFactory {
 		unset($parameters['object']);
 		
 		if (isset($parameters['title'])) {
+			// component replacement
+			if (!empty($this->titleSearch)) {
+				$parameters['title'] = str_replace($this->titleSearch, $this->titleReplace, $parameters['title']);
+			}
+			
 			// remove illegal characters
 			$parameters['title'] = trim($this->titleRegex->replace($parameters['title'], '-'), '-');
 			

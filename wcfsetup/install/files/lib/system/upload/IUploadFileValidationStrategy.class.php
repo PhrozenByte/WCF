@@ -5,7 +5,7 @@ namespace wcf\system\upload;
  * Interface for file upload validation strategies.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.upload
@@ -15,7 +15,7 @@ interface IUploadFileValidationStrategy {
 	/**
 	 * Validates the given file and returns true on success, otherwise false.
 	 * 
-	 * @param	wcf\system\upload\UploadFile		$uploadFile
+	 * @param	\wcf\system\upload\UploadFile		$uploadFile
 	 * @return	boolean
 	 */
 	public function validate(UploadFile $uploadFile);

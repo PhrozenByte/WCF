@@ -11,7 +11,7 @@ use wcf\system\option\OptionHandler;
  * Handles user options.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.option.user
@@ -19,7 +19,7 @@ use wcf\system\option\OptionHandler;
  */
 class UserOptionHandler extends OptionHandler {
 	/**
-	 * @see	wcf\system\option\OptionHandler::$cacheClass
+	 * @see	\wcf\system\option\OptionHandler::$cacheClass
 	 */
 	protected $cacheClass = 'wcf\system\cache\builder\UserOptionCacheBuilder';
 	
@@ -31,13 +31,13 @@ class UserOptionHandler extends OptionHandler {
 	
 	/**
 	 * true, if within edit mode
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $editMode = true;
 	
 	/**
 	 * true, if within search mode
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $searchMode = false;
 	
@@ -49,7 +49,7 @@ class UserOptionHandler extends OptionHandler {
 	
 	/**
 	 * current user
-	 * @var	wcf\data\user\User
+	 * @var	\wcf\data\user\User
 	 */
 	public $user = null;
 	
@@ -72,7 +72,7 @@ class UserOptionHandler extends OptionHandler {
 	
 	/**
 	 * Enables edit mode.
-	 *
+	 * 
 	 * @param	boolean		$enable
 	 */
 	public function enableEditMode($enable = true) {
@@ -81,7 +81,7 @@ class UserOptionHandler extends OptionHandler {
 	
 	/**
 	 * Enables search mode.
-	 *
+	 * 
 	 * @param	boolean		$enable
 	 */
 	public function enableSearchMode($enable = true) {
@@ -92,7 +92,7 @@ class UserOptionHandler extends OptionHandler {
 	/**
 	 * Sets option values for a certain user.
 	 * 
-	 * @param	wcf\data\user\User	$user
+	 * @param	\wcf\data\user\User	$user
 	 */
 	public function setUser(User $user) {
 		$this->optionValues = array();
@@ -113,7 +113,7 @@ class UserOptionHandler extends OptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\OptionHandler::getOption()
+	 * @see	\wcf\system\option\OptionHandler::getOption()
 	 */
 	public function getOption($optionName) {
 		$optionData = parent::getOption($optionName);
@@ -133,7 +133,7 @@ class UserOptionHandler extends OptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::getFormElement()
+	 * @see	\wcf\system\option\IOptionType::getFormElement()
 	 */
 	protected function getFormElement($type, Option $option) {
 		if ($this->searchMode) return $this->getTypeObject($type)->getSearchFormElement($option, (isset($this->optionValues[$option->optionName]) ? $this->optionValues[$option->optionName] : null));
@@ -142,7 +142,7 @@ class UserOptionHandler extends OptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\OptionHandler::validateOption()
+	 * @see	\wcf\system\option\OptionHandler::validateOption()
 	 */
 	protected function validateOption(Option $option) {
 		parent::validateOption($option);
@@ -153,7 +153,7 @@ class UserOptionHandler extends OptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\OptionHandler::checkCategory()
+	 * @see	\wcf\system\option\OptionHandler::checkCategory()
 	 */
 	protected function checkCategory(OptionCategory $category) {
 		if ($category->categoryName == 'hidden') {
@@ -164,7 +164,7 @@ class UserOptionHandler extends OptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\OptionHandler::checkVisibility()
+	 * @see	\wcf\system\option\OptionHandler::checkVisibility()
 	 */
 	protected function checkVisibility(Option $option) {
 		if ($option->isDisabled) {
@@ -194,7 +194,7 @@ class UserOptionHandler extends OptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\OptionHandler::save()
+	 * @see	\wcf\system\option\OptionHandler::save()
 	 */
 	public function save($categoryName = null, $optionPrefix = null) {
 		$options = parent::save($categoryName, $optionPrefix);
@@ -212,7 +212,7 @@ class UserOptionHandler extends OptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionHandler::readData()
+	 * @see	\wcf\system\option\IOptionHandler::readData()
 	 */
 	public function readData() {
 		foreach ($this->options as $option) {
@@ -221,7 +221,7 @@ class UserOptionHandler extends OptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionHandler::readUserInput()
+	 * @see	\wcf\system\option\IOptionHandler::readUserInput()
 	 */
 	public function readUserInput(array &$source) {
 		parent::readUserInput($source);

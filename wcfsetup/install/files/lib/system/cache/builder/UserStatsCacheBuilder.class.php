@@ -6,7 +6,7 @@ use wcf\system\WCF;
  * Caches the number of members and the newest member.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cache.builder
@@ -14,12 +14,12 @@ use wcf\system\WCF;
  */
 class UserStatsCacheBuilder extends AbstractCacheBuilder {
 	/**
-	 * @see	wcf\system\cache\builder\AbstractCacheBuilder::$maxLifetime
+	 * @see	\wcf\system\cache\builder\AbstractCacheBuilder::$maxLifetime
 	 */
 	protected $maxLifetime = 600;
 	
 	/**
-	 * @see	wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
+	 * @see	\wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
 	 */
 	protected function rebuild(array $parameters) {
 		$data = array();

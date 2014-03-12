@@ -38,14 +38,15 @@
 	//]]>
 </script>
 {/if}
-<script data-relocate="true" src="{@$__wcf->getPath()}js/3rdParty/jquery-ui.nestedSortable.js?v={@$__wcfVersion}"></script>
-<script data-relocate="true" src="{@$__wcf->getPath()}js/3rdParty/jquery-ui.timepicker.min.js?v={@$__wcfVersion}"></script>
+<script data-relocate="true" src="{@$__wcf->getPath()}js/3rdParty/jquery-ui.nestedSortable{if !ENABLE_DEBUG_MODE}.min{/if}.js?v={@$__wcfVersion}"></script>
+<script data-relocate="true" src="{@$__wcf->getPath()}js/3rdParty/jquery-ui.timepicker{if !ENABLE_DEBUG_MODE}.min{/if}.js?v={@$__wcfVersion}"></script>
 <script data-relocate="true" src="{@$__wcf->getPath()}js/WCF{if !ENABLE_DEBUG_MODE}.min{/if}.js?v={@$__wcfVersion}"></script>
 <script data-relocate="true">
 	//<![CDATA[
 	WCF.User.init({@$__wcf->user->userID}, '{@$__wcf->user->username|encodeJS}');
 	//]]>
 </script>
+<script data-relocate="true" src="{@$__wcf->getPath()}js/WCF.Location{if !ENABLE_DEBUG_MODE}.min{/if}.js?v={@$__wcfVersion}"></script>
 <script data-relocate="true" src="{@$__wcf->getPath()}js/WCF.Message{if !ENABLE_DEBUG_MODE}.min{/if}.js?v={@$__wcfVersion}"></script>
 <script data-relocate="true" src="{@$__wcf->getPath()}js/WCF.User{if !ENABLE_DEBUG_MODE}.min{/if}.js?v={@$__wcfVersion}"></script>
 <script data-relocate="true" src="{@$__wcf->getPath('wcf')}js/WCF.Like{if !ENABLE_DEBUG_MODE}.min{/if}.js?v={@$__wcfVersion}"></script>
@@ -78,7 +79,7 @@
 			'__days': [ '{lang}wcf.date.day.sunday{/lang}', '{lang}wcf.date.day.monday{/lang}', '{lang}wcf.date.day.tuesday{/lang}', '{lang}wcf.date.day.wednesday{/lang}', '{lang}wcf.date.day.thursday{/lang}', '{lang}wcf.date.day.friday{/lang}', '{lang}wcf.date.day.saturday{/lang}' ],
 			'__daysShort': [ '{lang}wcf.date.day.sun{/lang}', '{lang}wcf.date.day.mon{/lang}', '{lang}wcf.date.day.tue{/lang}', '{lang}wcf.date.day.wed{/lang}', '{lang}wcf.date.day.thu{/lang}', '{lang}wcf.date.day.fri{/lang}', '{lang}wcf.date.day.sat{/lang}' ],
 			'__months': [ '{lang}wcf.date.month.january{/lang}', '{lang}wcf.date.month.february{/lang}', '{lang}wcf.date.month.march{/lang}', '{lang}wcf.date.month.april{/lang}', '{lang}wcf.date.month.may{/lang}', '{lang}wcf.date.month.june{/lang}', '{lang}wcf.date.month.july{/lang}', '{lang}wcf.date.month.august{/lang}', '{lang}wcf.date.month.september{/lang}', '{lang}wcf.date.month.october{/lang}', '{lang}wcf.date.month.november{/lang}', '{lang}wcf.date.month.december{/lang}' ], 
-			'__monthsShort': [ '{lang}wcf.date.month.jan{/lang}', '{lang}wcf.date.month.feb{/lang}', '{lang}wcf.date.month.mar{/lang}', '{lang}wcf.date.month.apr{/lang}', '{lang}wcf.date.month.may{/lang}', '{lang}wcf.date.month.jun{/lang}', '{lang}wcf.date.month.jul{/lang}', '{lang}wcf.date.month.aug{/lang}', '{lang}wcf.date.month.sep{/lang}', '{lang}wcf.date.month.oct{/lang}', '{lang}wcf.date.month.nov{/lang}', '{lang}wcf.date.month.dec{/lang}' ],
+			'__monthsShort': [ '{lang}wcf.date.month.short.jan{/lang}', '{lang}wcf.date.month.short.feb{/lang}', '{lang}wcf.date.month.short.mar{/lang}', '{lang}wcf.date.month.short.apr{/lang}', '{lang}wcf.date.month.short.may{/lang}', '{lang}wcf.date.month.short.jun{/lang}', '{lang}wcf.date.month.short.jul{/lang}', '{lang}wcf.date.month.short.aug{/lang}', '{lang}wcf.date.month.short.sep{/lang}', '{lang}wcf.date.month.short.oct{/lang}', '{lang}wcf.date.month.short.nov{/lang}', '{lang}wcf.date.month.short.dec{/lang}' ],
 			'wcf.clipboard.item.unmarkAll': '{lang}wcf.clipboard.item.unmarkAll{/lang}',
 			'wcf.date.relative.now': '{lang}wcf.date.relative.now{/lang}',
 			'wcf.date.relative.minutes': '{capture assign=relativeMinutes}{lang}wcf.date.relative.minutes{/lang}{/capture}{@$relativeMinutes|encodeJS}',
@@ -90,6 +91,7 @@
 			'wcf.date.hour': '{lang}wcf.date.hour{/lang}',
 			'wcf.date.minute': '{lang}wcf.date.minute{/lang}',
 			'wcf.date.timeFormat': '{lang}wcf.date.timeFormat{/lang}',
+			'wcf.date.firstDayOfTheWeek': '{lang}wcf.date.firstDayOfTheWeek{/lang}',
 			'wcf.global.button.add': '{lang}wcf.global.button.add{/lang}',
 			'wcf.global.button.cancel': '{lang}wcf.global.button.cancel{/lang}',
 			'wcf.global.button.close': '{lang}wcf.global.button.close{/lang}',
@@ -122,6 +124,10 @@
 			'wcf.global.page.next': '{capture assign=pageNext}{lang}wcf.global.page.next{/lang}{/capture}{@$pageNext|encodeJS}',
 			'wcf.global.page.previous': '{capture assign=pagePrevious}{lang}wcf.global.page.previous{/lang}{/capture}{@$pagePrevious|encodeJS}',
 			'wcf.global.pageDirection': '{lang}wcf.global.pageDirection{/lang}',
+			'wcf.global.sidebar.hideLeftSidebar': '{lang}wcf.global.sidebar.hideLeftSidebar{/lang}',
+			'wcf.global.sidebar.hideRightSidebar': '{lang}wcf.global.sidebar.hideRightSidebar{/lang}',
+			'wcf.global.sidebar.showLeftSidebar': '{lang}wcf.global.sidebar.showLeftSidebar{/lang}',
+			'wcf.global.sidebar.showRightSidebar': '{lang}wcf.global.sidebar.showRightSidebar{/lang}',
 			'wcf.global.success': '{lang}wcf.global.success{/lang}',
 			'wcf.global.success.add': '{lang}wcf.global.success.add{/lang}',
 			'wcf.global.success.edit': '{lang}wcf.global.success.edit{/lang}',
@@ -139,17 +145,19 @@
 			{event name='javascriptLanguageImport'}
 		});
 		
-		if (jQuery.browser.touch) $('html').addClass('touch');
+		WCF.Dropdown.init();
+
+		WCF.System.Mobile.UX.init();
+		
 		new WCF.Date.Time();
 		new WCF.Effect.SmoothScroll();
 		new WCF.Effect.BalloonTooltip();
 		new WCF.Sitemap();
 		{if $__wcf->getStyleHandler()->countStyles() > 1}new WCF.Style.Chooser();{/if}
-		WCF.Dropdown.init();
 		WCF.System.PageNavigation.init('.pageNavigation');
 		WCF.Date.Picker.init();
-		WCF.System.MobileNavigation.init();
 		new WCF.User.ProfilePreview();
+		WCF.System.FlexibleMenu.init();
 		
 		{event name='javascriptInit'}
 		
@@ -169,25 +177,31 @@
 		{if $__sessionKeepAlive|isset}
 			new WCF.System.KeepAlive({@$__sessionKeepAlive});
 		{/if}
+		
+		if ($.browser.msie) {
+			window.onbeforeunload = function() {
+				/* Prevent "Back navigation caching" (http://msdn.microsoft.com/en-us/library/ie/dn265017%28v=vs.85%29.aspx) */
+			};
+		}
 	});
 	//]]>
 </script>
- <!--[IF IE 9]>
- <script data-relocate="true">
- 	$(function() {
- 		function fixButtonTypeIE9() {
- 			$('button').each(function(index, button) {
- 				var $button = $(button);
- 				if (!$button.attr('type')) {
- 					$button.attr('type', 'button');
- 				}
- 			});
- 		}
- 		
- 		WCF.DOMNodeInsertedHandler.addCallback('WCF.FixButtonTypeIE9', fixButtonTypeIE9);
- 		fixButtonTypeIE9();
- 	});
- </script>
- <![ENDIF]-->
+<!--[IF IE 9]>
+<script data-relocate="true">
+	$(function() {
+		function fixButtonTypeIE9() {
+			$('button').each(function(index, button) {
+				var $button = $(button);
+				if (!$button.attr('type')) {
+					$button.attr('type', 'button');
+				}
+			});
+		}
+		
+		WCF.DOMNodeInsertedHandler.addCallback('WCF.FixButtonTypeIE9', fixButtonTypeIE9);
+		fixButtonTypeIE9();
+	});
+</script>
+<![ENDIF]-->
 
 {include file='imageViewer'}

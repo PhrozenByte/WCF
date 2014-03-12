@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Manages the search index.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.search
@@ -23,7 +23,7 @@ class SearchIndexManager extends SingletonFactory {
 	protected $availableObjectTypes = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		// get available object types
@@ -46,7 +46,7 @@ class SearchIndexManager extends SingletonFactory {
 	
 	/**
 	 * Adds a new entry.
-	 *
+	 * 
 	 * @param	string		$objectType
 	 * @param	integer		$objectID
 	 * @param	string		$message
@@ -61,7 +61,7 @@ class SearchIndexManager extends SingletonFactory {
 		if ($languageID === null) $languageID = 0;
 		
 		// save new entry
-		$sql = "INSERT INTO	wcf".WCF_N."_search_index
+		$sql = "REPLACE INTO	wcf".WCF_N."_search_index
 					(objectTypeID, objectID, subject, message, time, userID, username, languageID, metaData)
 			VALUES		(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		$statement = WCF::getDB()->prepareStatement($sql);

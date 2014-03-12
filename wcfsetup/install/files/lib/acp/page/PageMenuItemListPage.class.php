@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Shows a list of page menu items.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.page
@@ -17,29 +17,29 @@ use wcf\system\WCF;
  */
 class PageMenuItemListPage extends AbstractPage {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.pageMenu.list';
 	
 	/**
 	 * list of footer page menu items
-	 * @var	array<wcf\data\page\menu\item\PageMenuItem>
+	 * @var	array<\wcf\data\page\menu\item\PageMenuItem>
 	 */
 	public $footerItems = array();
 	
 	/**
 	 * list of header page menu items
-	 * @var	array<wcf\data\page\menu\item\PageMenuItem>
+	 * @var	array<\wcf\data\page\menu\item\PageMenuItem>
 	 */
 	public $headerItems = array();
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.display.canManagePageMenu');
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -71,7 +71,7 @@ class PageMenuItemListPage extends AbstractPage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

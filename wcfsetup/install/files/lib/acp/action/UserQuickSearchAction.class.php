@@ -2,7 +2,6 @@
 namespace wcf\acp\action;
 use wcf\data\search\SearchEditor;
 use wcf\action\AbstractAction;
-use wcf\system\exception\IllegalLinkException;
 use wcf\system\exception\NamedUserException;
 use wcf\system\menu\acp\ACPMenu;
 use wcf\system\request\LinkHandler;
@@ -13,7 +12,7 @@ use wcf\util\HeaderUtil;
  * Provides special search options.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.action
@@ -21,7 +20,7 @@ use wcf\util\HeaderUtil;
  */
 class UserQuickSearchAction extends AbstractAction {
 	/**
-	 * @see	wcf\action\AbstractAction::$neededPermissions
+	 * @see	\wcf\action\AbstractAction::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.user.canEditUser');
 	
@@ -68,7 +67,7 @@ class UserQuickSearchAction extends AbstractAction {
 	public $maxResults = 500;
 	
 	/**
-	 * @see	wcf\action\IAction::readParameters()
+	 * @see	\wcf\action\IAction::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -77,7 +76,7 @@ class UserQuickSearchAction extends AbstractAction {
 	}
 	
 	/**
-	 * @see	wcf\action\IAction::execute();
+	 * @see	\wcf\action\IAction::execute();
 	 */
 	public function execute() {
 		ACPMenu::getInstance()->setActiveMenuItem('wcf.acp.menu.link.user.search');

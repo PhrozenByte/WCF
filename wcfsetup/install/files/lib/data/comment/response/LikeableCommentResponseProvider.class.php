@@ -10,7 +10,7 @@ use wcf\system\comment\CommentHandler;
  * Object type provider for likeable comment responses.
  * 
  * @author	Matthias Schmidt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.comment.response
@@ -18,24 +18,25 @@ use wcf\system\comment\CommentHandler;
  */
 class LikeableCommentResponseProvider extends AbstractObjectTypeProvider implements ILikeObjectTypeProvider {
 	/**
-	 * @see	wcf\data\object\type\AbstractObjectTypeProvider::$className
+	 * @see	\wcf\data\object\type\AbstractObjectTypeProvider::$className
 	 */
 	public $className = 'wcf\data\comment\response\CommentResponse';
 	
 	/**
-	 * @see	wcf\data\object\type\AbstractObjectTypeProvider::$decoratorClassName
+	 * @see	\wcf\data\object\type\AbstractObjectTypeProvider::$decoratorClassName
 	 */
 	public $decoratorClassName = 'wcf\data\comment\response\LikeableCommentResponse';
 	
 	/**
-	 * @see	wcf\data\object\type\AbstractObjectTypeProvider::$listClassName
+	 * @see	\wcf\data\object\type\AbstractObjectTypeProvider::$listClassName
 	 */
 	public $listClassName = 'wcf\data\comment\response\CommentResponseList';
 	
 	/**
-	 * @see	wcf\data\like\ILikeObjectTypeProvider::checkPermissions()
+	 * @see	\wcf\data\like\ILikeObjectTypeProvider::checkPermissions()
 	 */
 	public function checkPermissions(ILikeObject $response) {
+		if (!$response->responseID) return false;
 		$comment = new Comment($response->commentID);
 		if (!$comment->commentID) {
 			return false;

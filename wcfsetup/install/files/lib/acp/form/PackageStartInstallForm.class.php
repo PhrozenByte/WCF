@@ -4,7 +4,6 @@ use wcf\data\package\installation\queue\PackageInstallationQueue;
 use wcf\data\package\installation\queue\PackageInstallationQueueEditor;
 use wcf\data\package\Package;
 use wcf\form\AbstractForm;
-use wcf\system\exception\IllegalLinkException;
 use wcf\system\exception\PermissionDeniedException;
 use wcf\system\exception\SystemException;
 use wcf\system\exception\UserInputException;
@@ -19,7 +18,7 @@ use wcf\util\StringUtil;
  * Shows the package install and update form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -27,13 +26,13 @@ use wcf\util\StringUtil;
  */
 class PackageStartInstallForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.package.install';
 	
 	/**
 	 * updated package object
-	 * @var	wcf\system\package\Package
+	 * @var	\wcf\system\package\Package
 	 */
 	public $package = null;
 	
@@ -51,18 +50,18 @@ class PackageStartInstallForm extends AbstractForm {
 	
 	/**
 	 * archive of the installation/update package
-	 * @var	wcf\system\package\PackageArchive
+	 * @var	\wcf\system\package\PackageArchive
 	 */
 	public $archive = null;
 	
 	/**
 	 * package installation/update queue
-	 * @var	wcf\data\package\installation\queue\PackageInstallationQueue
+	 * @var	\wcf\data\package\installation\queue\PackageInstallationQueue
 	 */
 	public $queue = null;
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -72,7 +71,7 @@ class PackageStartInstallForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -92,6 +91,8 @@ class PackageStartInstallForm extends AbstractForm {
 	 * Validates the upload package input.
 	 */
 	protected function validateUploadPackage() {
+		$this->activeTabMenuItem = 'upload';
+		
 		if (empty($this->uploadPackage['tmp_name'])) {
 			throw new UserInputException('uploadPackage', 'uploadFailed');
 		}
@@ -111,6 +112,8 @@ class PackageStartInstallForm extends AbstractForm {
 	 * Validates the download package input.
 	 */
 	protected function validateDownloadPackage() {
+		$this->activeTabMenuItem = 'upload';
+		
 		if (FileUtil::isURL($this->downloadPackage)) {
 			// download package
 			$this->archive = new PackageArchive($this->downloadPackage, $this->package);
@@ -119,13 +122,13 @@ class PackageStartInstallForm extends AbstractForm {
 				$this->downloadPackage = $this->archive->downloadArchive();
 			}
 			catch (SystemException $e) {
-				throw new UserInputException('downloadPackage', 'notFound');
+				throw new UserInputException('downloadPackage', 'downloadFailed');
 			}
 		}
 		else {
 			// probably local path
 			if (!file_exists($this->downloadPackage)) {
-				throw new UserInputException('downloadPackage', 'notFound');
+				throw new UserInputException('downloadPackage', 'downloadFailed');
 			}
 			
 			$this->archive = new PackageArchive($this->downloadPackage, $this->package);
@@ -173,8 +176,7 @@ class PackageStartInstallForm extends AbstractForm {
 			WCF::getSession()->checkPermissions(array('admin.system.package.canUpdatePackage'));
 			$this->activeMenuItem = 'wcf.acp.menu.link.package';
 			
-			$this->archive->setPackage($this->package);
-			if (!$this->archive->isValidUpdate()) {
+			if (!$this->archive->isValidUpdate($this->package)) {
 				throw new UserInputException($type, 'noValidUpdate');
 			}
 		}
@@ -194,7 +196,7 @@ class PackageStartInstallForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
@@ -225,7 +227,7 @@ class PackageStartInstallForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -236,7 +238,7 @@ class PackageStartInstallForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::show()
+	 * @see	\wcf\page\IPage::show()
 	 */
 	public function show() {
 		if (!WCF::getSession()->getPermission('admin.system.package.canInstallPackage') && !WCF::getSession()->getPermission('admin.system.package.canUpdatePackage')) {

@@ -16,7 +16,7 @@ use wcf\util\StringUtil;
  * Sends daily mail notifications.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cronjob
@@ -24,14 +24,14 @@ use wcf\util\StringUtil;
  */
 class DailyMailNotificationCronjob extends AbstractCronjob {
 	/**
-	 * @see	wcf\system\cronjob\ICronjob::execute()
+	 * @see	\wcf\system\cronjob\ICronjob::execute()
 	 */
 	public function execute(Cronjob $cronjob) {
 		parent::execute($cronjob);
 		
 		// get user ids
 		$userIDs = array();
-		$sql = "SELECT 	DISTINCT notification_to_user.userID
+		$sql = "SELECT	DISTINCT notification_to_user.userID
 			FROM	wcf".WCF_N."_user_notification_to_user notification_to_user,
 				wcf".WCF_N."_user_notification notification
 			WHERE	notification.notificationID = notification_to_user.notificationID

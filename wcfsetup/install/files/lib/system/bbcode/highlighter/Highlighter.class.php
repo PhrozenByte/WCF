@@ -11,7 +11,7 @@ use wcf\util\StringUtil;
  * Highlights syntax of source code.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode.highlighter
@@ -98,24 +98,24 @@ abstract class Highlighter extends SingletonFactory {
 	
 	/**
 	 * regular expression to extract comments
-	 * @var	wcf\system\Regex
+	 * @var	\wcf\system\Regex
 	 */
 	public $cacheCommentsRegEx = null;
 	
 	/**
 	 * regular expression to find quote marks
-	 * @var	wcf\system\Regex
+	 * @var	\wcf\system\Regex
 	 */
 	public $quotesRegEx = null;
 	
 	/**
 	 * regular expression to find string separators
-	 * @var	wcf\system\Regex
+	 * @var	\wcf\system\Regex
 	 */
 	public $separatorsRegEx = '';
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$this->buildRegularExpressions();
@@ -197,16 +197,18 @@ abstract class Highlighter extends SingletonFactory {
 			}
 			
 			$cacheCommentsRegEx .= "(";
-			if (!empty($this->singleLineComment)) {
-				$cacheCommentsRegEx .= "(?:".implode('|', array_map('preg_quote', $this->singleLineComment)).")[^\n]*";
-				if (!empty($this->commentStart)) {
+			if (!empty($this->commentStart)) {
+				$cacheCommentsRegEx .= '(?:'.implode('|', array_map('preg_quote', $this->commentStart)).').*?(?:'.implode('|', array_map('preg_quote', $this->commentEnd)).')';
+				
+				if (!empty($this->singleLineComment)) {
 					$cacheCommentsRegEx .= '|';
 				}
 			}
 			
-			if (!empty($this->commentStart)) {
-				$cacheCommentsRegEx .= '(?:'.implode('|', array_map('preg_quote', $this->commentStart)).').*?(?:'.implode('|', array_map('preg_quote', $this->commentEnd)).')';
+			if (!empty($this->singleLineComment)) {
+				$cacheCommentsRegEx .= "(?:".implode('|', array_map('preg_quote', $this->singleLineComment)).")[^\n]*";
 			}
+			
 			$cacheCommentsRegEx .= ")";
 			
 			$this->cacheCommentsRegEx = new Regex($cacheCommentsRegEx, Regex::DOT_ALL);

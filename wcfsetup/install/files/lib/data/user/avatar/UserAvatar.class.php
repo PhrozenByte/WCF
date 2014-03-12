@@ -8,7 +8,7 @@ use wcf\system\WCF;
  * Represents a user's avatar.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.avatar
@@ -22,12 +22,12 @@ class UserAvatar extends DatabaseObject implements IUserAvatar {
 	public static $avatarThumbnailSizes = array(16, 24, 32, 48, 96, 128);
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'user_avatar';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'avatarID';
 	
@@ -58,7 +58,7 @@ class UserAvatar extends DatabaseObject implements IUserAvatar {
 	}
 	
 	/**
-	 * @see	wcf\data\user\avatar\IUserAvatar::getURL()
+	 * @see	\wcf\data\user\avatar\IUserAvatar::getURL()
 	 */
 	public function getURL($size = null) {
 		if ($size !== null && $size !== 'resized') {
@@ -69,7 +69,7 @@ class UserAvatar extends DatabaseObject implements IUserAvatar {
 	}
 	
 	/**
-	 * @see	wcf\data\user\avatar\IUserAvatar::getImageTag()
+	 * @see	\wcf\data\user\avatar\IUserAvatar::getImageTag()
 	 */
 	public function getImageTag($size = null) {
 		$width = $this->width;
@@ -97,21 +97,21 @@ class UserAvatar extends DatabaseObject implements IUserAvatar {
 	}
 	
 	/**
-	 * @see	wcf\data\user\avatar\IUserAvatar::getWidth()
+	 * @see	\wcf\data\user\avatar\IUserAvatar::getWidth()
 	 */
 	public function getWidth() {
 		return $this->width;
 	}
 	
 	/**
-	 * @see	wcf\data\user\avatar\IUserAvatar::getHeight()
+	 * @see	\wcf\data\user\avatar\IUserAvatar::getHeight()
 	 */
 	public function getHeight() {
 		return $this->height;
 	}
 	
 	/**
-	 * @see	wcf\data\user\avatar\IUserAvatar::canCrop()
+	 * @see	\wcf\data\user\avatar\IUserAvatar::canCrop()
 	 */
 	public function canCrop() {
 		return $this->width != $this->height && $this->width > self::$maxThumbnailSize && $this->height > self::$maxThumbnailSize;

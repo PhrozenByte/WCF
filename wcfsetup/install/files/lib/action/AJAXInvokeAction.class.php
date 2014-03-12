@@ -2,6 +2,7 @@
 namespace wcf\action;
 use wcf\system\exception\AJAXException;
 use wcf\system\exception\IllegalLinkException;
+use wcf\system\exception\InvalidSecurityTokenException;
 use wcf\system\exception\LoggedException;
 use wcf\system\exception\NamedUserException;
 use wcf\system\exception\PermissionDeniedException;
@@ -17,7 +18,7 @@ use wcf\util\StringUtil;
  * Default implementation for AJAX-based method calls.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	action
@@ -32,7 +33,7 @@ class AJAXInvokeAction extends AbstractSecureAction {
 	
 	/**
 	 * action object
-	 * @var	wcf\system\SingletonFactory
+	 * @var	\wcf\system\SingletonFactory
 	 */
 	public $actionObject = null;
 	
@@ -48,7 +49,6 @@ class AJAXInvokeAction extends AbstractSecureAction {
 	 */
 	public $inDebugMode = false;
 	
-
 	/**
 	 * results of the executed action
 	 * @var	mixed
@@ -56,7 +56,7 @@ class AJAXInvokeAction extends AbstractSecureAction {
 	protected $response = null;
 	
 	/**
-	 * @see	wcf\action\IAction::__run()
+	 * @see	\wcf\action\IAction::__run()
 	 */
 	public function __run() {
 		try {
@@ -73,7 +73,7 @@ class AJAXInvokeAction extends AbstractSecureAction {
 	}
 	
 	/**
-	 * @see	wcf\action\IAction::readParameters()
+	 * @see	\wcf\action\IAction::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -86,7 +86,7 @@ class AJAXInvokeAction extends AbstractSecureAction {
 	}
 	
 	/**
-	 * @see	wcf\action\IAction::execute()
+	 * @see	\wcf\action\IAction::execute()
 	 */
 	public function execute() {
 		parent::execute();
@@ -151,15 +151,15 @@ class AJAXInvokeAction extends AbstractSecureAction {
 	
 	/**
 	 * Throws an previously catched exception while maintaing the propriate stacktrace.
-	 *
+	 * 
 	 * @param	\Exception	$e
 	 */
 	protected function throwException(\Exception $e) {
 		if ($this->inDebugMode) {
 			throw $e;
 		}
-	
-		if ($e instanceof IllegalLinkException) {
+		
+		if ($e instanceof InvalidSecurityTokenException) {
 			throw new AJAXException(WCF::getLanguage()->get('wcf.ajax.error.sessionExpired'), AJAXException::SESSION_EXPIRED, $e->getTraceAsString());
 		}
 		else if ($e instanceof PermissionDeniedException) {
@@ -167,6 +167,9 @@ class AJAXInvokeAction extends AbstractSecureAction {
 		}
 		else if ($e instanceof SystemException) {
 			throw new AJAXException($e->getMessage(), AJAXException::INTERNAL_ERROR, $e->__getTraceAsString(), array(), $e->getExceptionID());
+		}
+		else if ($e instanceof IllegalLinkException) {
+			throw new AJAXException(WCF::getLanguage()->get('wcf.ajax.error.illegalLink'), AJAXException::ILLEGAL_LINK, $e->getTraceAsString());
 		}
 		else if ($e instanceof UserInputException) {
 			// repackage as ValidationActionException
@@ -193,7 +196,7 @@ class AJAXInvokeAction extends AbstractSecureAction {
 	
 	/**
 	 * Returns action response.
-	 *
+	 * 
 	 * @return	mixed
 	 */
 	public function getResponse() {
@@ -210,7 +213,7 @@ class AJAXInvokeAction extends AbstractSecureAction {
 	/**
 	 * Performs a debug call to AJAXInvokeAction, allowing testing without relying on JavaScript.
 	 * The $data-array should be build like within WCF.Action.Proxy, look below for an example:
-	 *
+	 * 
 	 * $data = array(
 	 * 	'actionName' => 'foo',
 	 * 	'className' => 'wcf\foo\bar\FooBarAction',
@@ -222,11 +225,11 @@ class AJAXInvokeAction extends AbstractSecureAction {
 	 * 		)
 	 * 	)
 	 * )
-	 *
+	 * 
 	 * @param	array		$data
 	 * @param	string		$className
 	 * @param	string		$actionName
-	 * @return	wcf\action\AJAXInvokeAction
+	 * @return	\wcf\action\AJAXInvokeAction
 	 */
 	public static function debugCall(array $data) {
 		// validate $data array

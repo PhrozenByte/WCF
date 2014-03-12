@@ -20,7 +20,7 @@ use wcf\util\StringUtil;
  * 	{pages page=8 pages=10 link='page-%d.html' assign='output' print=true}
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.template.plugin
@@ -94,7 +94,7 @@ class PagesFunctionTemplatePlugin implements IFunctionTemplatePlugin {
 	}
 	
 	/**
-	 * @see	wcf\system\template\IFunctionTemplatePlugin::execute()
+	 * @see	\wcf\system\template\IFunctionTemplatePlugin::execute()
 	 */
 	public function execute($tagArgs, TemplateEngine $tplObj) {
 		// needed params: controller, link, page, pages

@@ -13,13 +13,12 @@ use wcf\system\upload\DefaultUploadFileValidationStrategy;
 use wcf\system\Regex;
 use wcf\system\WCF;
 use wcf\util\FileUtil;
-use wcf\util\StringUtil;
 
 /**
  * Executes style-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.style
@@ -27,39 +26,44 @@ use wcf\util\StringUtil;
  */
 class StyleAction extends AbstractDatabaseObjectAction implements IToggleAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
 	 */
 	protected $allowGuestAccess = array('changeStyle', 'getStyleChooser');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\style\StyleEditor';
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$permissionsDelete
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$permissionsDelete
 	 */
 	protected $permissionsDelete = array('admin.style.canManageStyle');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$permissionsUpdate
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$permissionsUpdate
 	 */
 	protected $permissionsUpdate = array('admin.style.canManageStyle');
 	
 	/**
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$requireACP
+	 */
+	protected $requireACP = array('copy', 'delete', 'setAsDefault', 'toggle', 'update', 'upload');
+	
+	/**
 	 * style object
-	 * @var	wcf\data\style\Style
+	 * @var	\wcf\data\style\Style
 	 */
 	public $style = null;
 	
 	/**
 	 * style editor object
-	 * @var	wcf\data\style\StyleEditor
+	 * @var	\wcf\data\style\StyleEditor
 	 */
 	public $styleEditor = null;
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::create()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::create()
 	 */
 	public function create() {
 		$style = parent::create();
@@ -74,7 +78,7 @@ class StyleAction extends AbstractDatabaseObjectAction implements IToggleAction 
 	}
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::update()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::update()
 	 */
 	public function update() {
 		parent::update();
@@ -92,7 +96,7 @@ class StyleAction extends AbstractDatabaseObjectAction implements IToggleAction 
 	}
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::delete()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::delete()
 	 */
 	public function delete() {
 		$count = parent::delete();
@@ -141,7 +145,7 @@ class StyleAction extends AbstractDatabaseObjectAction implements IToggleAction 
 	/**
 	 * Updates style variables for given style.
 	 * 
-	 * @param	wcf\data\style\Style	$style
+	 * @param	\wcf\data\style\Style	$style
 	 * @param	boolean			$removePreviousVariables
 	 */
 	protected function updateVariables(Style $style, $removePreviousVariables = false) {
@@ -198,7 +202,7 @@ class StyleAction extends AbstractDatabaseObjectAction implements IToggleAction 
 	/**
 	 * Updates style preview image.
 	 * 
-	 * @param	wcf\data\style\Style	$style
+	 * @param	\wcf\data\style\Style	$style
 	 */
 	protected function updateStylePreviewImage(Style $style) {
 		if (!isset($this->parameters['tmpHash'])) {
@@ -399,7 +403,6 @@ class StyleAction extends AbstractDatabaseObjectAction implements IToggleAction 
 		
 		// create the new style
 		$newStyle = StyleEditor::create(array(
-			'packageID' => PACKAGE_ID,
 			'styleName' => $styleName,
 			'templateGroupID' => $this->styleEditor->templateGroupID,
 			'isDisabled' => 1, // newly created styles are disabled by default
@@ -412,6 +415,26 @@ class StyleAction extends AbstractDatabaseObjectAction implements IToggleAction 
 			'authorURL' => $this->styleEditor->authorURL,
 			'imagePath' => $this->styleEditor->imagePath
 		));
+		
+		// check if style description uses i18n
+		if (preg_match('~^wcf.style.styleDescription\d+$~', $newStyle->styleDescription)) {
+			$styleDescription = 'wcf.style.styleDescription'.$newStyle->styleID;
+			
+			// copy language items
+			$sql = "INSERT INTO	wcf".WCF_N."_language_item
+						(languageID, languageItem, languageItemValue, languageItemOriginIsSystem, languageCategoryID, packageID)
+				SELECT		languageID, '".$styleDescription."', languageItemValue, 0, languageCategoryID, packageID
+				FROM		wcf".WCF_N."_language_item
+				WHERE		languageItem = ?";
+			$statement = WCF::getDB()->prepareStatement($sql);
+			$statement->execute(array($newStyle->styleDescription));
+			
+			// update style description
+			$styleEditor = new StyleEditor($newStyle);
+			$styleEditor->update(array(
+				'styleDescription' => $styleDescription
+			));
+		}
 		
 		// copy style variables
 		$sql = "INSERT INTO	wcf".WCF_N."_style_variable_value
@@ -447,7 +470,7 @@ class StyleAction extends AbstractDatabaseObjectAction implements IToggleAction 
 	}
 	
 	/**
-	 * @see	wcf\data\IToggleAction::validateToggle()
+	 * @see	\wcf\data\IToggleAction::validateToggle()
 	 */
 	public function validateToggle() {
 		parent::validateUpdate();
@@ -460,7 +483,7 @@ class StyleAction extends AbstractDatabaseObjectAction implements IToggleAction 
 	}
 	
 	/**
-	 * @see	wcf\data\IToggleAction::toggle()
+	 * @see	\wcf\data\IToggleAction::toggle()
 	 */
 	public function toggle() {
 		foreach ($this->objects as $style) {

@@ -5,7 +5,7 @@ namespace wcf\system\image\adapter;
  * Basic interface for all image adapters.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.image.adapter
@@ -52,7 +52,7 @@ interface IImageAdapter {
 	 * @param	integer		$originY
 	 * @param	integer		$width
 	 * @param	integer		$height
-	 * @see		wcf\system\image\adapter\IImageAdapter::getImage()
+	 * @see		\wcf\system\image\adapter\IImageAdapter::getImage()
 	 */
 	public function clip($originX, $originY, $width, $height);
 	
@@ -63,13 +63,11 @@ interface IImageAdapter {
 	 * @param	integer		$originY
 	 * @param	integer		$originWidth
 	 * @param	integer		$originHeight
-	 * @param	integer		$targetX
-	 * @param	integer		$targetY
 	 * @param	integer		$targetWidth
 	 * @param	integer		$targetHeight
-	 * @see		wcf\system\image\adapter\IImageAdapter::getImage()
+	 * @see		\wcf\system\image\adapter\IImageAdapter::getImage()
 	 */
-	public function resize($originX, $originY, $originWidth, $originHeight, $targetX, $targetY, $targetWidth, $targetHeight);
+	public function resize($originX, $originY, $originWidth, $originHeight, $targetWidth, $targetHeight);
 	
 	/**
 	 * Draws a rectangle, overwrites image resource within instance.
@@ -78,8 +76,8 @@ interface IImageAdapter {
 	 * @param	integer		$startY
 	 * @param	integer		$endX
 	 * @param	integer		$endY
-	 * @see		wcf\system\image\adapter\IImageAdapter::getImage()
-	 * @see		wcf\system\image\adapter\IImageAdapter::setColor()
+	 * @see		\wcf\system\image\adapter\IImageAdapter::getImage()
+	 * @see		\wcf\system\image\adapter\IImageAdapter::setColor()
 	 */
 	public function drawRectangle($startX, $startY, $endX, $endY);
 	
@@ -89,8 +87,8 @@ interface IImageAdapter {
 	 * @param	string		$string
 	 * @param	integer		$x
 	 * @param	integer		$y
-	 * @see		wcf\system\image\adapter\IImageAdapter::getImage()
-	 * @see		wcf\system\image\adapter\IImageAdapter::setColor()
+	 * @see		\wcf\system\image\adapter\IImageAdapter::getImage()
+	 * @see		\wcf\system\image\adapter\IImageAdapter::setColor()
 	 */
 	public function drawText($string, $x, $y);
 	
@@ -112,7 +110,7 @@ interface IImageAdapter {
 	
 	/**
 	 * Sets a color to be transparent with alpha 0.
-	 *
+	 * 
 	 * @param	integer		$red
 	 * @param	integer		$green
 	 * @param	integer		$blue
@@ -147,6 +145,21 @@ interface IImageAdapter {
 	 * @return	integer
 	 */
 	public function getHeight();
+	
+	/**
+	 * Returns the image type (GD only)
+	 * 
+	 * @return	integer
+	 */
+	public function getType();
+	
+	/**
+	 * Rotates an image the specified number of degrees.
+	 * 
+	 * @param	float		$degrees	number of degrees to rotate the image clockwise
+	 * @return	mixed
+	 */
+	public function rotate($degrees);
 	
 	/**
 	 * Determines if an image adapter is supported.

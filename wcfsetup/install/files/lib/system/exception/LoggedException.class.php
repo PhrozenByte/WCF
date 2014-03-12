@@ -1,6 +1,7 @@
 <?php
 namespace wcf\system\exception;
 use wcf\system\WCF;
+use wcf\util\JSON;
 use wcf\util\StringUtil;
 
 /**
@@ -8,7 +9,7 @@ use wcf\util\StringUtil;
  * way to log errors.
  * 
  * @author	Tim Duesterhus, Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.exception
@@ -98,6 +99,7 @@ class LoggedException extends \Exception {
 			'Request URI: '.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n".
 			'Referrer: '.(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '')."\n".
 			'User-Agent: '.(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '')."\n".
+			'Information: '.JSON::encode($this->information)."\n".
 			"Stacktrace: \n  ".implode("\n  ", explode("\n", $this->__getTraceAsString()))."\n";
 		
 		// calculate Exception-ID

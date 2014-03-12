@@ -1,12 +1,11 @@
 <?php
 namespace wcf\system\upload;
-use wcf\util\StringUtil;
 
 /**
  * Represents a file upload.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.upload
@@ -18,6 +17,12 @@ class UploadFile {
 	 * @var	string
 	 */
 	protected $filename = '';
+	
+	/**
+	 * internal file id
+	 * @var	integer
+	 */
+	protected $internalFileID = 0;
 	
 	/**
 	 * location of the uploaded file
@@ -59,6 +64,11 @@ class UploadFile {
 	 * @param	string		$mimeType
 	 */
 	public function __construct($filename, $location, $filesize, $errorCode = 0, $mimeType = '') {
+		if (preg_match('~^__wcf_([0-9]+)_(.*)~', $filename, $matches)) {
+			$this->internalFileID = $matches[1];
+			$filename = $matches[2];
+		}
+		
 		$this->filename = $filename;
 		$this->location = $location;
 		$this->filesize = $filesize;
@@ -73,6 +83,15 @@ class UploadFile {
 	 */
 	public function getFilename() {
 		return $this->filename;
+	}
+	
+	/**
+	 * Returns internal file id.
+	 * 
+	 * @return	integer
+	 */
+	public function getInternalFileID() {
+		return $this->internalFileID;
 	}
 	
 	/**

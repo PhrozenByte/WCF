@@ -4,6 +4,8 @@
 	<script data-relocate="true">
 		//<![CDATA[
 		$(function() {
+			WCF.Language.add('wcf.acp.worker.abort.confirmMessage', '{lang}wcf.acp.worker.abort.confirmMessage{/lang}');
+			
 			new WCF.ACP.Worker('mail', 'wcf\\system\\worker\\MailWorker', '', {
 				mailID: {@$mailID}
 			});
@@ -76,9 +78,7 @@
 	<h1>{lang}wcf.acp.user.bulkProcessing{/lang}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 <p class="warning">{lang}wcf.acp.user.bulkProcessing.warning{/lang}</p>
 
@@ -112,7 +112,7 @@
 				{event name='tabMenuTabs'}
 			</ul>
 		</nav>
-	
+		
 		<div id="conditions" class="container containerPadding tabMenuContent">
 			<fieldset>
 				<legend>{lang}wcf.acp.user.search.conditions{/lang}</legend>
@@ -128,7 +128,7 @@
 					<dl>
 						<dt><label for="email">{lang}wcf.user.email{/lang}</label></dt>
 						<dd>
-							<input type="email" id="email" name="email" value="{$email}" class="medium" />
+							<input type="text" id="email" name="email" value="{$email}" class="medium" />
 						</dd>
 					</dl>
 				{/if}
@@ -197,14 +197,14 @@
 			<div id="profile" class="container containerPadding tabMenuContent">
 				<fieldset>
 					<legend>{lang}wcf.acp.user.search.conditions.profile{/lang}</legend>
-			
+					
 					{include file='optionFieldList' langPrefix='wcf.user.option.'}
 				</fieldset>
 				
 				{event name='profileFieldsets'}
 			</div>
 		{/if}
-	
+		
 		<div id="action" class="container containerPadding tabMenuContent">
 			<fieldset{if $errorField == 'action'} class="formError"{/if}>
 				<legend>{lang}wcf.acp.user.bulkProcessing.action{/lang}</legend>
@@ -253,7 +253,7 @@
 					<dl{if $errorField == 'from'} class="formError"{/if}>
 						<dt><label for="from">{lang}wcf.acp.user.sendMail.from{/lang}</label></dt>
 						<dd>
-							<input type="email" id="from" name="from" value="{$from}" class="medium" />
+							<input type="text" id="from" name="from" value="{$from}" class="medium" />
 							{if $errorField == 'from'}
 								<small class="innerError">
 									{if $errorType == 'empty'}{lang}wcf.global.form.error.empty{/lang}{/if}
@@ -336,6 +336,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

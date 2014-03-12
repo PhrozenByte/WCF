@@ -11,7 +11,7 @@ use wcf\system\WCF;
  * Shows the page menu item edit form.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -19,13 +19,13 @@ use wcf\system\WCF;
  */
 class PageMenuItemEditForm extends PageMenuItemAddForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.pageMenu';
 	
 	/**
 	 * page menu item object
-	 * @var	wcf\data\page\menu\item\PageMenuItem
+	 * @var	\wcf\data\page\menu\item\PageMenuItem
 	 */
 	public $menuItem = null;
 	
@@ -36,7 +36,7 @@ class PageMenuItemEditForm extends PageMenuItemAddForm {
 	public $menuItemID = 0;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		if (isset($_REQUEST['id'])) $this->menuItemID = intval($_REQUEST['id']);
@@ -49,7 +49,7 @@ class PageMenuItemEditForm extends PageMenuItemAddForm {
 	}
 	
 	/**
-	 * @see	wcf\acp\form\PageMenuItemAddForm::initAvailableParentMenuItems()
+	 * @see	\wcf\acp\form\PageMenuItemAddForm::initAvailableParentMenuItems()
 	 */
 	protected function initAvailableParentMenuItems() {
 		parent::initAvailableParentMenuItems();
@@ -59,7 +59,7 @@ class PageMenuItemEditForm extends PageMenuItemAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -85,7 +85,7 @@ class PageMenuItemEditForm extends PageMenuItemAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
@@ -104,14 +104,14 @@ class PageMenuItemEditForm extends PageMenuItemAddForm {
 		}
 		
 		// save menu item
-		$this->objectAction = new PageMenuItemAction(array($this->menuItem), 'update', array('data' => array(
+		$this->objectAction = new PageMenuItemAction(array($this->menuItem), 'update', array('data' => array_merge($this->additionalFields, array(
 			'isDisabled' => ($this->isDisabled) ? 1 : 0,
 			'menuItemController' => $this->menuItemController,
 			'menuItemLink' => ($this->menuItemController ? $this->menuItemParameters : $this->menuItemLink),
 			'parentMenuItem' => ($this->menuPosition == 'header' ? $this->parentMenuItem : ''),
 			'menuPosition' => $this->menuPosition,
 			'showOrder' => $this->showOrder
-		)));
+		))));
 		$this->objectAction->executeAction();
 		
 		// update children
@@ -128,7 +128,7 @@ class PageMenuItemEditForm extends PageMenuItemAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

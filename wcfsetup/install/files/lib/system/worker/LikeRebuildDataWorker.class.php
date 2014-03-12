@@ -8,7 +8,7 @@ use wcf\system\WCF;
  * Worker implementation for updating likes.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.worker
@@ -16,27 +16,26 @@ use wcf\system\WCF;
  */
 class LikeRebuildDataWorker extends AbstractRebuildDataWorker {
 	/**
-	 * @see	wcf\system\worker\AbstractRebuildDataWorker::$objectListClassName
+	 * @see	\wcf\system\worker\AbstractRebuildDataWorker::$objectListClassName
 	 */
 	protected $objectListClassName = 'wcf\data\like\LikeList';
 	
 	/**
-	 * @see	wcf\system\worker\AbstractWorker::$limit
+	 * @see	\wcf\system\worker\AbstractWorker::$limit
 	 */
 	protected $limit = 1000;
 	
 	/**
-	 * @see	wcf\system\worker\AbstractRebuildDataWorker::initObjectList
+	 * @see	\wcf\system\worker\AbstractRebuildDataWorker::initObjectList
 	 */
 	protected function initObjectList() {
 		parent::initObjectList();
 		
 		$this->objectList->sqlOrderBy = 'like_table.objectID, like_table.likeID';
-		$this->objectList->getConditionBuilder()->add('like_table.objectUserID IS NOT NULL');
 	}
 	
 	/**
-	 * @see	wcf\system\worker\IWorker::execute()
+	 * @see	\wcf\system\worker\IWorker::execute()
 	 */
 	public function execute() {
 		parent::execute();
@@ -57,11 +56,13 @@ class LikeRebuildDataWorker extends AbstractRebuildDataWorker {
 		$itemsToUser = array();
 		$likeObjectData = array();
 		foreach ($this->objectList as $like) {
-			if (!isset($itemsToUser[$like->objectUserID])) {
-				$itemsToUser[$like->objectUserID] = 0;
+			if ($like->objectUserID && $like->likeValue == Like::LIKE) {
+				if (!isset($itemsToUser[$like->objectUserID])) {
+					$itemsToUser[$like->objectUserID] = 0;
+				}
+				
+				$itemsToUser[$like->objectUserID]++;
 			}
-			
-			$itemsToUser[$like->objectUserID]++;
 			
 			if (!isset($likeObjectData[$like->objectTypeID])) {
 				$likeObjectData[$like->objectTypeID] = array();

@@ -6,7 +6,7 @@
  * not work here as it discards the inline styles set for the selection.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
 (function() {
@@ -16,6 +16,8 @@
 	 * @param	CKEDITOR	editor
 	 */
 	function transformBBCode(editor) {
+		editor.fire('lockSnapshot');
+		
 		var $markerID = null;
 		$(editor.container.$).find('span.wcfBBCode').removeClass('wcfBBCode').html(function() {
 			var $bbcode = $(this).data('bbcode');
@@ -34,6 +36,8 @@
 			
 			$marker.remove();
 		}
+		
+		editor.fire('unlockSnapshot');
 	}
 	
 	// listens for 'afterCommandExec' to transform BBCodes into plain text

@@ -5,7 +5,7 @@ namespace wcf\system\bbcode\highlighter;
  * Highlights syntax of c / c++ source code.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode.highlighter
@@ -13,19 +13,19 @@ namespace wcf\system\bbcode\highlighter;
  */
 class CHighlighter extends Highlighter {
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$separators
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$separators
 	 */
 	protected $separators = array('(', ')', '{', '}', '[', ']', ';', '.', ',');
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$operators
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$operators
 	 */
 	protected $operators = array('=', '>', '<', '!', '~', '?', ':', '==', '<=', '>=', '!=',
 		'&&', '||', '++', '--', '+', '-', '*', '/', '&', '|', '^', '%', '<<', '>>', '>>>', '+=', '-=', '*=',
 		'/=', '&=', '|=', '^=', '%=', '<<=', '>>=', '>>>=');
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$keywords1
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$keywords1
 	 */
 	protected $keywords1 = array(
 		'and',
@@ -74,7 +74,7 @@ class CHighlighter extends Highlighter {
 	);
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$keywords2
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$keywords2
 	 */
 	protected $keywords2 = array(
 		'auto',
@@ -110,7 +110,7 @@ class CHighlighter extends Highlighter {
 	);
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$keywords3
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$keywords3
 	 */
 	protected $keywords3 = array(
 		'#include',

@@ -41,7 +41,7 @@
 {capture assign='sidebar'}
 	{assign var=encodedLetter value=$letter|rawurlencode}
 	<div class="jsOnly">
-		<form method="get" action="{if $searchID}{link controller='MembersList' id=$searchID}{/link}{else}{link controller='MembersList'}{/link}{/if}">
+		<form method="post" action="{link controller='UserSearch'}{/link}">
 			<fieldset>
 				<legend><label for="searchUsername">{lang}wcf.user.search{/lang}</label></legend>
 				
@@ -49,6 +49,7 @@
 					<dt></dt>
 					<dd>
 						<input type="text" id="searchUsername" name="username" class="long" placeholder="{lang}wcf.user.username{/lang}" />
+						{@SECURITY_TOKEN_INPUT_TAG}
 					</dd>
 				</dl>
 			</fieldset>
@@ -92,6 +93,7 @@
 			<div class="formSubmit">
 				<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
 				<input type="hidden" name="letter" value="{$letter}" />
+				{@SECURITY_TOKEN_INPUT_TAG}
 			</div>
 		</form>
 	</div>

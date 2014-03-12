@@ -3,13 +3,12 @@ namespace wcf\system\setup;
 use wcf\system\exception\SystemException;
 use wcf\system\io\Tar;
 use wcf\util\FileUtil;
-use wcf\util\StringUtil;
 
 /**
  * Extracts files and directories from a tar archive.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.setup
@@ -37,7 +36,7 @@ class Installer {
 	
 	/**
 	 * file handler of the installed files
-	 * @var	wcf\system\setup\IFileHandler
+	 * @var	\wcf\system\setup\IFileHandler
 	 */
 	protected $fileHandler;
 	
@@ -46,7 +45,7 @@ class Installer {
 	 * 
 	 * @param	string				$targetDir
 	 * @param	string				$source
-	 * @param	wcf\system\setup\IFileHandler	$fileHandler
+	 * @param	\wcf\system\setup\IFileHandler	$fileHandler
 	 * @param	string				$folder
 	 */
 	public function __construct($targetDir, $source, $fileHandler = null, $folder = '') {

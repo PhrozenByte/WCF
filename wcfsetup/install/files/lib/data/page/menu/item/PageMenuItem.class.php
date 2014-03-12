@@ -11,7 +11,7 @@ use wcf\system\WCF;
  * Represents a page menu item.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.page.menu.item
@@ -19,17 +19,17 @@ use wcf\system\WCF;
  */
 class PageMenuItem extends ProcessibleDatabaseObject implements ITreeMenuItem {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'page_menu_item';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'menuItemID';
 	
 	/**
-	 * @see	wcf\data\ProcessibleDatabaseObject::$processorInterface
+	 * @see	\wcf\data\ProcessibleDatabaseObject::$processorInterface
 	 */
 	protected static $processorInterface = 'wcf\system\menu\page\IPageMenuItemProvider';
 	
@@ -46,7 +46,7 @@ class PageMenuItem extends ProcessibleDatabaseObject implements ITreeMenuItem {
 	protected $controller = null;
 	
 	/**
-	 * @see	wcf\data\ProcessibleDatabaseObject::getProcessor()
+	 * @see	\wcf\data\ProcessibleDatabaseObject::getProcessor()
 	 */
 	public function getProcessor() {
 		if (parent::getProcessor() === null) {
@@ -57,7 +57,7 @@ class PageMenuItem extends ProcessibleDatabaseObject implements ITreeMenuItem {
 	}
 	
 	/**
-	 * @see	wcf\system\menu\ITreeMenuItem::getLink()
+	 * @see	\wcf\system\menu\ITreeMenuItem::getLink()
 	 */
 	public function getLink() {
 		// external link

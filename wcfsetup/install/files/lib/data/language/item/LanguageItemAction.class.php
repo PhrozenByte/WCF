@@ -10,7 +10,7 @@ use wcf\system\WCF;
  * Executes language item-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.language.item
@@ -18,24 +18,29 @@ use wcf\system\WCF;
  */
 class LanguageItemAction extends AbstractDatabaseObjectAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\language\item\LanguageItemEditor';
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$permissionsCreate
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$permissionsCreate
 	 */
 	protected $permissionsCreate = array('admin.language.canManageLanguage');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$permissionsDelete
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$permissionsDelete
 	 */
 	protected $permissionsDelete = array('admin.language.canManageLanguage');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$permissionsUpdate
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$permissionsUpdate
 	 */
 	protected $permissionsUpdate = array('admin.language.canManageLanguage');
+	
+	/**
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$requireACP
+	 */
+	protected $requireACP = array('create', 'delete', 'edit', 'prepareEdit', 'update');
 	
 	/**
 	 * Validates parameters to prepare edit.
@@ -44,7 +49,7 @@ class LanguageItemAction extends AbstractDatabaseObjectAction {
 		if (!WCF::getSession()->getPermission('admin.language.canManageLanguage')) {
 			throw new PermissionDeniedException();
 		}
-	
+		
 		$this->readObjects();
 		if (!count($this->objects)) {
 			throw new UserInputException('objectIDs');
@@ -59,7 +64,7 @@ class LanguageItemAction extends AbstractDatabaseObjectAction {
 		WCF::getTPL()->assign(array(
 			'item' => $item
 		));
-	
+		
 		return array(
 			'languageItem' => $item->languageItem,
 			'template' => WCF::getTPL()->fetch('languageItemEditDialog')
@@ -73,7 +78,7 @@ class LanguageItemAction extends AbstractDatabaseObjectAction {
 		if (!WCF::getSession()->getPermission('admin.language.canManageLanguage')) {
 			throw new PermissionDeniedException();
 		}
-	
+		
 		$this->readObjects();
 		if (!count($this->objects)) {
 			throw new UserInputException('objectIDs');
@@ -92,7 +97,7 @@ class LanguageItemAction extends AbstractDatabaseObjectAction {
 		$editor = reset($this->objects);
 		if ($editor->languageItemOriginIsSystem) {
 			$updateData = array(
-				'languageCustomItemValue' => $this->parameters['languageCustomItemValue'],
+				'languageCustomItemValue' => !$this->parameters['languageUseCustomValue'] && empty($this->parameters['languageCustomItemValue']) ? null : $this->parameters['languageCustomItemValue'],
 				'languageUseCustomValue' => ($this->parameters['languageUseCustomValue'] ? 1 : 0)
 			);
 		}

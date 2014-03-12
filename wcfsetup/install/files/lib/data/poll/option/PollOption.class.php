@@ -7,7 +7,7 @@ use wcf\data\DatabaseObject;
  * Represents a poll option.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.poll.poll
@@ -15,12 +15,12 @@ use wcf\data\DatabaseObject;
  */
 class PollOption extends DatabaseObject {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'poll_option';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseIndexName
 	 */
 	protected static $databaseTableIndexName = 'optionID';
 	
@@ -33,7 +33,7 @@ class PollOption extends DatabaseObject {
 	/**
 	 * Returns relative amount of votes for this option.
 	 * 
-	 * @param	wcf\data\poll\Poll
+	 * @param	\wcf\data\poll\Poll
 	 * @return	integer
 	 */
 	public function getRelativeVotes(Poll $poll) {

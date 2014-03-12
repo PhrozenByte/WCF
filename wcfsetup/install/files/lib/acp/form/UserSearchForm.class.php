@@ -6,9 +6,8 @@ use wcf\system\database\util\PreparedStatementConditionBuilder;
 use wcf\system\event\EventHandler;
 use wcf\system\exception\UserInputException;
 use wcf\system\language\LanguageFactory;
-use wcf\system\menu\acp\ACPMenu;
 use wcf\system\request\LinkHandler;
-use wcf\system\wcf;
+use wcf\system\WCF;
 use wcf\util\ArrayUtil;
 use wcf\util\HeaderUtil;
 use wcf\util\StringUtil;
@@ -17,7 +16,7 @@ use wcf\util\StringUtil;
  * Shows the user search form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -25,18 +24,17 @@ use wcf\util\StringUtil;
  */
 class UserSearchForm extends UserOptionListForm {
 	/**
-	 * active menu item name
-	 * @var	string
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
-	public $menuItemName = 'wcf.acp.menu.link.user.search';
+	public $activeMenuItem = 'wcf.acp.menu.link.user.search';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.user.canSearchUser');
 	
 	/**
-	 * username 
+	 * username
 	 * @var	string
 	 */
 	public $username = '';
@@ -73,49 +71,49 @@ class UserSearchForm extends UserOptionListForm {
 	
 	/**
 	 * registration start date
-	 * @var string
+	 * @var	string
 	 */
 	public $registrationDateStart = '';
 	
 	/**
 	 * registration start date
-	 * @var string
+	 * @var	string
 	 */
 	public $registrationDateEnd = '';
 	
 	/**
 	 * banned state
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $banned = 0;
 	
 	/**
 	 * not banned state
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $notBanned = 0;
 	
 	/**
 	 * last activity start time
-	 * @var string
+	 * @var	string
 	 */
 	public $lastActivityTimeStart = '';
 	
 	/**
 	 * last activity end time
-	 * @var string
+	 * @var	string
 	 */
 	public $lastActivityTimeEnd = '';
 	
 	/**
 	 * enabled state
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $enabled = 0;
 	
 	/**
 	 * disabled state
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $disabled = 0;
 	
@@ -127,7 +125,7 @@ class UserSearchForm extends UserOptionListForm {
 	
 	/**
 	 * condtion builder object
-	 * @var	wcf\system\database\condition\PreparedStatementConditionBuilder
+	 * @var	\wcf\system\database\condition\PreparedStatementConditionBuilder
 	 */
 	public $conditions = null;
 	
@@ -168,15 +166,18 @@ class UserSearchForm extends UserOptionListForm {
 	public $maxResults = 0;
 	
 	/**
-	 * @see wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
-	
+		
 		// search user from passed groupID by group-view
 		if (isset($_GET['groupID'])) {
 			$this->groupIDs[] = intval($_GET['groupID']);
-				
+			
+			// disable check for security token for GET requests
+			$_POST['t'] = WCF::getSession()->getSecurityToken();
+			
 			// do search
 			try {
 				$this->validate();
@@ -190,7 +191,7 @@ class UserSearchForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -217,7 +218,7 @@ class UserSearchForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\acp\form\AbstractOptionListForm::initOptionHandler()
+	 * @see	\wcf\acp\form\AbstractOptionListForm::initOptionHandler()
 	 */
 	protected function initOptionHandler() {
 		$this->optionHandler->enableSearchMode();
@@ -225,7 +226,7 @@ class UserSearchForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -241,7 +242,7 @@ class UserSearchForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -273,18 +274,7 @@ class UserSearchForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::show()
-	 */
-	public function show() {
-		// set active menu item
-		ACPMenu::getInstance()->setActiveMenuItem($this->menuItemName);
-		
-		// show form
-		parent::show();
-	}
-	
-	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
@@ -314,7 +304,7 @@ class UserSearchForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		AbstractForm::validate();
@@ -334,7 +324,7 @@ class UserSearchForm extends UserOptionListForm {
 		$this->matches = array();
 		$sql = "SELECT		user_table.userID
 			FROM		wcf".WCF_N."_user user_table
-			LEFT JOIN	wcf".WCF_N."_user_option_value option_value 
+			LEFT JOIN	wcf".WCF_N."_user_option_value option_value
 			ON		(option_value.userID = user_table.userID)";
 		
 		// build search condition

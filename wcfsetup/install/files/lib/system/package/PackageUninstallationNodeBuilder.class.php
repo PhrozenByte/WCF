@@ -6,7 +6,7 @@ use wcf\system\WCF;
  * Creates a logical node-based uninstallation tree.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package
@@ -14,7 +14,7 @@ use wcf\system\WCF;
  */
 class PackageUninstallationNodeBuilder extends PackageInstallationNodeBuilder {
 	/**
-	 * @see	wcf\system\package\PackageInstallationNodeBuilder::buildNodes()
+	 * @see	\wcf\system\package\PackageInstallationNodeBuilder::buildNodes()
 	 */
 	public function buildNodes() {
 		if (!empty($this->parentNode)) {
@@ -29,7 +29,7 @@ class PackageUninstallationNodeBuilder extends PackageInstallationNodeBuilder {
 	}
 	
 	/**
-	 * @see	wcf\system\package\PackageInstallationNodeBuilder::buildPluginNodes()
+	 * @see	\wcf\system\package\PackageInstallationNodeBuilder::buildPluginNodes()
 	 */
 	protected function buildPluginNodes() {
 		if (empty($this->node)) {
@@ -74,7 +74,7 @@ class PackageUninstallationNodeBuilder extends PackageInstallationNodeBuilder {
 	}
 	
 	/**
-	 * @see	wcf\system\package\PackageInstallationNodeBuilder::buildPackageNode()
+	 * @see	\wcf\system\package\PackageInstallationNodeBuilder::buildPackageNode()
 	 */
 	protected function buildPackageNode() {
 		$this->parentNode = $this->node;

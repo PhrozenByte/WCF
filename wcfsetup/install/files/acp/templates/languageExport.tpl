@@ -4,13 +4,7 @@
 	<h1>{lang}wcf.acp.language.export{/lang}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
-
-{if $success|isset}
-	<p class="success">{lang}wcf.acp.language.add.success{/lang}</p>
-{/if}
+{include file='formError'}
 
 <div class="contentNavigation">
 	<nav>
@@ -37,7 +31,7 @@
 			<dl>
 				<dt><label for="selectedPackages">{lang}wcf.acp.language.export.selectPackages{/lang}</label></dt>
 				<dd>
-					<select id="selectedPackages" name="selectedPackages[]" multiple="multiple" size="20" class="long">
+					<select id="selectedPackages" name="selectedPackages[]" multiple="multiple" size="20" class="long" style="font-family: monospace;">
 						<option value="*"{if $selectAllPackages} selected="selected"{/if}>{lang}wcf.acp.language.export.allPackages{/lang}</option>
 						<option value="-">--------------------</option>
 						{foreach from=$packages item=package}
@@ -63,6 +57,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" accesskey="s" value="{lang}wcf.global.button.submit{/lang}" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

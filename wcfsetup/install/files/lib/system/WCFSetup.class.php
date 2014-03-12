@@ -40,7 +40,7 @@ define('ENABLE_BENCHMARK', 0);
  * Executes the installation of the basic WCF systems.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system
@@ -620,9 +620,6 @@ class WCFSetup extends WCF {
 				$db = new $dbClass($dbHost, $dbUser, $dbPassword, $dbName, $dbPort, true);
 				$db->connect();
 				
-				$start = microtime(true);
-				file_put_contents(WCF_DIR.'__wcfSetupPerformance.log', "Validating database ...", FILE_APPEND);
-				
 				// check sql version
 				if (!empty($availableDBClasses[$dbClass]['minversion'])) {
 					$compareSQLVersion = preg_replace('/^(\d+\.\d+\.\d+).*$/', '\\1', $db->getVersion());
@@ -648,15 +645,8 @@ class WCFSetup extends WCF {
 					}
 				}
 				
-				$end = microtime(true);
-				file_put_contents(WCF_DIR.'__wcfSetupPerformance.log', round($end - $start, 3)."\nChecking for table conflicts ...", FILE_APPEND);
-				$start = $end;
-				
 				// check for table conflicts
 				$conflictedTables = $this->getConflictedTables($db, $dbNumber);
-				
-				$end = microtime(true);
-				file_put_contents(WCF_DIR.'__wcfSetupPerformance.log', round($end - $start, 3)."\n\n", FILE_APPEND);
 				
 				// write config.inc
 				if (empty($conflictedTables)) {
@@ -670,7 +660,7 @@ class WCFSetup extends WCF {
 					$file->write("\$dbPassword = '".str_replace("'", "\\'", $dbPassword)."';\n");
 					$file->write("\$dbName = '".str_replace("'", "\\'", $dbName)."';\n");
 					$file->write("\$dbClass = '".str_replace("'", "\\'", $dbClass)."';\n");
-					$file->write("if (!defined('WCF_N')) define('WCF_N', $dbNumber);\n?>");
+					$file->write("if (!defined('WCF_N')) define('WCF_N', $dbNumber);\n");
 					$file->close();
 					
 					// go to next step
@@ -699,12 +689,11 @@ class WCFSetup extends WCF {
 		WCF::getTPL()->display('stepConfigureDB');
 	}
 	
-	
 	/**
 	 * Checks if in the chosen database are tables in conflict with the wcf tables
 	 * which will be created in the next step.
 	 * 
-	 * @param	wcf\system\database\Database	$db
+	 * @param	\wcf\system\database\Database	$db
 	 * @param	integer				$dbNumber
 	 */
 	protected function getConflictedTables($db, $dbNumber) {
@@ -737,9 +726,6 @@ class WCFSetup extends WCF {
 	 */
 	protected function createDB() {
 		$this->initDB();
-		
-		$start = microtime(true);
-		file_put_contents(WCF_DIR.'__wcfSetupPerformance.log', "Creating database: ", FILE_APPEND);
 		
 		// get content of the sql structure file
 		$sql = file_get_contents(TMP_DIR.'setup/db/install.sql');
@@ -798,9 +784,6 @@ class WCFSetup extends WCF {
 			
 			$this->gotoNextStep('logFiles');
 		}
-		
-		$end = microtime(true);
-		file_put_contents(WCF_DIR.'__wcfSetupPerformance.log', round($end - $start, 3) . "\n\n", FILE_APPEND);
 	}
 	
 	/**
@@ -811,8 +794,6 @@ class WCFSetup extends WCF {
 		
 		$this->getInstalledFiles(WCF_DIR);
 		$acpTemplateInserts = $fileInserts = array();
-		file_put_contents(WCF_DIR.'__wcfSetupPerformance.log', "Logging files:\n", FILE_APPEND);
-		$start = microtime(true);
 		foreach (self::$installedFiles as $file) {
 			$match = array();
 			if (preg_match('!/acp/templates/([^/]+)\.tpl$!', $file, $match)) {
@@ -824,8 +805,7 @@ class WCFSetup extends WCF {
 				$fileInserts[] = str_replace(WCF_DIR, '', $file);
 			}
 		}
-		file_put_contents(WCF_DIR.'__wcfSetupPerformance.log', "\tRead files: " . round(microtime(true) - $start, 3) . "\n", FILE_APPEND);
-		$start = microtime(true);
+		
 		// save acp template log
 		if (!empty($acpTemplateInserts)) {
 			$sql = "INSERT INTO	wcf".WCF_N."_acp_template
@@ -839,8 +819,7 @@ class WCFSetup extends WCF {
 			}
 			self::getDB()->commitTransaction();
 		}
-		file_put_contents(WCF_DIR.'__wcfSetupPerformance.log', "\tRegistered ACP templates: " . round(microtime(true) - $start, 3) . "\n", FILE_APPEND);
-		$start = microtime(true);
+		
 		// save file log
 		if (!empty($fileInserts)) {
 			$sql = "INSERT INTO	wcf".WCF_N."_package_installation_file_log
@@ -854,7 +833,7 @@ class WCFSetup extends WCF {
 			}
 			self::getDB()->commitTransaction();
 		}
-		file_put_contents(WCF_DIR.'__wcfSetupPerformance.log', "\tRegistered files: " . round(microtime(true) - $start, 3) . "\n", FILE_APPEND);
+		
 		$this->gotoNextStep('installLanguage');
 	}
 	
@@ -882,7 +861,6 @@ class WCFSetup extends WCF {
 	protected function installLanguage() {
 		$this->initDB();
 		
-		$start = microtime(true);
 		foreach (self::$selectedLanguages as $language) {
 			// get language.xml file name
 			$filename = TMP_DIR.'install/lang/'.$language.'.xml';
@@ -899,7 +877,7 @@ class WCFSetup extends WCF {
 			// import xml
 			LanguageEditor::importFromXML($xml, 0);
 		}
-		file_put_contents(WCF_DIR.'__wcfSetupPerformance.log', "\nInstalled languages: " . round(microtime(true) - $start, 3) . "\n", FILE_APPEND);
+		
 		// set default language
 		$language = LanguageFactory::getInstance()->getLanguageByCode(in_array(self::$selectedLanguageCode, self::$selectedLanguages) ? self::$selectedLanguageCode : self::$selectedLanguages[0]);
 		LanguageFactory::getInstance()->makeDefault($language->languageID);
@@ -1169,6 +1147,7 @@ class WCFSetup extends WCF {
 		
 		SessionHandler::getInstance()->changeUser($admin);
 		SessionHandler::getInstance()->register('masterPassword', 1);
+		SessionHandler::getInstance()->register('__wcfSetup_developerMode', self::$developerMode);
 		SessionHandler::getInstance()->update();
 		
 		$installPhpDeleted = @unlink('./install.php');

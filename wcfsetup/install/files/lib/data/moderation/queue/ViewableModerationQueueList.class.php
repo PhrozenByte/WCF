@@ -12,7 +12,7 @@ use wcf\system\WCF;
  * 	    would not work (MySQL is retarded).
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.moderation.queue
@@ -26,12 +26,12 @@ class ViewableModerationQueueList extends ModerationQueueList {
 	public $loadUserProfiles = false;
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$useQualifiedShorthand
+	 * @see	\wcf\data\DatabaseObjectList::$useQualifiedShorthand
 	 */
 	public $useQualifiedShorthand = false;
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::__construct()
+	 * @see	\wcf\data\DatabaseObjectList::__construct()
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -47,7 +47,7 @@ class ViewableModerationQueueList extends ModerationQueueList {
 	}
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::readObjects()
+	 * @see	\wcf\data\DatabaseObjectList::readObjects()
 	 */
 	public function readObjects() {
 		parent::readObjects();

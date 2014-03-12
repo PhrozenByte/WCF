@@ -11,7 +11,7 @@ use wcf\util\StringUtil;
  * 	{implode from=$array key=bar item=foo glue=";"}{$foo}{/implode}
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.template.plugin
@@ -25,7 +25,7 @@ class ImplodeCompilerTemplatePlugin implements ICompilerTemplatePlugin {
 	protected $tagStack = array();
 	
 	/**
-	 * @see	wcf\system\template\ICompilerTemplatePlugin::executeStart()
+	 * @see	\wcf\system\template\ICompilerTemplatePlugin::executeStart()
 	 */
 	public function executeStart($tagArgs, TemplateScriptingCompiler $compiler) {
 		$compiler->pushTag('implode');
@@ -49,7 +49,7 @@ class ImplodeCompilerTemplatePlugin implements ICompilerTemplatePlugin {
 	}
 	
 	/**
-	 * @see	wcf\system\template\ICompilerTemplatePlugin::executeEnd()
+	 * @see	\wcf\system\template\ICompilerTemplatePlugin::executeEnd()
 	 */
 	public function executeEnd(TemplateScriptingCompiler $compiler) {
 		$compiler->popTag('implode');

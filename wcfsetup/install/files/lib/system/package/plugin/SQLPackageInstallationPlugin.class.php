@@ -3,19 +3,14 @@ namespace wcf\system\package\plugin;
 use wcf\data\package\Package;
 use wcf\data\package\PackageList;
 use wcf\system\exception\SystemException;
-use wcf\system\form\container\GroupFormElementContainer;
-use wcf\system\form\element\LabelFormElement;
-use wcf\system\form\FormDocument;
-use wcf\system\package\PackageInstallationFormManager;
 use wcf\system\package\PackageInstallationSQLParser;
 use wcf\system\WCF;
-use wcf\util\StringUtil;
 
 /**
  * Executes the delivered sql file.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package.plugin
@@ -23,12 +18,12 @@ use wcf\util\StringUtil;
  */
 class SQLPackageInstallationPlugin extends AbstractPackageInstallationPlugin {
 	/**
-	 * @see	wcf\system\package\plugin\AbstractPackageInstallationPlugin::$tableName
+	 * @see	\wcf\system\package\plugin\AbstractPackageInstallationPlugin::$tableName
 	 */
 	public $tableName = 'package_installation_sql_log';
 	
 	/**
-	 * @see	wcf\system\package\plugin\IPackageInstallationPlugin::install()
+	 * @see	\wcf\system\package\plugin\IPackageInstallationPlugin::install()
 	 */
 	public function install() {
 		parent::install();
@@ -87,7 +82,7 @@ class SQLPackageInstallationPlugin extends AbstractPackageInstallationPlugin {
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\IPackageInstallationPlugin::uninstall()
+	 * @see	\wcf\system\package\plugin\IPackageInstallationPlugin::uninstall()
 	 */
 	public function uninstall() {
 		// get logged sql tables/columns

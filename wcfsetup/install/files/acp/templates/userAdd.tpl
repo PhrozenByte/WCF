@@ -13,9 +13,7 @@
 	{if $action == 'edit'}<p>{$user->username}</p>{/if}
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $userID|isset && $__wcf->user->userID == $userID}
 	<p class="warning">{lang}wcf.acp.user.edit.warning.selfEdit{/lang}</p>
@@ -347,7 +345,7 @@
 					
 					{if MODULE_GRAVATAR}
 						<dl{if $errorType[gravatar]|isset} class="formError"{/if}>
-							<dt class="framed"><img src="http://www.gravatar.com/avatar/{@$user->email|strtolower|md5}?s=96" alt="" class="icon96" /></dt>
+							<dt class="framed"><img src="https://secure.gravatar.com/avatar/{@$user->email|strtolower|md5}?s=96" alt="" class="icon96" /></dt>
 							<dd>
 								<label><input type="radio" name="avatarType" value="gravatar" {if $avatarType == 'gravatar'}checked="checked" {/if}/> {lang}wcf.user.avatar.type.gravatar{/lang}</label>
 								
@@ -416,6 +414,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

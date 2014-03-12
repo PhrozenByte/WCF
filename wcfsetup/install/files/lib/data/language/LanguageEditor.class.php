@@ -22,7 +22,7 @@ use wcf\util\XML;
  * Provides functions to edit languages.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.language
@@ -30,12 +30,12 @@ use wcf\util\XML;
  */
 class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObject {
 	/**
-	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	\wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\language\Language';
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectEditor::delete()
+	 * @see	\wcf\data\DatabaseObjectEditor::delete()
 	 */
 	public function delete() {
 		parent::delete();
@@ -46,7 +46,7 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 	/**
 	 * Updates the language files for the given category.
 	 * 
-	 * @param	wcf\data\language\category\LanguageCategory	$languageCategory
+	 * @param	\wcf\data\language\category\LanguageCategory	$languageCategory
 	 */
 	public function updateCategory(LanguageCategory $languageCategory) {
 		$this->writeLanguageFiles(array($languageCategory->languageCategoryID));
@@ -115,7 +115,7 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 		echo "\xEF\xBB\xBF";
 		
 		// header
-		echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<language xmlns=\"http://www.woltlab.com\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/language.xsd\" languagecode=\"".$this->languageCode."\">\n";
+		echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<language xmlns=\"http://www.woltlab.com\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/language.xsd\" languagecode=\"".$this->languageCode."\" countrycode=\"".$this->countryCode."\">\n";
 		
 		// get items
 		$items = array();
@@ -161,11 +161,12 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 	 * Imports language items from an XML file into this language.
 	 * Updates the relevant language files automatically.
 	 * 
-	 * @param	wcf\util\XML	$xml
+	 * @param	\wcf\util\XML	$xml
 	 * @param	integer		$packageID
 	 * @param	boolean		$updateFiles
+	 * @param	boolean		$updateExistingItems
 	 */
-	public function updateFromXML(XML $xml, $packageID, $updateFiles = true) {
+	public function updateFromXML(XML $xml, $packageID, $updateFiles = true, $updateExistingItems = true) {
 		$xpath = $xml->xpath();
 		$usedCategories = array();
 		
@@ -223,20 +224,26 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 		if (!empty($itemData)) {
 			// insert/update a maximum of 50 items per run (prevents issues with max_allowed_packet)
 			$step = ($packageID) ? 5 : 4;
+			WCF::getDB()->beginTransaction();
 			for ($i = 0, $length = count($itemData); $i < $length; $i += 50 * $step) {
 				$parameters = array_slice($itemData, $i, 50 * $step);
 				$repeat = count($parameters) / $step;
 				
-				$sql = "INSERT INTO		wcf".WCF_N."_language_item
+				$sql = "INSERT".(!$updateExistingItems ? " IGNORE" : "")." INTO		wcf".WCF_N."_language_item
 								(languageID, languageItem, languageItemValue, languageCategoryID". ($packageID ? ", packageID" : "") . ")
-					VALUES			".substr(str_repeat('(?, ?, ?, ?'. ($packageID ? ', ?' : '') .'), ', $repeat), 0, -2)."
-					ON DUPLICATE KEY
-					UPDATE			languageItemValue = VALUES(languageItemValue),
+					VALUES			".substr(str_repeat('(?, ?, ?, ?'. ($packageID ? ', ?' : '') .'), ', $repeat), 0, -2);
+				
+				if ($updateExistingItems) {
+					$sql .= " ON DUPLICATE KEY
+					UPDATE			languageItemValue = IF(languageItemOriginIsSystem = 0, languageItemValue, VALUES(languageItemValue)),
 								languageCategoryID = VALUES(languageCategoryID),
 								languageUseCustomValue = 0";
+				}
+				
 				$statement = WCF::getDB()->prepareStatement($sql);
 				$statement->execute($parameters);
 			}
+			WCF::getDB()->commitTransaction();
 		}
 		
 		// update the relevant language files
@@ -257,7 +264,7 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 	public static function deleteLanguageFiles($languageID = '.*', $category = '.*') {
 		if ($category != '.*') $category = preg_quote($category, '~');
 		if ($languageID != '.*') $languageID = intval($languageID);
-
+		
 		DirectoryUtil::getInstance(WCF_DIR.'language/')->removePattern(new Regex($languageID.'_'.$category.'\.php$'));
 	}
 	
@@ -281,7 +288,7 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 	/**
 	 * Takes an XML object and returns the specific language code.
 	 * 
-	 * @param	wcf\util\XML	$xml
+	 * @param	\wcf\util\XML	$xml
 	 * @return	string
 	 */
 	public static function readLanguageCodeFromXML(XML $xml) {
@@ -299,7 +306,7 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 	/**
 	 * Takes an XML object and returns the specific language name.
 	 * 
-	 * @param	wcf\util\XML	$xml
+	 * @param	\wcf\util\XML	$xml
 	 * @return	string		language name
 	 */
 	public static function readLanguageNameFromXML(XML $xml) {
@@ -317,7 +324,7 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 	/**
 	 * Takes an XML object and returns the specific country code.
 	 * 
-	 * @param	wcf\util\XML	$xml
+	 * @param	\wcf\util\XML	$xml
 	 * @return	string		country code
 	 */
 	public static function readCountryCodeFromXML(XML $xml) {
@@ -336,9 +343,9 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 	 * Imports language items from an XML file into a new or a current language.
 	 * Updates the relevant language files automatically.
 	 * 
-	 * @param	wcf\util\XML	$xml
+	 * @param	\wcf\util\XML	$xml
 	 * @param	integer		$packageID
-	 * @return	wcf\data\language\LanguageEditor
+	 * @return	\wcf\data\language\LanguageEditor
 	 */
 	public static function importFromXML(XML $xml, $packageID) {
 		$languageCode = self::readLanguageCodeFromXML($xml);
@@ -388,7 +395,7 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 	 * Updates the language items of a language category.
 	 * 
 	 * @param	array						$items
-	 * @param	wcf\data\language\category\LanguageCategory	$category
+	 * @param	\wcf\data\language\category\LanguageCategory	$category
 	 * @param	integer						$packageID
 	 * @param	array						$useCustom
 	 */
@@ -475,7 +482,7 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 	 * @param	boolean		$useRegex
 	 * @param	boolean		$caseSensitive
 	 * @param	boolean		$searchVariableName
-	 * @return	array		results 
+	 * @return	array
 	 */
 	public static function search($search, $replace = null, $languageID = null, $useRegex = 0, $searchVariableName = 0) {
 		$results = array();
@@ -597,7 +604,7 @@ class LanguageEditor extends DatabaseObjectEditor implements IEditableCachedObje
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableCachedObject::resetCache()
+	 * @see	\wcf\data\IEditableCachedObject::resetCache()
 	 */
 	public static function resetCache() {
 		LanguageFactory::getInstance()->clearCache();

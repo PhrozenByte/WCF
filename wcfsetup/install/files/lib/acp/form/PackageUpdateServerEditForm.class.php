@@ -10,7 +10,7 @@ use wcf\system\WCF;
  * Shows the server edit form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -25,12 +25,12 @@ class PackageUpdateServerEditForm extends PackageUpdateServerAddForm {
 	
 	/**
 	 * active package update server
-	 * @var	wcf\data\package\update\server\PackageUpdateServer
+	 * @var	\wcf\data\package\update\server\PackageUpdateServer
 	 */
 	public $updateServer = null;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -43,17 +43,17 @@ class PackageUpdateServerEditForm extends PackageUpdateServerAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
 		
 		// save server
-		$this->objectAction = new PackageUpdateServerAction(array($this->packageUpdateServerID), 'update', array('data' => array(
+		$this->objectAction = new PackageUpdateServerAction(array($this->packageUpdateServerID), 'update', array('data' => array_merge($this->additionalFields, array(
 			'serverURL' => $this->serverURL,
 			'loginUsername' => $this->loginUsername,
 			'loginPassword' => $this->loginPassword
-		)));
+		))));
 		$this->objectAction->executeAction();
 		$this->saved();
 		
@@ -62,7 +62,7 @@ class PackageUpdateServerEditForm extends PackageUpdateServerAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -75,7 +75,7 @@ class PackageUpdateServerEditForm extends PackageUpdateServerAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

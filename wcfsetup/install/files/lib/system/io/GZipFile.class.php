@@ -6,7 +6,7 @@ use wcf\system\exception\SystemException;
  * The File class handles all file operations on a gzip file.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.io
@@ -56,8 +56,8 @@ class GZipFile extends File {
 		$byteBlock = 1<<14;
 		$eof = $byteBlock;
 		
-		// the correction is for zip files that are too small 
-		// to get in the first while loop 
+		// the correction is for zip files that are too small
+		// to get in the first while loop
 		$correction = 1;
 		while ($this->seek($eof) == 0) {
 			$eof += $byteBlock;

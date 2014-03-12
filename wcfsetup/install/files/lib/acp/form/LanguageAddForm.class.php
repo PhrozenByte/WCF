@@ -6,13 +6,12 @@ use wcf\system\exception\UserInputException;
 use wcf\system\language\LanguageFactory;
 use wcf\system\WCF;
 use wcf\util\StringUtil;
-use wcf\util\XML;
 
 /**
  * Shows the language add form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -20,18 +19,24 @@ use wcf\util\XML;
  */
 class LanguageAddForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.language';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * country code
+	 * @var	string
+	 */
+	public $countryCode = '';
+	
+	/**
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.language.canManageLanguage');
 	
 	/**
 	 * language object
-	 * @var	wcf\data\language\Language
+	 * @var	\wcf\data\language\Language
 	 */
 	public $language = null;
 	
@@ -49,13 +54,13 @@ class LanguageAddForm extends AbstractForm {
 	
 	/**
 	 * list of available languages
-	 * @var	array<wcf\data\language\Language>
+	 * @var	array<\wcf\data\language\Language>
 	 */
 	public $languages = array();
 	
 	/**
 	 * source language object
-	 * @var	wcf\data\language\Language
+	 * @var	\wcf\data\language\Language
 	 */
 	public $sourceLanguage = null;
 	
@@ -66,18 +71,19 @@ class LanguageAddForm extends AbstractForm {
 	public $sourceLanguageID = 0;
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
 		
+		if (isset($_POST['countryCode'])) $this->countryCode = StringUtil::trim($_POST['countryCode']);
 		if (isset($_POST['languageName'])) $this->languageName = StringUtil::trim($_POST['languageName']);
 		if (isset($_POST['languageCode'])) $this->languageCode = StringUtil::trim($_POST['languageCode']);
 		if (isset($_POST['sourceLanguageID'])) $this->sourceLanguageID = intval($_POST['sourceLanguageID']);
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -85,6 +91,11 @@ class LanguageAddForm extends AbstractForm {
 		// language name
 		if (empty($this->languageName)) {
 			throw new UserInputException('languageName');
+		}
+		
+		// country code
+		if (empty($this->countryCode)) {
+			throw new UserInputException('countryCode');
 		}
 		
 		// language code
@@ -122,19 +133,22 @@ class LanguageAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
 		
 		$this->language = LanguageEditor::create(array(
+			'countryCode' => mb_strtolower($this->countryCode),
 			'languageName' => $this->languageName,
 			'languageCode' => mb_strtolower($this->languageCode)
 		));
 		$languageEditor = new LanguageEditor($this->sourceLanguage);
 		$languageEditor->copy($this->language);
+		
 		LanguageFactory::getInstance()->clearCache();
 		LanguageFactory::getInstance()->deleteLanguageCache();
+		
 		$this->saved();
 		
 		// show success message
@@ -142,7 +156,7 @@ class LanguageAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -151,12 +165,13 @@ class LanguageAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
 		
 		WCF::getTPL()->assign(array(
+			'countryCode' => $this->countryCode,
 			'languageName' => $this->languageName,
 			'languageCode' => $this->languageCode,
 			'sourceLanguageID' => $this->sourceLanguageID,

@@ -7,7 +7,7 @@ use wcf\system\WCF;
  * Represents a like of an object.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.like
@@ -15,24 +15,24 @@ use wcf\system\WCF;
  */
 class Like extends DatabaseObject {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'like';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseIndexName
 	 */
 	protected static $databaseTableIndexName = 'likeID';
 	
 	/**
 	 * like value
-	 * @var integer
+	 * @var	integer
 	 */
 	const LIKE = 1;
 	
 	/**
 	 * dislike value
-	 * @var integer
+	 * @var	integer
 	 */
 	const DISLIKE = -1;
 	
@@ -67,7 +67,7 @@ class Like extends DatabaseObject {
 	}
 	
 	/**
-	 * @see	wcf\data\IStorableObject::getDatabaseTableAlias()
+	 * @see	\wcf\data\IStorableObject::getDatabaseTableAlias()
 	 */
 	public static function getDatabaseTableAlias() {
 		return 'like_table';

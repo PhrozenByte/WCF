@@ -3,7 +3,6 @@ namespace wcf\acp\form;
 use wcf\data\label\Label;
 use wcf\data\label\LabelAction;
 use wcf\data\object\type\ObjectTypeCache;
-use wcf\data\package\PackageCache;
 use wcf\form\AbstractForm;
 use wcf\system\exception\IllegalLinkException;
 use wcf\system\language\I18nHandler;
@@ -13,7 +12,7 @@ use wcf\system\WCF;
  * Shows the label edit form.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -21,12 +20,12 @@ use wcf\system\WCF;
  */
 class LabelEditForm extends LabelAddForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.label';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.content.label.canManageLabel');
 	
@@ -38,12 +37,12 @@ class LabelEditForm extends LabelAddForm {
 	
 	/**
 	 * label object
-	 * @var	wcf\data\label\Label
+	 * @var	\wcf\data\label\Label
 	 */
 	public $labelObj = null;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -56,7 +55,7 @@ class LabelEditForm extends LabelAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
@@ -71,11 +70,11 @@ class LabelEditForm extends LabelAddForm {
 		}
 		
 		// update label
-		$this->objectAction = new LabelAction(array($this->labelID), 'update', array('data' => array(
+		$this->objectAction = new LabelAction(array($this->labelID), 'update', array('data' => array_merge($this->additionalFields, array(
 			'label' => $this->label,
 			'cssClassName' => ($this->cssClassName == 'custom' ? $this->customCssClassName : $this->cssClassName),
 			'groupID' => $this->groupID
-		)));
+		))));
 		$this->objectAction->executeAction();
 		
 		$objectTypes = ObjectTypeCache::getInstance()->getObjectTypes('com.woltlab.wcf.label.objectType');
@@ -95,7 +94,7 @@ class LabelEditForm extends LabelAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -115,7 +114,7 @@ class LabelEditForm extends LabelAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

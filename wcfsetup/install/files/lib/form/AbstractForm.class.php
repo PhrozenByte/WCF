@@ -11,7 +11,7 @@ use wcf\util\StringUtil;
  * This includes the default event listener for a form: readFormParameters, validate, save.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	form
@@ -38,12 +38,18 @@ abstract class AbstractForm extends AbstractPage implements IForm {
 	
 	/**
 	 * database object action
-	 * @var	wcf\data\AbstractDatabaseObjectAction
+	 * @var	\wcf\data\AbstractDatabaseObjectAction
 	 */
 	public $objectAction = null;
 	
 	/**
-	 * @see	wcf\form\IForm::submit()
+	 * additional fields
+	 * @var	array<mixed>
+	 */
+	public $additionalFields = array();
+	
+	/**
+	 * @see	\wcf\form\IForm::submit()
 	 */
 	public function submit() {
 		// call submit event
@@ -63,7 +69,7 @@ abstract class AbstractForm extends AbstractPage implements IForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		// call readFormParameters event
@@ -73,15 +79,19 @@ abstract class AbstractForm extends AbstractPage implements IForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		// call validate event
 		EventHandler::getInstance()->fireAction($this, 'validate');
+		
+		if (!isset($_POST['t']) || !WCF::getSession()->checkSecurityToken($_POST['t'])) {
+			throw new UserInputException('__securityToken');
+		}
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		// call save event
@@ -97,7 +107,7 @@ abstract class AbstractForm extends AbstractPage implements IForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		if (!empty($_POST) || !empty($_FILES)) {
@@ -108,7 +118,7 @@ abstract class AbstractForm extends AbstractPage implements IForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

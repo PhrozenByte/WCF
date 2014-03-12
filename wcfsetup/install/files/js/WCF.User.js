@@ -2,7 +2,7 @@
  * User-related classes.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
 
@@ -121,6 +121,11 @@ WCF.User.QuickLogin = {
 	 */
 	init: function() {
 		$('.loginLink').click($.proxy(this._render, this));
+		
+		// prepend protocol and hostname
+		$('#loginForm input[name=url]').val(function(index, value) {
+			return window.location.protocol + '//' + window.location.host + value;
+		});
 	},
 	
 	/**
@@ -280,7 +285,7 @@ WCF.User.Profile.ActivityPointList = {
 
 /**
  * Provides methods to follow an user.
- *
+ * 
  * @param	integer		userID
  * @param	boolean		following
  */
@@ -469,7 +474,7 @@ WCF.User.Profile.IgnoreUser = Class.extend({
 	 */
 	_updateButton: function() {
 		if (this._button === null) {
-			this._button = $('<li id="ignoreUser"><a class="button jsTooltip" title="'+WCF.Language.get('wcf.user.button.'+(this._following ? 'un' : '')+'ignore')+'"><span class="icon icon16 icon-ban-circle"></span> <span class="invisible">'+WCF.Language.get('wcf.user.button.'+(this._following ? 'un' : '')+'ignore')+'</span></a></li>').prependTo($('#profileButtonContainer'));
+			this._button = $('<li id="ignoreUser"><a class="button jsTooltip" title="'+WCF.Language.get('wcf.user.button.'+(this._isIgnoredUser ? 'un' : '')+'ignore')+'"><span class="icon icon16 icon-ban-circle"></span> <span class="invisible">'+WCF.Language.get('wcf.user.button.'+(this._isIgnoredUser ? 'un' : '')+'ignore')+'</span></a></li>').prependTo($('#profileButtonContainer'));
 		}
 		
 		this._button.find('.button').data('tooltip', WCF.Language.get('wcf.user.button.' + (this._isIgnoredUser ? 'un' : '') + 'ignore'));
@@ -806,7 +811,6 @@ WCF.User.Profile.Editor = Class.extend({
 	}
 });
 
-
 /**
  * Namespace for registration functions.
  */
@@ -1015,7 +1019,7 @@ WCF.User.Registration.Validation = Class.extend({
 
 /**
  * Username validation for registration.
- *
+ * 
  * @see	WCF.User.Registration.Validation
  */
 WCF.User.Registration.Validation.Username = WCF.User.Registration.Validation.extend({
@@ -1171,6 +1175,11 @@ WCF.User.Registration.LostPassword = Class.extend({
 		this._email.keyup($.proxy(this._checkEmail, this));
 		this._username.keyup($.proxy(this._checkUsername, this));
 		
+		if ($.browser.mozilla && $.browser.touch) {
+			this._email.on('input', $.proxy(this._checkEmail, this));
+			this._username.on('input', $.proxy(this._checkUsername, this));
+		}
+		
 		// toggle fields on init
 		this._checkEmail();
 		this._checkUsername();
@@ -1209,7 +1218,7 @@ WCF.User.Registration.LostPassword = Class.extend({
  * Notification system for WCF.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
 WCF.Notification = {};
@@ -1937,7 +1946,7 @@ WCF.User.Avatar.Crop = Class.extend({
 		
 		// check if object already had been initialized
 		if (!this._proxy) {
-			this._proxy  = new WCF.Action.Proxy({
+			this._proxy = new WCF.Action.Proxy({
 				success: $.proxy(this._success, this)
 			});
 		}
@@ -2512,84 +2521,5 @@ WCF.User.ObjectWatch.Subscribe = Class.extend({
 			}
 		});
 		this._proxy.sendRequest();
-	}
-});
-
-/**
- * Enables notifications for subscriptions.
- */
-WCF.User.ObjectWatch.Notification = Class.extend({
-	/**
-	 * CSS selector for buttons
-	 * @var	string
-	 */
-	_buttonSelector: '.jsObjectWatchNotificationButton',
-	
-	/**
-	 * watch id
-	 * @var	integer
-	 */
-	_watchID: 0,
-	
-	/**
-	 * WCF.User.ObjectWatch.Notification object.
-	 */
-	init: function() {
-		// initialize proxy
-		this._proxy = new WCF.Action.Proxy({
-			success: $.proxy(this._success, this)
-		});
-		
-		// bind event listeners
-		$(this._buttonSelector).click($.proxy(this._click, this));
-	},
-	
-	/**
-	 * Handles a click on a button.
-	 * 
-	 * @param	object		event
-	 */
-	_click: function(event) {
-		var link = $(event.target);
-		if (!link.is('a')) {
-			link = link.closest('a');
-		}
-		this._watchID = link.data('watchID');
-		
-		this._proxy.setOption('data', {
-			actionName: link.data('notification') ? 'disableNotification' : 'enableNotification',
-			className: 'wcf\\data\\user\\object\\watch\\UserObjectWatchAction',
-			objectIDs: [ this._watchID ]
-		});
-		this._proxy.sendRequest();
-	},
-	
-	/**
-	 * Handles the successful action.
-	 * 
-	 * @param	object		data
-	 * @param	string		textStatus
-	 * @param	jQuery		jqXHR
-	 */
-	_success: function(data, textStatus, jqXHR) {
-		$(this._buttonSelector).each($.proxy(function(index, container) {
-			var button = $(container);
-			
-			if (button.data('watchID') == this._watchID) {
-				// toogle icon title
-				if (button.data('notification')) {
-					button.children('img').removeClass('disabled');
-					button.data('tooltip', WCF.Language.get('wcf.user.watchedObjects.enableNotification'));
-				}
-				else {
-					button.children('img').addClass('disabled');
-					button.data('tooltip', WCF.Language.get('wcf.user.watchedObjects.disableNotification'));
-				}
-				
-				button.data('notification', !button.data('notification'));
-				
-				return false;
-			}
-		}, this));
 	}
 });

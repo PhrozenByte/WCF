@@ -6,7 +6,7 @@ use wcf\system\WCF;
  * A UserException is thrown when a user gives invalid input data.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.exception
@@ -14,7 +14,7 @@ use wcf\system\WCF;
  */
 abstract class UserException extends \Exception implements IPrintableException {
 	/**
-	 * @see	wcf\system\exception\IPrintableException::show()
+	 * @see	\wcf\system\exception\IPrintableException::show()
 	 */
 	public function show() {
 		if (WCF::debugModeIsEnabled()) {
@@ -23,5 +23,14 @@ abstract class UserException extends \Exception implements IPrintableException {
 		else {
 			echo '<pre>' . $this->_getMessage() . '</pre>';
 		}
+	}
+	
+	/**
+	 * Returns the exception's message, should be used to sanitize the output.
+	 * 
+	 * @return	string
+	 */
+	protected function _getMessage() {
+		return $this->getMessage();
 	}
 }

@@ -8,7 +8,7 @@ use wcf\system\WCF;
  * Represents a language.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.language
@@ -16,12 +16,12 @@ use wcf\system\WCF;
  */
 class Language extends DatabaseObject {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'language';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'languageID';
 	
@@ -39,7 +39,7 @@ class Language extends DatabaseObject {
 	
 	/**
 	 * instance of LanguageEditor
-	 * @var	wcf\data\language\LanguageEditor
+	 * @var	\wcf\data\language\LanguageEditor
 	 */
 	private $editor = null;
 	
@@ -185,7 +185,7 @@ class Language extends DatabaseObject {
 	/**
 	 * Returns a list of available languages.
 	 * 
-	 * @return	array<wcf\data\language\Language>
+	 * @return	array<\wcf\data\language\Language>
 	 */
 	public function getLanguages() {
 		return LanguageFactory::getInstance()->getLanguages();

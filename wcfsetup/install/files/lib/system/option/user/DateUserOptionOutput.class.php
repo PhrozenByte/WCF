@@ -8,7 +8,7 @@ use wcf\util\DateUtil;
  * User option output implementation for for the output of a date input.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.option.user
@@ -22,7 +22,7 @@ class DateUserOptionOutput implements IUserOptionOutput {
 	protected $dateFormat = DateUtil::DATE_FORMAT;
 	
 	/**
-	 * @see	wcf\system\option\user\IUserOptionOutput::getOutput()
+	 * @see	\wcf\system\option\user\IUserOptionOutput::getOutput()
 	 */
 	public function getOutput(User $user, UserOption $option, $value) {
 		if (empty($value) || $value == '0000-00-00') return '';

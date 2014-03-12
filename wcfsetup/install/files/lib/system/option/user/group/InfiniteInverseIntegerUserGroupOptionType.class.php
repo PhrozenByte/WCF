@@ -8,7 +8,7 @@ namespace wcf\system\option\user\group;
  * value.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.option.user.group
@@ -16,7 +16,7 @@ namespace wcf\system\option\user\group;
  */
 class InfiniteInverseIntegerUserGroupOptionType extends InverseIntegerUserGroupOptionType {
 	/**
-	 * @see	wcf\system\option\user\group\IUserGroupOptionType::merge()
+	 * @see	\wcf\system\option\user\group\IUserGroupOptionType::merge()
 	 */
 	public function merge($defaultValue, $groupValue) {
 		if ($groupValue == -1 || $defaultValue == $groupValue) {

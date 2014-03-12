@@ -13,9 +13,7 @@
 	<h1>{lang}wcf.acp.group.{@$action}{/lang}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $warningSelfEdit|isset}
 	<p class="warning">{lang}wcf.acp.group.edit.warning.selfIsMember{/lang}</p>
@@ -34,7 +32,7 @@
 					<div class="dropdownMenu">
 						<ul class="scrollableDropdownMenu">
 							{foreach from=$availableUserGroups item='availableUserGroup'}
-								<li{if $availableUserGroup->groupID == $groupID} class="active"{/if}><a href="{link controller='UserGroupEdit' id=$availableUserGroup->groupID}{/link}">{lang}{$availableUserGroup->groupName}{/lang}</a></li>
+								<li{if $availableUserGroup->groupID == $groupID} class="active"{/if}><a href="{link controller='UserGroupEdit' id=$availableUserGroup->groupID}{/link}">{$availableUserGroup->getName()}</a></li>
 							{/foreach}
 						</ul>
 					</div>
@@ -61,6 +59,8 @@
 						<small class="innerError">
 							{if $errorType.groupName == 'empty'}
 								{lang}wcf.global.form.error.empty{/lang}
+							{elseif $errorType.groupName == 'multilingual'}
+								{lang}wcf.global.form.error.multilingual{/lang}
 							{else}
 								{lang}wcf.acp.group.groupName.error.{@$errorType}{/lang}
 							{/if}
@@ -105,7 +105,7 @@
 						<input type="text" id="userOnlineMarking" name="userOnlineMarking" value="{$userOnlineMarking}" class="long" />
 						{if $errorType.userOnlineMarking|isset}
 							<small class="innerError">
-								{lang}wcf.acp.group.userOnlineMarking.error.{@$errorType.priority}{/lang}
+								{lang}wcf.acp.group.userOnlineMarking.error.{@$errorType.userOnlineMarking}{/lang}
 							</small>
 						{/if}
 						<small>{lang}wcf.acp.group.userOnlineMarking.description{/lang}</small>
@@ -178,6 +178,7 @@
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
 		<input type="hidden" name="action" value="{@$action}" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

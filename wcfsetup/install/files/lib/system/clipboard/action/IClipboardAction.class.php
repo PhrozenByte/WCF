@@ -6,7 +6,7 @@ use wcf\data\clipboard\action\ClipboardAction;
  * Basic interface for all clipboard editor actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.clipboard.action
@@ -24,9 +24,9 @@ interface IClipboardAction {
 	 * Returns editor item for the clipboard action with the given name or null
 	 * if the action is not applicable to the given objects.
 	 * 
-	 * @param	array<wcf\data\DatabaseObject>			$objects
-	 * @param	wcf\data\clipboard\action\ClipboardAction	$action
-	 * @return	wcf\system\clipboard\ClipboardEditorItem
+	 * @param	array<\wcf\data\DatabaseObject>			$objects
+	 * @param	\wcf\data\clipboard\action\ClipboardAction	$action
+	 * @return	\wcf\system\clipboard\ClipboardEditorItem
 	 */
 	public function execute(array $objects, ClipboardAction $action);
 	

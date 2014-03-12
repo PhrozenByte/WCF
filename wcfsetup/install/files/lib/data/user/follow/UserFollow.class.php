@@ -7,7 +7,7 @@ use wcf\system\WCF;
  * Represents a user's follower.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.follow
@@ -15,12 +15,12 @@ use wcf\system\WCF;
  */
 class UserFollow extends DatabaseObject {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'user_follow';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'followID';
 	
@@ -29,7 +29,7 @@ class UserFollow extends DatabaseObject {
 	 * 
 	 * @param	integer		$userID
 	 * @param	integer		$followUserID
-	 * @return	wcf\data\user\follow\UserFollow
+	 * @return	\wcf\data\user\follow\UserFollow
 	 */
 	public static function getFollow($userID, $followUserID) {
 		$sql = "SELECT	followID

@@ -19,7 +19,7 @@ use wcf\util\StringUtil;
  * Shows the style add form.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -27,7 +27,7 @@ use wcf\util\StringUtil;
  */
 class StyleAddForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.style.add';
 	
@@ -65,7 +65,7 @@ class StyleAddForm extends AbstractForm {
 	
 	/**
 	 * list of available template groups
-	 * @var	array<wcf\data\template\group\TemplateGroup>
+	 * @var	array<\wcf\data\template\group\TemplateGroup>
 	 */
 	public $availableTemplateGroups = array();
 	
@@ -106,7 +106,7 @@ class StyleAddForm extends AbstractForm {
 	public $license = '';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.style.canManageStyle');
 	
@@ -159,7 +159,7 @@ class StyleAddForm extends AbstractForm {
 	public $specialVariables = array();
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -172,7 +172,7 @@ class StyleAddForm extends AbstractForm {
 		}
 		
 		$templateGroupList = new TemplateGroupList();
-		$templateGroupList->sqlOrderBy = "template_group.templateGroupName ASC";
+		$templateGroupList->sqlOrderBy = "templateGroupName";
 		$templateGroupList->readObjects();
 		$this->availableTemplateGroups = $templateGroupList->getObjects();
 		
@@ -185,7 +185,7 @@ class StyleAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -229,7 +229,7 @@ class StyleAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -355,7 +355,7 @@ class StyleAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -460,13 +460,13 @@ class StyleAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
 		
 		$this->objectAction = new StyleAction(array(), 'create', array(
-			'data' => array(
+			'data' => array_merge($this->additionalFields, array(
 				'styleName' => $this->styleName,
 				'templateGroupID' => $this->templateGroupID,
 				'isDisabled' => 1, // styles are disabled by default
@@ -478,7 +478,7 @@ class StyleAddForm extends AbstractForm {
 				'license' => $this->license,
 				'authorName' => $this->authorName,
 				'authorURL' => $this->authorURL
-			),
+			)),
 			'tmpHash' => $this->tmpHash,
 			'variables' => $this->variables
 		));
@@ -512,7 +512,7 @@ class StyleAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

@@ -6,7 +6,7 @@ use wcf\system\Regex;
  * Highlights syntax of TeX source code.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode.highlighter
@@ -14,17 +14,17 @@ use wcf\system\Regex;
  */
 class TexHighlighter extends Highlighter {
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$quotes
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$quotes
 	 */
 	protected $quotes = array();
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$singleLineComment
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$singleLineComment
 	 */
 	protected $singleLineComment = array('%');
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::highlightKeywords()
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::highlightKeywords()
 	 */
 	protected function highlightKeywords($string) {
 		$string = Regex::compile('\\$([^\\$]*)\\$', Regex::DOT_ALL)->replace($string, '<span class="hlKeywords2">\\0</span>');
@@ -35,7 +35,7 @@ class TexHighlighter extends Highlighter {
 	}
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::highlightNumbers()
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::highlightNumbers()
 	 */
 	protected function highlightNumbers($string) {
 		// do not highlight numbers

@@ -5,8 +5,20 @@
 		$('#optionValueContainer label').each(function(index, label) {
 			var $label = $(label);
 			var $id = $label.prop('for');
-			var $groupID = $id.replace(/^userGroupOption/, '');
-			$label.parents('dl').children('dd').find('input, select, textarea').attr('id', $id).attr('name', 'values[' + $groupID + ']');
+			if ($id && $id.match(/^userGroupOption/)) {
+				var $groupID = $id.replace(/^userGroupOption/, '');
+				$label.parents('dl').children('dd').find('input, select, textarea').each(function(index, element) {
+					var $element = $(element);
+					var $oldName = $element.attr('name');
+					
+					var $newName = 'values[' + $groupID + ']';
+					if ($oldName.substr(-2) == '[]') {
+						$newName += '[]';
+					}
+					
+					$element.attr('id', $id).attr('name', $newName);
+				});
+			}
 		});
 	});
 </script>
@@ -14,6 +26,8 @@
 <header class="boxHeadline">
 	<h1>{lang}wcf.acp.group.option.editingOption{/lang}</h1>
 </header>
+
+{include file='formError'}
 
 {if $success|isset}
 	<p class="success">{lang}wcf.global.success.edit{/lang}</p>
@@ -55,6 +69,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

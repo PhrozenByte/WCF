@@ -14,8 +14,10 @@ fieldset {
 		.textShadow(@wcfContainerBackgroundColor);
 		
 		+ small {
-			top: -7px;
+			display: inline-block;
+			margin-bottom: @wcfGapTiny;
 			position: relative;
+			top: -7px;
 		}
 	}
 	
@@ -341,6 +343,7 @@ select[multiple][disabled] {
 	border-color: @wcfInputBorderColor;
 	color: @wcfDimmedColor;
 	cursor: not-allowed;
+	opacity: 1; /* ios fix */
 }
 
 /* success state */
@@ -435,7 +438,7 @@ textarea {
 	li {
 		padding: @wcfGapTiny @wcfGapSmall;
 		text-align: right;
-
+		
 		&:hover {
 			background-color: @wcfButtonHoverBackgroundColor;
 		}
@@ -507,7 +510,8 @@ select > option {
 	input[type="url"],
 	input[type="search"],
 	input[type="tel"],
-	input[type="color"] {
+	input[type="color"],
+	.cke_editable {
 		font-size: 16px;
 	}
 }

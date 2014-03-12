@@ -8,7 +8,7 @@ use wcf\system\WCF;
  * User activity event implementation for follows.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.user.activity.event
@@ -16,7 +16,7 @@ use wcf\system\WCF;
  */
 class FollowUserActivityEvent extends SingletonFactory implements IUserActivityEvent {
 	/**
-	 * @see	wcf\system\user\activity\event\IUserActivityEvent::prepare()
+	 * @see	\wcf\system\user\activity\event\IUserActivityEvent::prepare()
 	 */
 	public function prepare(array $events) {
 		$objectIDs = array();

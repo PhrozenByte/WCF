@@ -12,7 +12,7 @@ use wcf\util\FileUtil;
  * Provides functions to edit options.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.option
@@ -26,7 +26,7 @@ class OptionEditor extends DatabaseObjectEditor implements IEditableCachedObject
 	const FILENAME = 'options.inc.php';
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	\wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\option\Option';
 	
@@ -104,7 +104,7 @@ class OptionEditor extends DatabaseObjectEditor implements IEditableCachedObject
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableCachedObject::resetCache()
+	 * @see	\wcf\data\IEditableCachedObject::resetCache()
 	 */
 	public static function resetCache() {
 		// reset cache

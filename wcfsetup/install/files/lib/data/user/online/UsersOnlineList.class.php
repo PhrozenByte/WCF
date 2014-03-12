@@ -1,5 +1,6 @@
 <?php
 namespace wcf\data\user\online;
+use wcf\data\option\OptionAction;
 use wcf\data\session\SessionList;
 use wcf\data\user\group\UserGroup;
 use wcf\data\user\User;
@@ -10,7 +11,7 @@ use wcf\util\StringUtil;
  * Represents a list of currently online users.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.online
@@ -18,7 +19,7 @@ use wcf\util\StringUtil;
  */
 class UsersOnlineList extends SessionList {
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$sqlOrderBy
+	 * @see	\wcf\data\DatabaseObjectList::$sqlOrderBy
 	 */
 	public $sqlOrderBy = 'user_table.username';
 	
@@ -40,7 +41,7 @@ class UsersOnlineList extends SessionList {
 	public $usersOnlineMarkings = null;
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::__construct()
+	 * @see	\wcf\data\DatabaseObjectList::__construct()
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -56,7 +57,7 @@ class UsersOnlineList extends SessionList {
 	}
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::readObjects()
+	 * @see	\wcf\data\DatabaseObjectList::readObjects()
 	 */
 	public function readObjects() {
 		parent::readObjects();
@@ -79,13 +80,16 @@ class UsersOnlineList extends SessionList {
 	 * Gets users online stats.
 	 */
 	public function readStats() {
+		$conditionBuilder = clone $this->getConditionBuilder();
+		$conditionBuilder->add('session.spiderID IS NULL');
+		
 		$sql = "SELECT		user_option_value.userOption".User::getUserOptionID('canViewOnlineStatus')." AS canViewOnlineStatus, session.userID
 			FROM		wcf".WCF_N."_session session
 			LEFT JOIN	wcf".WCF_N."_user_option_value user_option_value
 			ON		(user_option_value.userID = session.userID)
-			".$this->getConditionBuilder();
+			".$conditionBuilder;
 		$statement = WCF::getDB()->prepareStatement($sql);
-		$statement->execute($this->getConditionBuilder()->getParameters());
+		$statement->execute($conditionBuilder->getParameters());
 		while ($row = $statement->fetchArray()) {
 			$this->stats['total']++;
 			if ($row['userID']) {
@@ -123,6 +127,21 @@ class UsersOnlineList extends SessionList {
 		}
 		
 		return $this->usersOnlineMarkings;
+	}
+	
+	/**
+	 * Checks the users online record.
+	 */
+	public function checkRecord() {
+		$usersOnlineTotal = (USERS_ONLINE_RECORD_NO_GUESTS ? $this->stats['members'] : $this->stats['total']);
+		if ($usersOnlineTotal > USERS_ONLINE_RECORD) {
+			// save new record
+			$optionAction = new OptionAction(array(), 'import', array('data' => array(
+				'users_online_record' => $usersOnlineTotal,
+				'users_online_record_time' => TIME_NOW
+			)));
+			$optionAction->executeAction();
+		}
 	}
 	
 	/**

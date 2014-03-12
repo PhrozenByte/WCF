@@ -5,9 +5,9 @@ use wcf\system\category\CategoryHandler;
 
 /**
  * Caches the acl options of categories.
- *
+ * 
  * @author	Matthias Schmidt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cache.builder
@@ -15,7 +15,7 @@ use wcf\system\category\CategoryHandler;
  */
 class CategoryACLOptionCacheBuilder extends AbstractCacheBuilder {
 	/**
-	 * @see	wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
+	 * @see	\wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
 	 */
 	public function rebuild(array $parameters) {
 		$data = array();
@@ -29,10 +29,9 @@ class CategoryACLOptionCacheBuilder extends AbstractCacheBuilder {
 			$aclOptions = ACLHandler::getInstance()->getPermissions(ACLHandler::getInstance()->getObjectTypeID($aclObjectType), array_keys($categories));
 			$options = $aclOptions['options']->getObjects();
 			
-			$data = array();
 			foreach (array('group', 'user') as $type) {
 				foreach ($aclOptions[$type] as $categoryID => $optionData) {
-					if (!isset($aclValues[$categoryID])) {
+					if (!isset($data[$categoryID])) {
 						$data[$categoryID] = array(
 							'group' => array(),
 							'user' => array()

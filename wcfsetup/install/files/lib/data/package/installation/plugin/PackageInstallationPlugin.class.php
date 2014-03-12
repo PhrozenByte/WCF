@@ -6,7 +6,7 @@ use wcf\data\DatabaseObject;
  * Represents a package installation plugin.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.package.installation.plugin
@@ -14,17 +14,17 @@ use wcf\data\DatabaseObject;
  */
 class PackageInstallationPlugin extends DatabaseObject {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'package_installation_plugin';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'pluginName';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexIsIdentity
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexIsIdentity
 	 */
 	protected static $databaseTableIndexIsIdentity = false;
 }

@@ -1,7 +1,7 @@
 <?php
 namespace wcf\form;
 use wcf\data\user\User;
-use wcf\data\user\UserEditor;
+use wcf\data\user\UserAction;
 use wcf\system\exception\UserInputException;
 use wcf\system\mail\Mail;
 use wcf\system\request\LinkHandler;
@@ -13,7 +13,7 @@ use wcf\util\UserRegistrationUtil;
  * Shows the new email activation code form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	form
@@ -21,7 +21,7 @@ use wcf\util\UserRegistrationUtil;
  */
 class EmailNewActivationCodeForm extends RegisterNewActivationCodeForm {
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -50,7 +50,7 @@ class EmailNewActivationCodeForm extends RegisterNewActivationCodeForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
@@ -59,8 +59,12 @@ class EmailNewActivationCodeForm extends RegisterNewActivationCodeForm {
 		$activationCode = UserRegistrationUtil::getActivationCode();
 		
 		// save user
-		$userEditor = new UserEditor($this->user);
-		$userEditor->update(array('reactivationCode' => $activationCode));
+		$this->objectAction = new UserAction(array($this->user), 'update', array(
+			'data' => array_merge($this->additionalFields, array(
+				'reactivationCode' => $activationCode
+			))
+		));
+		$this->objectAction->executeAction();
 		
 		// send activation mail
 		$messageData = array(

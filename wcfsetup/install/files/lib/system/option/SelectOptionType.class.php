@@ -2,21 +2,22 @@
 namespace wcf\system\option;
 use wcf\data\option\Option;
 use wcf\system\WCF;
-use wcf\util\StringUtil;
 
 /**
  * Option type implementation for select lists.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.option
  * @category	Community Framework
  */
 class SelectOptionType extends RadioButtonOptionType {
+	protected $allowEmptyValue = false; 
+	
 	/**
-	 * @see	wcf\system\option\IOptionType::getFormElement()
+	 * @see	\wcf\system\option\IOptionType::getFormElement()
 	 */
 	public function getFormElement(Option $option, $value) {
 		// get options
@@ -27,22 +28,24 @@ class SelectOptionType extends RadioButtonOptionType {
 			'enableOptions' => $options['enableOptions'],
 			'option' => $option,
 			'selectOptions' => $option->parseSelectOptions(),
-			'value' => $value
+			'value' => $value,
+			'allowEmptyValue' => ($this->allowEmptyValue || $option->allowEmptyValue)
 		));
 		return WCF::getTPL()->fetch('selectOptionType');
 	}
 	
 	/**
-	 * @see	wcf\system\option\ISearchableUserOption::getSearchFormElement()
+	 * @see	\wcf\system\option\ISearchableUserOption::getSearchFormElement()
 	 */
 	public function getSearchFormElement(Option $option, $value) {
+		$this->allowEmptyValue = true;
 		return $this->getFormElement($option, $value);
 	}
 	
 	/**
 	 * Prepares JSON-encoded values for disabling or enabling dependent options.
 	 * 
-	 * @param	wcf\data\option\Option	$option
+	 * @param	\wcf\data\option\Option	$option
 	 * @return	array
 	 */
 	protected function parseEnableOptions(Option $option) {
@@ -54,7 +57,7 @@ class SelectOptionType extends RadioButtonOptionType {
 			foreach ($options as $key => $optionData) {
 				$tmp = explode(',', $optionData);
 				
-				foreach ($optionData as $item) {
+				foreach ($tmp as $item) {
 					if ($item{0} == '!') {
 						if (!empty($disableOptions)) $disableOptions .= ',';
 						$disableOptions .= "{ value: '".$key."', option: '".mb_substr($item, 1)."' }";

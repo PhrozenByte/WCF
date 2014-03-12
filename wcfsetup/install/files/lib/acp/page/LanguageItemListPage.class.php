@@ -9,9 +9,9 @@ use wcf\util\StringUtil;
 
 /**
  * Shows a list of language items.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.page
@@ -19,69 +19,69 @@ use wcf\util\StringUtil;
  */
 class LanguageItemListPage extends AbstractPage {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.language.item.list';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.language.canManageLanguage');
 	
 	/**
 	 * language item list
-	 * @var wcf\data\language\item\LanguageItemList
+	 * @var	\wcf\data\language\item\LanguageItemList
 	 */
 	public $languageItemList = null;
 	
 	/**
 	 * language id
-	 * @var integer
+	 * @var	integer
 	 */
 	public $languageID = 0;
 	
 	/**
 	 * language category id
-	 * @var integer
+	 * @var	integer
 	 */
 	public $languageCategoryID = 0;
 	
 	/**
 	 * language item name
-	 * @var string
+	 * @var	string
 	 */
 	public $languageItem = '';
 	
 	/**
 	 * language item value
-	 * @var string
+	 * @var	string
 	 */
 	public $languageItemValue = '';
 	
 	/**
 	 * search for custom values
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $hasCustomValue = 0;
 	
 	/**
 	 * available languages
-	 * @var array
+	 * @var	array
 	 */
 	public $availableLanguages = array();
 	
 	/**
 	 * available language categories
-	 * @var array
+	 * @var	array
 	 */
 	public $availableLanguageCategories = array();
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
-	
+		
 		if (isset($_REQUEST['id'])) $this->languageID = intval($_REQUEST['id']);
 		if (isset($_REQUEST['languageCategoryID'])) $this->languageCategoryID = intval($_REQUEST['languageCategoryID']);
 		if (isset($_REQUEST['languageItem'])) $this->languageItem = StringUtil::trim($_REQUEST['languageItem']);
@@ -90,7 +90,7 @@ class LanguageItemListPage extends AbstractPage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -98,7 +98,7 @@ class LanguageItemListPage extends AbstractPage {
 		// get languages
 		$this->availableLanguages = LanguageFactory::getInstance()->getLanguages();
 		
-		// get categories		
+		// get categories
 		$languageCategoryList = new LanguageCategoryList();
 		$languageCategoryList->readObjects();
 		$this->availableLanguageCategories = $languageCategoryList->getObjects();
@@ -117,17 +117,17 @@ class LanguageItemListPage extends AbstractPage {
 		if ($this->languageCategoryID) $this->languageItemList->getConditionBuilder()->add('languageCategoryID = ?', array($this->languageCategoryID));
 		if ($this->languageItem) $this->languageItemList->getConditionBuilder()->add('languageItem LIKE ?', array($this->languageItem.'%'));
 		if ($this->languageItemValue) $this->languageItemList->getConditionBuilder()->add('((languageUseCustomValue = 0 AND languageItemValue LIKE ?) OR languageCustomItemValue LIKE ?)', array('%'.$this->languageItemValue.'%', '%'.$this->languageItemValue.'%'));
-		if ($this->hasCustomValue) $this->languageItemList->getConditionBuilder()->add("languageCustomItemValue <> ''");
+		if ($this->hasCustomValue) $this->languageItemList->getConditionBuilder()->add("languageCustomItemValue IS NOT NULL");
 		if (!$this->languageCategoryID) $this->languageItemList->sqlLimit = 100;
 		$this->languageItemList->readObjects();
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
-	
+		
 		WCF::getTPL()->assign(array(
 			'objects' => $this->languageItemList,
 			'languageID' => $this->languageID,

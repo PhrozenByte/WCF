@@ -45,9 +45,7 @@
 	<h1>{lang}wcf.acp.pageMenu.{$action}{/lang}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $success|isset}
 	<p class="success">{lang}wcf.global.success.{$action}{/lang}</p>
@@ -111,11 +109,11 @@
 			<dl{if $errorField == 'pageMenuItem'} class="formError"{/if}>
 				<dt><label for="pageMenuItem">{lang}wcf.acp.pageMenu.pageMenuItem{/lang}</label></dt>
 				<dd>
-					<input type="text" name="pageMenuItem" id="pageMenuItem" value="{$pageMenuItem}" class="long" required="required" />
+					<input type="text" name="pageMenuItem" id="pageMenuItem" value="{$i18nPlainValues['pageMenuItem']}" class="long" required="required" />
 					{if $errorField == 'pageMenuItem'}
 						<small class="innerError">
-							{if $errorType == 'empty'}
-								{lang}wcf.global.form.error.empty{/lang}
+							{if $errorType == 'multilingual'}
+								{lang}wcf.global.form.error.multilingual{/lang}
 							{else}
 								{lang}wcf.acp.pageMenu.pageMenuItem.error.{$errorType}{/lang}
 							{/if}
@@ -219,6 +217,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

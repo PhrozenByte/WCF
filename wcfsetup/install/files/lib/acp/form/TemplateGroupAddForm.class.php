@@ -10,9 +10,9 @@ use wcf\util\StringUtil;
 
 /**
  * Shows the form for adding new template groups.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -20,41 +20,41 @@ use wcf\util\StringUtil;
  */
 class TemplateGroupAddForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.template.group.add';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.template.canManageTemplate');
 	
 	/**
 	 * template group name
-	 * @var string
+	 * @var	string
 	 */
 	public $templateGroupName = '';
 	
 	/**
 	 * template group folder
-	 * @var integer
+	 * @var	integer
 	 */
 	public $templateGroupFolderName = '';
 	
 	/**
 	 * parent template group id
-	 * @var integer
+	 * @var	integer
 	 */
 	public $parentTemplateGroupID = 0;
 	
 	/**
 	 * available template groups
-	 * @var array
+	 * @var	array
 	 */
 	public $availableTemplateGroups = array();
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -68,7 +68,7 @@ class TemplateGroupAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -84,7 +84,7 @@ class TemplateGroupAddForm extends AbstractForm {
 		if (empty($this->templateGroupName)) {
 			throw new UserInputException('templateGroupName');
 		}
-	
+		
 		$sql = "SELECT	COUNT(*) AS count
 			FROM	wcf".WCF_N."_template_group
 			WHERE	templateGroupName = ?";
@@ -107,7 +107,7 @@ class TemplateGroupAddForm extends AbstractForm {
 		if (!preg_match('/^[a-z0-9_\- ]+\/$/i', $this->templateGroupFolderName)) {
 			throw new UserInputException('templateGroupFolderName', 'notValid');
 		}
-	
+		
 		$sql = "SELECT	COUNT(*) AS count
 			FROM	wcf".WCF_N."_template_group
 			WHERE	templateGroupFolderName = ?";
@@ -120,16 +120,16 @@ class TemplateGroupAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
 		
-		$this->objectAction = new TemplateGroupAction(array(), 'create', array('data' => array(
+		$this->objectAction = new TemplateGroupAction(array(), 'create', array('data' => array_merge($this->additionalFields, array(
 			'templateGroupName' => $this->templateGroupName,
 			'templateGroupFolderName' => $this->templateGroupFolderName,
 			'parentTemplateGroupID' => ($this->parentTemplateGroupID ?: null)
-		)));
+		))));
 		$this->objectAction->executeAction();
 		$this->saved();
 		
@@ -143,18 +143,19 @@ class TemplateGroupAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
-	
+		
 		$templateGroupList = new TemplateGroupList();
+		$templateGroupList->sqlOrderBy = "templateGroupName";
 		$templateGroupList->readObjects();
 		$this->availableTemplateGroups = $templateGroupList->getObjects();
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

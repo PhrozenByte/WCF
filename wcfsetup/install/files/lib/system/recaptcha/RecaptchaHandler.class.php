@@ -16,7 +16,7 @@ use wcf\util\UserUtil;
  * and released under the conditions of the GNU Lesser General Public License.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.recaptcha
@@ -62,7 +62,7 @@ class RecaptchaHandler extends SingletonFactory {
 	const ERROR_NOT_REACHABLE = 'recaptcha-not-reachable';
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		// set appropriate language code, fallback to EN if language code is not known to reCAPTCHA-API
@@ -143,7 +143,7 @@ class RecaptchaHandler extends SingletonFactory {
 	 * @param	string		$response
 	 */
 	protected function verify($challenge, $response) {
-		$request = new HTTPRequest('http://www.google.com/recaptcha/api/verify', array(), array(
+		$request = new HTTPRequest('http://www.google.com/recaptcha/api/verify', array('timeout' => 10), array(
 			'privatekey' => $this->privateKey,
 			'remoteip' => UserUtil::getIpAddress(),
 			'challenge' => $challenge,

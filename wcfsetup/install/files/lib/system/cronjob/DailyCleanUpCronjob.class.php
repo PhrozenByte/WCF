@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Cronjob for a daily system cleanup.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cronjob
@@ -17,13 +17,13 @@ use wcf\system\WCF;
  */
 class DailyCleanUpCronjob extends AbstractCronjob {
 	/**
-	 * @see	wcf\system\cronjob\ICronjob::execute()
+	 * @see	\wcf\system\cronjob\ICronjob::execute()
 	 */
 	public function execute(Cronjob $cronjob) {
 		parent::execute($cronjob);
 		
 		// clean up search keywords
-		$sql = "SELECT 	AVG(searches) AS searches
+		$sql = "SELECT	AVG(searches) AS searches
 			FROM	wcf".WCF_N."_search_keyword";
 		$statement = WCF::getDB()->prepareStatement($sql);
 		$statement->execute();

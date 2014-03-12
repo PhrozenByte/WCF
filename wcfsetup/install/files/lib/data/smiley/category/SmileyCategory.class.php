@@ -9,7 +9,7 @@ use wcf\system\exception\SystemException;
  * Represents a smiley category.
  * 
  * @author	Tim Duesterhus, Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.smiley.category
@@ -30,7 +30,7 @@ class SmileyCategory extends AbstractDecoratedCategory implements \Countable, IT
 	
 	/**
 	 * list of assigned smilies
-	 * @var	array<wcf\data\smiley\Smiley>
+	 * @var	array<\wcf\data\smiley\Smiley>
 	 */
 	public $smilies = null;
 	
@@ -62,7 +62,7 @@ class SmileyCategory extends AbstractDecoratedCategory implements \Countable, IT
 	/**
 	 * CAUTION: This methods does not return the current iterator index,
 	 * rather than the object key which maps to that index.
-	 *
+	 * 
 	 * @see	\Iterator::key()
 	 */
 	public function key() {
@@ -102,7 +102,7 @@ class SmileyCategory extends AbstractDecoratedCategory implements \Countable, IT
 	}
 	
 	/**
-	 * @see	wcf\data\ITraversableObject::seekTo()
+	 * @see	\wcf\data\ITraversableObject::seekTo()
 	 */
 	public function seekTo($objectID) {
 		$this->index = array_search($objectID, $this->indexToObject);
@@ -113,7 +113,7 @@ class SmileyCategory extends AbstractDecoratedCategory implements \Countable, IT
 	}
 	
 	/**
-	 * @see	wcf\data\ITraversableObject::search()
+	 * @see	\wcf\data\ITraversableObject::search()
 	 */
 	public function search($objectID) {
 		try {

@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Installs, updates and deletes templates.
  * 
  * @author	Alexander Ebert, Matthias Schmidt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package.plugin
@@ -17,12 +17,12 @@ use wcf\system\WCF;
  */
 class TemplatePackageInstallationPlugin extends AbstractPackageInstallationPlugin {
 	/**
-	 * @see	wcf\system\package\plugin\AbstractPackageInstallationPlugin::$tableName
+	 * @see	\wcf\system\package\plugin\AbstractPackageInstallationPlugin::$tableName
 	 */
 	public $tableName = 'template';
 	
 	/**
-	 * @see	wcf\system\package\plugin\IPackageInstallationPlugin::install()
+	 * @see	\wcf\system\package\plugin\IPackageInstallationPlugin::install()
 	 */
 	public function install() {
 		parent::install();
@@ -55,9 +55,12 @@ class TemplatePackageInstallationPlugin extends AbstractPackageInstallationPlugi
 	 */
 	public function uninstall() {
 		// fetch templates from log
-		$sql = "SELECT	templateName, application
-			FROM	wcf".WCF_N."_template
-			WHERE	packageID = ?";
+		$sql = "SELECT		template.templateName, template.application,
+					template_group.templateGroupFolderName
+			FROM		wcf".WCF_N."_template template
+			LEFT JOIN	wcf".WCF_N."_template_group template_group
+			ON		(template_group.templateGroupID = template.templateGroupID)
+			WHERE		packageID = ?";
 		$statement = WCF::getDB()->prepareStatement($sql);
 		$statement->execute(array($this->installation->getPackageID()));
 		
@@ -67,7 +70,7 @@ class TemplatePackageInstallationPlugin extends AbstractPackageInstallationPlugi
 				$templates[$row['application']] = array();
 			}
 			
-			$templates[$row['application']][] = 'templates/'.$row['templateName'].'.tpl';
+			$templates[$row['application']][] = 'templates/'.$row['templateGroupFolderName'].$row['templateName'].'.tpl';
 		}
 		
 		foreach ($templates as $application => $templateNames) {

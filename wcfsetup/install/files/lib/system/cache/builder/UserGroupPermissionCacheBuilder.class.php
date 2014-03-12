@@ -10,7 +10,7 @@ use wcf\util\StringUtil;
  * Caches the merged user group options for a certain user group combination.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cache.builder
@@ -19,18 +19,18 @@ use wcf\util\StringUtil;
 class UserGroupPermissionCacheBuilder extends AbstractCacheBuilder {
 	/**
 	 * list of used group option type objects
-	 * @var	array<wcf\system\option\group\IGroupOptionType>
+	 * @var	array<\wcf\system\option\group\IGroupOptionType>
 	 */
 	protected $typeObjects = array();
 	
 	/**
-	 * @see	wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
+	 * @see	\wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
 	 */
 	public function rebuild(array $parameters) {
 		$data = array();
 		
 		// get all options
-		$sql = "SELECT	optionName, optionID 
+		$sql = "SELECT	optionName, optionID
 			FROM	wcf".WCF_N."_user_group_option";
 		$statement = WCF::getDB()->prepareStatement($sql);
 		$statement->execute();
@@ -95,7 +95,7 @@ class UserGroupPermissionCacheBuilder extends AbstractCacheBuilder {
 	 * Returns an object of the requested group option type.
 	 * 
 	 * @param	string			$type
-	 * @return	wcf\system\option\user\group\IUserGroupOptionType
+	 * @return	\wcf\system\option\user\group\IUserGroupOptionType
 	 */
 	protected function getTypeObject($type) {
 		if (!isset($this->typeObjects[$type])) {

@@ -70,7 +70,7 @@ final class Regex {
 	
 	/**
 	 * indicates that pattern string is treated as UTF-8.
-	 * @var integer
+	 * @var	integer
 	 */
 	const UTF_8 = 128;
 	
@@ -211,7 +211,7 @@ final class Regex {
 	/**
 	 * Replaces part of the string with the regex.
 	 * 
-	 * @param	string		$string	
+	 * @param	string		$string
 	 * @param	mixed		$replacement	replacement-string or instance of wcf\system\Callback
 	 * @return	string
 	 */

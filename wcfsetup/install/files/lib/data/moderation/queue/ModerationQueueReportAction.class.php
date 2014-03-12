@@ -10,7 +10,7 @@ use wcf\util\StringUtil;
  * Executes actions for reports.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.moderation.queue
@@ -18,13 +18,13 @@ use wcf\util\StringUtil;
  */
 class ModerationQueueReportAction extends ModerationQueueAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
 	 */
 	protected $allowGuestAccess = array('prepareReport', 'removeContent', 'removeReport', 'report');
 	
 	/**
 	 * moderation queue editor object
-	 * @var	wcf\data\moderation\queue\ModerationQueueEditor
+	 * @var	\wcf\data\moderation\queue\ModerationQueueEditor
 	 */
 	public $queue = null;
 	

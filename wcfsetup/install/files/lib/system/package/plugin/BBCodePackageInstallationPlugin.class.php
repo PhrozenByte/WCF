@@ -1,6 +1,7 @@
 <?php
 namespace wcf\system\package\plugin;
 use wcf\data\bbcode\attribute\BBCodeAttributeEditor;
+use wcf\data\package\PackageCache;
 use wcf\system\exception\SystemException;
 use wcf\system\WCF;
 
@@ -8,7 +9,7 @@ use wcf\system\WCF;
  * Installs, updates and deletes bbcodes.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.package.plugin
@@ -16,17 +17,17 @@ use wcf\system\WCF;
  */
 class BBCodePackageInstallationPlugin extends AbstractXMLPackageInstallationPlugin {
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::$className
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::$className
 	 */
 	public $className = 'wcf\data\bbcode\BBCodeEditor';
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractPackageInstallationPlugin::$tableName
+	 * @see	\wcf\system\package\plugin\AbstractPackageInstallationPlugin::$tableName
 	 */
 	public $tableName = 'bbcode';
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::$tagName
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::$tagName
 	 */
 	public $tagName = 'bbcode';
 	
@@ -37,7 +38,7 @@ class BBCodePackageInstallationPlugin extends AbstractXMLPackageInstallationPlug
 	protected $attributes = array();
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::handleDelete()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::handleDelete()
 	 */
 	protected function handleDelete(array $items) {
 		$sql = "DELETE FROM	wcf".WCF_N."_".$this->tableName."
@@ -53,7 +54,7 @@ class BBCodePackageInstallationPlugin extends AbstractXMLPackageInstallationPlug
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::getElement()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::getElement()
 	 */
 	protected function getElement(\DOMXPath $xpath, array &$elements, \DOMElement $element) {
 		$nodeValue = $element->nodeValue;
@@ -78,7 +79,7 @@ class BBCodePackageInstallationPlugin extends AbstractXMLPackageInstallationPlug
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::prepareImport()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::prepareImport()
 	 */
 	protected function prepareImport(array $data) {
 		$data = array(
@@ -101,16 +102,26 @@ class BBCodePackageInstallationPlugin extends AbstractXMLPackageInstallationPlug
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::validateImport()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::validateImport()
 	 */
 	protected function validateImport(array $data) {
 		if ($data['bbcodeTag'] == 'all' || $data['bbcodeTag'] == 'none') {
 			throw new SystemException("BBCodes can't be called 'all' or 'none'");
 		}
+		
+		// check if bbcode tag already exists
+		$sqlData = $this->findExistingItem($data);
+		$statement = WCF::getDB()->prepareStatement($sqlData['sql']);
+		$statement->execute($sqlData['parameters']);
+		$row = $statement->fetchArray();
+		if ($row && $row['packageID'] != $this->installation->getPackageID()) {
+			$package = PackageCache::getInstance()->getPackage($row['packageID']);
+			throw new SystemException("BBCode '" . $data['bbcodeTag'] . "' is already provided by '" . $package . "' ('" . $package->package . "').");
+		}
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::findExistingItem()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::findExistingItem()
 	 */
 	protected function findExistingItem(array $data) {
 		$sql = "SELECT	*
@@ -129,7 +140,7 @@ class BBCodePackageInstallationPlugin extends AbstractXMLPackageInstallationPlug
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::import()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::import()
 	 */
 	protected function import(array $row, array $data) {
 		// extract attributes
@@ -144,13 +155,13 @@ class BBCodePackageInstallationPlugin extends AbstractXMLPackageInstallationPlug
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::postImport()
+	 * @see	\wcf\system\package\plugin\AbstractXMLPackageInstallationPlugin::postImport()
 	 */
 	protected function postImport() {
 		// clear attributes
 		$sql = "DELETE FROM	wcf".WCF_N."_bbcode_attribute
 			WHERE		bbcodeID IN (
-						SELECT 	bbcodeID
+						SELECT	bbcodeID
 						FROM	wcf".WCF_N."_bbcode
 						WHERE	packageID = ?
 					)";

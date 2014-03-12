@@ -6,9 +6,9 @@ use wcf\system\SingletonFactory;
 
 /**
  * Caches parsed user signatures.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.user.signature
@@ -17,15 +17,15 @@ use wcf\system\SingletonFactory;
 class SignatureCache extends SingletonFactory {
 	/**
 	 * cached signatures
-	 * @var string
+	 * @var	string
 	 */
 	protected $signatures = array();
 	
 	/**
 	 * Returns a parsed user signature.
 	 * 
-	 * @param	wcf\data\user\User	$user
-	 * @return 	string
+	 * @param	\wcf\data\user\User	$user
+	 * @return	string
 	 */
 	public function getSignature(User $user) {
 		if (!isset($this->signatures[$user->userID])) {

@@ -6,7 +6,7 @@ use wcf\data\IDatabaseObjectProcessor;
  * Any special bbcode class should implement this interface.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode
@@ -19,7 +19,7 @@ interface IBBCode extends IDatabaseObjectProcessor {
 	 * @param	array					$openingTag
 	 * @param	string					$content
 	 * @param	array					$closingTag
-	 * @param	wcf\system\bbcode\BBCodeParser		$parser
+	 * @param	\wcf\system\bbcode\BBCodeParser		$parser
 	 * @return	string
 	 */
 	public function getParsedTag(array $openingTag, $content, array $closingTag, BBCodeParser $parser);

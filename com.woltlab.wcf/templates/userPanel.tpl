@@ -80,6 +80,8 @@
 							<a href="{link controller='GoogleAuth'}{/link}" class="button"><span class="icon icon16 icon-google-plus"></span> <span>{lang}wcf.user.3rdparty.google.login{/lang}</span></a>
 						</li>
 					{/if}
+					
+					{event name='3rdpartyButtons'}
 				{/capture}
 				
 				<form method="post" action="{link controller='Login'}{/link}">
@@ -121,7 +123,9 @@
 						
 						<div class="formSubmit">
 							<input type="submit" id="loginSubmitButton" name="submitButton" value="{lang}wcf.user.button.login{/lang}" accesskey="s" />
+							<a class="button" href="{link controller='LostPassword'}{/link}"><span>{lang}wcf.user.lostPassword{/lang}</span></a>
 							<input type="hidden" name="url" value="{$__wcf->session->requestURI}" />
+							{@SECURITY_TOKEN_INPUT_TAG}
 						</div>
 					</fieldset>
 					

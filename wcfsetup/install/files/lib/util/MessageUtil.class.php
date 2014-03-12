@@ -7,7 +7,7 @@ use wcf\system\Regex;
  * Contains message-related functions.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	util
@@ -21,7 +21,7 @@ class MessageUtil {
 	 * @return	string
 	 */
 	public static function stripCrap($text) {
-		// strip session links, security tokens and access tokens	
+		// strip session links, security tokens and access tokens
 		$text = Regex::compile('(?<=\?|&)([st]=[a-f0-9]{40}|at=\d+-[a-f0-9]{40})')->replace($text, '');
 		
 		// convert html entities (utf-8)
@@ -32,14 +32,18 @@ class MessageUtil {
 		// unify new lines
 		$text = StringUtil::unifyNewlines($text);
 		
-		// remove emoji (MySQL 5.1 does not support them)
-		$text = preg_replace('~\xF0\x9F[\x80-\xBF][\x80-\xBF]~', '', $text);
+		// remove 4 byte utf-8 characters as MySQL < 5.5 does not support them
+		// see http://stackoverflow.com/a/16902461/782822
+		$text = preg_replace('/[\xF0-\xF7].../s', '', $text);
+		
+		// remove control characters
+		$text = preg_replace('~[\x00-\x08\x0B-\x1F\x7F]~', '', $text);
 		
 		return $text;
 	}
 	
 	/**
-	 * Gets mentioned users.
+	 * Returns the mentioned users in the given text.
 	 * 
 	 * @param	string		$text
 	 * @return	array<string>
@@ -77,8 +81,8 @@ class MessageUtil {
 	}
 	
 	/**
-	 * Gets quoted users.
-	 *
+	 * Returns the quoted users in the given text.
+	 * 
 	 * @param	string		$text
 	 * @return	array<string>
 	 */
@@ -101,5 +105,17 @@ class MessageUtil {
 		}
 		
 		return $usernames;
+	}
+	
+	/**
+	 * Truncates a formatted message and keeps the HTML syntax intact.
+	 * 
+	 * @param	string		$message		string which shall be truncated
+	 * @param	integer		$maxLength		string length after truncating
+	 * @return	string					truncated string
+	 */
+	public static function truncateFormattedMessage($message, $maxLength = 1000) {
+		$message = Regex::compile('<!-- begin:parser_nonessential -->.*?<!-- end:parser_nonessential -->', Regex::DOT_ALL)->replace($message, '');
+		return StringUtil::truncateHTML($message, $maxLength);
 	}
 }

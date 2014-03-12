@@ -6,9 +6,9 @@ use wcf\system\WCF;
 
 /**
  * List of deleted content.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	page
@@ -16,54 +16,55 @@ use wcf\system\WCF;
  */
 class DeletedContentListPage extends MultipleLinkPage {
 	/**
-	 * @see	wcf\page\AbstractPage::$loginRequired
+	 * @see	\wcf\page\AbstractPage::$loginRequired
 	 */
 	public $loginRequired = true;
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('mod.general.canUseModeration');
 	
 	/**
 	 * object type object
-	 * @var	wcf\data\object\type\ObjectType
+	 * @var	\wcf\data\object\type\ObjectType
 	 */
 	public $objectType = null;
 	
 	/**
-	 * @see wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
-	
+		
 		// get object type
 		if (isset($_REQUEST['objectType'])) {
 			$this->objectType = ObjectTypeCache::getInstance()->getObjectTypeByName('com.woltlab.wcf.deletedContent', $_REQUEST['objectType']);
-			if ($this->objectType === null) {
-				throw new IllegalLinkException();
-			}
 		}
 		else {
 			// use first object type
 			$objectTypes = ObjectTypeCache::getInstance()->getObjectTypes('com.woltlab.wcf.deletedContent');
-			$this->objectType = reset($objectTypes);
+			if (!empty($objectTypes)) $this->objectType = reset($objectTypes);
+		}
+		
+		if ($this->objectType === null) {
+			throw new IllegalLinkException();
 		}
 	}
 	
 	/**
-	 * @see wcf\page\MultipleLinkPage::readParameters()
+	 * @see	\wcf\page\MultipleLinkPage::readParameters()
 	 */
 	protected function initObjectList() {
 		$this->objectList = $this->objectType->getProcessor()->getObjectList();
 	}
 	
 	/**
-	 * @see wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
-	
+		
 		WCF::getTPL()->assign(array(
 			'availableObjectTypes' => ObjectTypeCache::getInstance()->getObjectTypes('com.woltlab.wcf.deletedContent'),
 			'objectType' => $this->objectType->objectType,

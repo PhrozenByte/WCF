@@ -70,7 +70,7 @@
 				<div class="userCredits">
 					<dl class="plain dataList">
 						{content}
-							{if MESSAGE_SIDEBAR_ENABLE_LIKES_RECEIVED && $userProfile->likesReceived}
+							{if MODULE_LIKE && MESSAGE_SIDEBAR_ENABLE_LIKES_RECEIVED && $userProfile->likesReceived}
 								<dt>{lang}wcf.like.likesReceived{/lang}</dt>
 								<dd>{#$userProfile->likesReceived}</dd>
 							{/if}
@@ -80,7 +80,7 @@
 								<dd>{#$userProfile->activityPoints}</dd>
 							{/if}
 							{event name='userCredits'}
-							{if MESSAGE_SIDEBAR_USER_OPTIONS}
+							{if MESSAGE_SIDEBAR_USER_OPTIONS && $userProfile->isAccessible('canViewProfile')}
 								{assign var='__sidebarUserOptions' value=','|explode:MESSAGE_SIDEBAR_USER_OPTIONS}
 								{foreach from=$__sidebarUserOptions item='__sidebarUserOption'}
 									{if $userProfile->getUserOption($__sidebarUserOption)}

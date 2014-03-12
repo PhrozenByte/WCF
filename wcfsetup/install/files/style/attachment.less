@@ -22,6 +22,7 @@
 			
 			> li {
 				margin: 0 0 @wcfGapMedium @wcfGapSmall;
+				vertical-align: top;
 			}
 		}
 	}
@@ -41,7 +42,6 @@
 	min-height: ~"@{wcf_option_attachment_thumbnail_height}px";
 	min-width: ~"@{wcf_option_attachment_thumbnail_width}px";
 	position: relative;
-	vertical-align: top;
 	
 	> a {
 		display: inline-block;
@@ -87,9 +87,7 @@
 	padding-bottom: @wcfGapSmall;
 		
 	> li {
-		float: left;
 		min-height: 60px;
-		width: 33%;
 		
 		> div {
 			> div {
@@ -114,6 +112,15 @@
 					display: inline-block;
 				}
 			}
+		}
+	}
+}
+
+@media only screen and (min-width: 801px) {
+	.formAttachmentList {
+		> li {
+			float: left;
+			width: 33%;
 		}
 	}
 }

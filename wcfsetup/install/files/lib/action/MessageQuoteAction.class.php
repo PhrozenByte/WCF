@@ -12,7 +12,7 @@ use wcf\util\StringUtil;
  * Handles message quotes.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	action
@@ -39,7 +39,7 @@ class MessageQuoteAction extends AJAXProxyAction {
 	public $objectTypes = array();
 	
 	/**
-	 * @see	wcf\action\IAction::readParameters()
+	 * @see	\wcf\action\IAction::readParameters()
 	 */
 	public function readParameters() {
 		AbstractSecureAction::readParameters();
@@ -60,7 +60,7 @@ class MessageQuoteAction extends AJAXProxyAction {
 	}
 	
 	/**
-	 * @see	wcf\action\IAction::execute()
+	 * @see	\wcf\action\IAction::execute()
 	 */
 	public function execute() {
 		AbstractAction::execute();

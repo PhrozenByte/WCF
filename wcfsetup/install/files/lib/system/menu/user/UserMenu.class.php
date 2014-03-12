@@ -8,7 +8,7 @@ use wcf\system\menu\TreeMenu;
  * Builds the user menu.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.menu.user
@@ -16,7 +16,7 @@ use wcf\system\menu\TreeMenu;
  */
 class UserMenu extends TreeMenu {
 	/**
-	 * @see	wcf\system\menu\TreeMenu::loadCache()
+	 * @see	\wcf\system\menu\TreeMenu::loadCache()
 	 */
 	protected function loadCache() {
 		parent::loadCache();
@@ -25,7 +25,7 @@ class UserMenu extends TreeMenu {
 	}
 	
 	/**
-	 * @see	wcf\system\menu\TreeMenu::checkMenuItem()
+	 * @see	\wcf\system\menu\TreeMenu::checkMenuItem()
 	 */
 	protected function checkMenuItem(ITreeMenuItem $item) {
 		if (!parent::checkMenuItem($item)) return false;

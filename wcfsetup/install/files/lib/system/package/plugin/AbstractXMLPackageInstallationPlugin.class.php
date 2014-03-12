@@ -11,7 +11,7 @@ use wcf\util\XML;
  * Abstract implementation of a package installation plugin using a XML file.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package.plugin
@@ -31,7 +31,7 @@ abstract class AbstractXMLPackageInstallationPlugin extends AbstractPackageInsta
 	public $tagName = '';
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractPackageInstallationPlugin::install()
+	 * @see	\wcf\system\package\plugin\AbstractPackageInstallationPlugin::install()
 	 */
 	public function __construct(PackageInstallationDispatcher $installation, $instruction = array()) {
 		parent::__construct($installation, $instruction);
@@ -48,7 +48,7 @@ abstract class AbstractXMLPackageInstallationPlugin extends AbstractPackageInsta
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\IPackageInstallationPlugin::install()
+	 * @see	\wcf\system\package\plugin\IPackageInstallationPlugin::install()
 	 */
 	public function install() {
 		parent::install();
@@ -70,7 +70,7 @@ abstract class AbstractXMLPackageInstallationPlugin extends AbstractPackageInsta
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\IPackageInstallationPlugin::uninstall()
+	 * @see	\wcf\system\package\plugin\IPackageInstallationPlugin::uninstall()
 	 */
 	public function uninstall() {
 		parent::uninstall();
@@ -181,7 +181,7 @@ abstract class AbstractXMLPackageInstallationPlugin extends AbstractPackageInsta
 	 * @param	array		$elements
 	 * @param	\DOMElement	$element
 	 */
-	protected function getElement(\DOMXpath $xpath, array &$elements, \DOMElement $element) {
+	protected function getElement(\DOMXPath $xpath, array &$elements, \DOMElement $element) {
 		$elements[$element->tagName] = $element->nodeValue;
 	}
 	
@@ -190,7 +190,7 @@ abstract class AbstractXMLPackageInstallationPlugin extends AbstractPackageInsta
 	 * 
 	 * @param	array		$row
 	 * @param	array		$data
-	 * @return	wcf\data\IStorableObject
+	 * @return	\wcf\data\IStorableObject
 	 */
 	protected function import(array $row, array $data) {
 		if (empty($row)) {
@@ -311,7 +311,7 @@ abstract class AbstractXMLPackageInstallationPlugin extends AbstractPackageInsta
 	 * @param	string		$parentName
 	 * @param	string		$columnName
 	 * @param	string		$tableNameExtension
-	 * @return	integer	
+	 * @return	integer
 	 */
 	protected function getShowOrder($showOrder, $parentName = null, $columnName = null, $tableNameExtension = '') {
 		if ($showOrder === null) {

@@ -2,11 +2,13 @@
 namespace wcf\data\style;
 use wcf\data\language\LanguageList;
 use wcf\data\package\Package;
+use wcf\data\package\PackageCache;
 use wcf\data\template\group\TemplateGroup;
 use wcf\data\template\group\TemplateGroupAction;
 use wcf\data\template\TemplateEditor;
 use wcf\data\DatabaseObjectEditor;
 use wcf\data\IEditableCachedObject;
+use wcf\system\application\ApplicationHandler;
 use wcf\system\cache\builder\StyleCacheBuilder;
 use wcf\system\exception\SystemException;
 use wcf\system\image\ImageHandler;
@@ -27,7 +29,7 @@ use wcf\util\XMLWriter;
  * Provides functions to edit, import, export and delete a style.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.style
@@ -37,12 +39,12 @@ class StyleEditor extends DatabaseObjectEditor implements IEditableCachedObject 
 	const INFO_FILE = 'style.xml';
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	\wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\style\Style';
 	
 	/**
-	 * @see	wcf\data\IEditableObject::update()
+	 * @see	\wcf\data\IEditableObject::update()
 	 */
 	public function update(array $parameters = array()) {
 		$variables = null;
@@ -66,7 +68,7 @@ class StyleEditor extends DatabaseObjectEditor implements IEditableCachedObject 
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableObject::delete()
+	 * @see	\wcf\data\IEditableObject::delete()
 	 */
 	public function delete() {
 		parent::delete();
@@ -120,7 +122,7 @@ class StyleEditor extends DatabaseObjectEditor implements IEditableCachedObject 
 	/**
 	 * Reads the data of a style exchange format file.
 	 * 
-	 * @param	wcf\system\io\Tar	$tar
+	 * @param	\wcf\system\io\Tar	$tar
 	 * @return	array
 	 */
 	public static function readStyleData(Tar $tar) {
@@ -289,7 +291,7 @@ class StyleEditor extends DatabaseObjectEditor implements IEditableCachedObject 
 	 * @param	StyleEditor	$style
 	 * @return	StyleEditor
 	 */
-	public static function import($filename, $packageID = PACKAGE_ID, StyleEditor $style = null) {
+	public static function import($filename, $packageID = 1, StyleEditor $style = null) {
 		// open file
 		$tar = new Tar($filename);
 		
@@ -491,7 +493,7 @@ class StyleEditor extends DatabaseObjectEditor implements IEditableCachedObject 
 	/**
 	 * Saves localized style descriptions.
 	 * 
-	 * @param	wcf\data\style\StyleEditor	$styleEditor
+	 * @param	\wcf\data\style\StyleEditor	$styleEditor
 	 * @param	array<string>			$descriptions
 	 */
 	protected static function saveLocalizedDescriptions(StyleEditor $styleEditor, array $descriptions) {
@@ -656,7 +658,7 @@ class StyleEditor extends DatabaseObjectEditor implements IEditableCachedObject 
 			
 			// append templates to tar
 			// get templates
-			$sql = "SELECT		template.*, package.package, package.packageDir
+			$sql = "SELECT		template.*, package.package
 				FROM		wcf".WCF_N."_template template
 				LEFT JOIN	wcf".WCF_N."_package package
 				ON		(package.packageID = template.packageID)
@@ -665,9 +667,17 @@ class StyleEditor extends DatabaseObjectEditor implements IEditableCachedObject 
 			$statement->execute(array($this->templateGroupID));
 			while ($row = $statement->fetchArray()) {
 				$packageDir = 'com.woltlab.wcf';
-				if (!empty($row['packageDir'])) $packageDir = $row['package'];
 				
-				$filename = FileUtil::addTrailingSlash(FileUtil::getRealPath(WCF_DIR . $row['packageDir'] . 'templates/' . $templateGroup->templateGroupFolderName)) . $row['templateName'] . '.tpl';
+				if ($row['application'] != 'wcf') {
+					$application = ApplicationHandler::getInstance()->getApplication($row['application']);
+					$packageDir = $row['package'];
+				}
+				else {
+					$application = ApplicationHandler::getInstance()->getWCF();
+				}
+				$package = PackageCache::getInstance()->getPackage($application->packageID);
+				
+				$filename = FileUtil::addTrailingSlash(FileUtil::getRealPath(WCF_DIR . $package->packageDir . 'templates/' . $templateGroup->templateGroupFolderName)) . $row['templateName'] . '.tpl';
 				$templatesTar->add($filename, $packageDir, dirname($filename));
 			}
 			
@@ -738,6 +748,10 @@ class StyleEditor extends DatabaseObjectEditor implements IEditableCachedObject 
 			$xml->startElement('authorinformation');
 			$xml->writeElement('author', $this->authorName);
 			if ($this->authorURL) $xml->writeElement('authorurl', $this->authorURL);
+			$xml->endElement();
+			
+			$xml->startElement('requiredpackages');
+			$xml->writeElement('requiredpackage', 'com.woltlab.wcf', array('minversion' => '2.0.0'));
 			$xml->endElement();
 			
 			$xml->startElement('instructions', array('type' => 'install'));
@@ -814,7 +828,7 @@ class StyleEditor extends DatabaseObjectEditor implements IEditableCachedObject 
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableObject::create()
+	 * @see	\wcf\data\IEditableObject::create()
 	 */
 	public static function create(array $parameters = array()) {
 		$variables = null;
@@ -824,7 +838,7 @@ class StyleEditor extends DatabaseObjectEditor implements IEditableCachedObject 
 		}
 		
 		// default values
-		if (!isset($parameters['packageID'])) $parameters['packageID'] = PACKAGE_ID;
+		if (!isset($parameters['packageID'])) $parameters['packageID'] = 1;
 		if (!isset($parameters['styleDate'])) $parameters['styleDate'] = gmdate('Y-m-d', TIME_NOW);
 		
 		// check if no default style is defined
@@ -858,7 +872,7 @@ class StyleEditor extends DatabaseObjectEditor implements IEditableCachedObject 
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableCachedObject::resetCache()
+	 * @see	\wcf\data\IEditableCachedObject::resetCache()
 	 */
 	public static function resetCache() {
 		StyleCacheBuilder::getInstance()->reset();

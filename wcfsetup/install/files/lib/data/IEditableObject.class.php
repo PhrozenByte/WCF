@@ -5,7 +5,7 @@ namespace wcf\data;
  * Abstract class for all data holder classes.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data
@@ -16,7 +16,7 @@ interface IEditableObject extends IStorableObject {
 	 * Creates a new object.
 	 * 
 	 * @param	array		$parameters
-	 * @return	wcf\data\IStorableObject
+	 * @return	\wcf\data\IStorableObject
 	 */
 	public static function create(array $parameters = array());
 	

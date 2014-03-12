@@ -1,13 +1,14 @@
 <?php
 namespace wcf\system\bbcode;
 use wcf\system\application\ApplicationHandler;
+use wcf\system\request\RouteHandler;
 use wcf\system\WCF;
 
 /**
  * Parses the [quote] bbcode tag.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode
@@ -15,15 +16,21 @@ use wcf\system\WCF;
  */
 class QuoteBBCode extends AbstractBBCode {
 	/**
-	 * @see	wcf\system\bbcode\IBBCode::getParsedTag()
+	 * @see	\wcf\system\bbcode\IBBCode::getParsedTag()
 	 */
 	public function getParsedTag(array $openingTag, $content, array $closingTag, BBCodeParser $parser) {
 		if ($parser->getOutputType() == 'text/html') {
+			$quoteLink = (!empty($openingTag['attributes'][1]) ? $openingTag['attributes'][1] : '');
+			$externalQuoteLink = (!empty($openingTag['attributes'][1]) ? !ApplicationHandler::getInstance()->isInternalURL($openingTag['attributes'][1]) : false);
+			if (!$externalQuoteLink) {
+				$quoteLink = preg_replace('~^https?://~', RouteHandler::getProtocol(), $quoteLink);
+			}
+			
 			WCF::getTPL()->assign(array(
 				'content' => $content,
-				'quoteLink' => (!empty($openingTag['attributes'][1]) ? $openingTag['attributes'][1] : ''),
+				'quoteLink' => $quoteLink,
 				'quoteAuthor' => (!empty($openingTag['attributes'][0]) ? $openingTag['attributes'][0] : ''),
-				'isExternalQuoteLink' => (!empty($openingTag['attributes'][1]) ? !ApplicationHandler::getInstance()->isInternalURL($openingTag['attributes'][1]) : false)
+				'isExternalQuoteLink' => $externalQuoteLink
 			));
 			return WCF::getTPL()->fetch('quoteBBCodeTag');
 		}

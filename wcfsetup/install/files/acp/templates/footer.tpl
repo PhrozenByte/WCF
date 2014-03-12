@@ -14,6 +14,7 @@
 				{if PACKAGE_ID && SHOW_CLOCK}
 					<li title="{lang}wcf.date.timezone.{@'/'|str_replace:'.':$__wcf->getUser()->getTimeZone()->getName()|strtolower}{/lang}"><p><span class="icon icon16 icon-time"></span> <span>{@TIME_NOW|plainTime}</span></p></li>
 				{/if}
+				
 				{event name='navigationItems'}
 			</ul>
 		</nav>
@@ -21,7 +22,7 @@
 		<div class="footerContent">
 			{if PACKAGE_ID && ENABLE_BENCHMARK}{include file='benchmark'}{/if}
 			
-			<address class="copyright marginTop"><a href="http://www.woltlab.com">Copyright &copy; 2001-2013 WoltLab&reg; GmbH</a>{event name='copyright'}</address>
+			<address class="copyright marginTop"><a href="http://www.woltlab.com">Copyright &copy; 2001-2014 WoltLab&reg; GmbH</a>{event name='copyright'}</address>
 		</div>
 	</footer>
 	

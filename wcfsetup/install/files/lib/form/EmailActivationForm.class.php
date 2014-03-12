@@ -1,7 +1,8 @@
 <?php
 namespace wcf\form;
 use wcf\data\user\User;
-use wcf\data\user\UserEditor;
+use wcf\data\user\UserAction;
+use wcf\system\event\EventHandler;
 use wcf\system\exception\IllegalLinkException;
 use wcf\system\exception\NamedUserException;
 use wcf\system\exception\UserInputException;
@@ -14,7 +15,7 @@ use wcf\util\UserUtil;
  * Shows the email activation form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	form
@@ -35,12 +36,12 @@ class EmailActivationForm extends AbstractForm {
 	
 	/**
 	 * User object
-	 * @var	wcf\data\user\User
+	 * @var	\wcf\data\user\User
 	 */
 	public $user = null;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -50,7 +51,7 @@ class EmailActivationForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -60,13 +61,13 @@ class EmailActivationForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
-		parent::validate();
+		EventHandler::getInstance()->fireAction($this, 'validate');
 		
 		// check given user id
-		$this->user = new UserEditor(new User($this->userID));
+		$this->user = new User($this->userID);
 		if (!$this->user->userID) {
 			throw new UserInputException('u', 'notValid');
 		}
@@ -88,17 +89,20 @@ class EmailActivationForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
 		
 		// enable new email
-		$this->user->update(array(
-			'email' => $this->user->newEmail,
-			'newEmail' => '',
-			'reactivationCode' => 0
+		$this->objectAction = new UserAction(array($this->user), 'update', array(
+			'data' => array_merge($this->additionalFields, array(
+				'email' => $this->user->newEmail,
+				'newEmail' => '',
+				'reactivationCode' => 0
+			))
 		));
+		$this->objectAction->executeAction();
 		$this->saved();
 		
 		// forward to index page
@@ -107,7 +111,7 @@ class EmailActivationForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -119,7 +123,7 @@ class EmailActivationForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::show()
+	 * @see	\wcf\page\IPage::show()
 	 */
 	public function show() {
 		if (REGISTER_ACTIVATION_METHOD != 1) {

@@ -1,5 +1,7 @@
 <?php
 namespace wcf\system\importer;
+use wcf\data\user\option\category\UserOptionCategoryEditor;
+use wcf\data\user\option\category\UserOptionCategoryList;
 use wcf\data\user\option\UserOptionAction;
 use wcf\data\user\option\UserOptionEditor;
 use wcf\system\language\LanguageFactory;
@@ -8,9 +10,9 @@ use wcf\util\StringUtil;
 
 /**
  * Imports user options.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.importer
@@ -18,15 +20,21 @@ use wcf\util\StringUtil;
  */
 class UserOptionImporter extends AbstractImporter {
 	/**
-	 * @see wcf\system\importer\AbstractImporter::$className
+	 * @see	\wcf\system\importer\AbstractImporter::$className
 	 */
 	protected $className = 'wcf\data\user\option\UserOption';
 	
 	/**
 	 * language category id
-	 * @var integer
+	 * @var	integer
 	 */
 	protected $languageCategoryID = null;
+	
+	/**
+	 * list of available user option categories
+	 * @var array<string>
+	 */
+	protected $categoryCache = null;
 	
 	/**
 	 * Creates a new UserOptionImporter object.
@@ -43,7 +51,7 @@ class UserOptionImporter extends AbstractImporter {
 	}
 	
 	/**
-	 * @see wcf\system\importer\IImporter::import()
+	 * @see	\wcf\system\importer\IImporter::import()
 	 */
 	public function import($oldID, array $data, array $additionalData = array()) {
 		$data['packageID'] = 1;
@@ -55,6 +63,9 @@ class UserOptionImporter extends AbstractImporter {
 				$data['defaultValue'] = intval($data['defaultValue']);
 			}
 		}
+		
+		// create category
+		$this->createCategory($data['categoryName']);
 		
 		// save option
 		$action = new UserOptionAction(array(), 'create', array('data' => $data));
@@ -84,5 +95,31 @@ class UserOptionImporter extends AbstractImporter {
 		ImportHandler::getInstance()->saveNewID('com.woltlab.wcf.user.option', $oldID, $userOption->optionID);
 		
 		return $userOption->optionID;
+	}
+	
+	/**
+	 * Creates the given category if necessary.
+	 * 
+	 * @param	string		$name
+	 */
+	protected function createCategory($name) {
+		if ($this->categoryCache === null) {
+			// get existing categories
+			$list = new UserOptionCategoryList();
+			$list->getConditionBuilder()->add('categoryName = ? OR parentCategoryName = ?', array('profile', 'profile'));
+			$list->readObjects();
+			foreach ($list->getObjects() as $category) $this->categoryCache[] = $category->categoryName;
+		}
+		
+		if (!in_array($name, $this->categoryCache)) {
+			// create category
+			UserOptionCategoryEditor::create(array(
+				'packageID' => 1,
+				'categoryName' => $name,
+				'parentCategoryName' => 'profile'
+			));
+			
+			$this->categoryCache[] = $name;
+		}
 	}
 }

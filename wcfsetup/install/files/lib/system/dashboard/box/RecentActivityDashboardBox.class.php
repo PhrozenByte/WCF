@@ -10,7 +10,7 @@ use wcf\system\WCF;
  * Dashboard box for recent activity.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.dashboard.box
@@ -19,24 +19,24 @@ use wcf\system\WCF;
 class RecentActivityDashboardBox extends AbstractContentDashboardBox {
 	/**
 	 * recent activity list
-	 * @var	wcf\data\user\activity\event\ViewableUserActivityEventList
+	 * @var	\wcf\data\user\activity\event\ViewableUserActivityEventList
 	 */
 	public $eventList = null;
 	
 	/**
 	 * true, if results were filtered by followed users
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $filteredByFollowedUsers = false;
 	
 	/**
 	 * latest event time
-	 * @var integer
+	 * @var	integer
 	 */
 	public $lastEventTime = 0;
 	
 	/**
-	 * @see	wcf\system\dashboard\box\IDashboardBox::init()
+	 * @see	\wcf\system\dashboard\box\IDashboardBox::init()
 	 */
 	public function init(DashboardBox $box, IPage $page) {
 		parent::init($box, $page);
@@ -57,7 +57,7 @@ class RecentActivityDashboardBox extends AbstractContentDashboardBox {
 	}
 	
 	/**
-	 * @see	wcf\system\dashboard\box\AbstractContentDashboardBox::render()
+	 * @see	\wcf\system\dashboard\box\AbstractContentDashboardBox::render()
 	 */
 	protected function render() {
 		if (count($this->eventList)) {

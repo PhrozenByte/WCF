@@ -6,7 +6,7 @@ use wcf\data\moderation\queue\ModerationQueue;
  * Default interface for moderation queue handlers.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.moderation.queue
@@ -16,7 +16,7 @@ interface IModerationQueueHandler {
 	/**
 	 * Creates queue assignments for matching object ids.
 	 * 
-	 * @param	array<wcf\data\moderation\queue\ModerationQueue>	$queues
+	 * @param	array<\wcf\data\moderation\queue\ModerationQueue>	$queues
 	 */
 	public function assignQueues(array $queues);
 	
@@ -29,6 +29,14 @@ interface IModerationQueueHandler {
 	public function getContainerID($objectID);
 	
 	/**
+	 * Validates object ids and returns orphaned queue ids.
+	 * 
+	 * @param	array<integer>		$queues
+	 * @return	array<integer>
+	 */
+	public function identifyOrphans(array $queues);
+	
+	/**
 	 * Returns true if given object id is valid.
 	 * 
 	 * @param	integer		$objectID
@@ -39,7 +47,7 @@ interface IModerationQueueHandler {
 	/**
 	 * Populates object properties for viewing.
 	 * 
-	 * @param	array<wcf\data\moderation\queue\ViewableModerationQueue>	$queues
+	 * @param	array<\wcf\data\moderation\queue\ViewableModerationQueue>	$queues
 	 */
 	public function populate(array $queues);
 	
@@ -47,7 +55,7 @@ interface IModerationQueueHandler {
 	 * Removes affected content. It is up to the processing class to either
 	 * soft-delete the content or remove it permanently.
 	 * 
-	 * @param	wcf\data\moderation\queue\ModerationQueue	$queue
+	 * @param	\wcf\data\moderation\queue\ModerationQueue	$queue
 	 * @param	string						$message
 	 */
 	public function removeContent(ModerationQueue $queue, $message);

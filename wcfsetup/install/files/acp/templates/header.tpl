@@ -48,7 +48,7 @@
 				'__days': [ '{lang}wcf.date.day.sunday{/lang}', '{lang}wcf.date.day.monday{/lang}', '{lang}wcf.date.day.tuesday{/lang}', '{lang}wcf.date.day.wednesday{/lang}', '{lang}wcf.date.day.thursday{/lang}', '{lang}wcf.date.day.friday{/lang}', '{lang}wcf.date.day.saturday{/lang}' ],
 				'__daysShort': [ '{lang}wcf.date.day.sun{/lang}', '{lang}wcf.date.day.mon{/lang}', '{lang}wcf.date.day.tue{/lang}', '{lang}wcf.date.day.wed{/lang}', '{lang}wcf.date.day.thu{/lang}', '{lang}wcf.date.day.fri{/lang}', '{lang}wcf.date.day.sat{/lang}' ],
 				'__months': [ '{lang}wcf.date.month.january{/lang}', '{lang}wcf.date.month.february{/lang}', '{lang}wcf.date.month.march{/lang}', '{lang}wcf.date.month.april{/lang}', '{lang}wcf.date.month.may{/lang}', '{lang}wcf.date.month.june{/lang}', '{lang}wcf.date.month.july{/lang}', '{lang}wcf.date.month.august{/lang}', '{lang}wcf.date.month.september{/lang}', '{lang}wcf.date.month.october{/lang}', '{lang}wcf.date.month.november{/lang}', '{lang}wcf.date.month.december{/lang}' ], 
-				'__monthsShort': [ '{lang}wcf.date.month.jan{/lang}', '{lang}wcf.date.month.feb{/lang}', '{lang}wcf.date.month.mar{/lang}', '{lang}wcf.date.month.apr{/lang}', '{lang}wcf.date.month.may{/lang}', '{lang}wcf.date.month.jun{/lang}', '{lang}wcf.date.month.jul{/lang}', '{lang}wcf.date.month.aug{/lang}', '{lang}wcf.date.month.sep{/lang}', '{lang}wcf.date.month.oct{/lang}', '{lang}wcf.date.month.nov{/lang}', '{lang}wcf.date.month.dec{/lang}' ],
+				'__monthsShort': [ '{lang}wcf.date.month.short.jan{/lang}', '{lang}wcf.date.month.short.feb{/lang}', '{lang}wcf.date.month.short.mar{/lang}', '{lang}wcf.date.month.short.apr{/lang}', '{lang}wcf.date.month.short.may{/lang}', '{lang}wcf.date.month.short.jun{/lang}', '{lang}wcf.date.month.short.jul{/lang}', '{lang}wcf.date.month.short.aug{/lang}', '{lang}wcf.date.month.short.sep{/lang}', '{lang}wcf.date.month.short.oct{/lang}', '{lang}wcf.date.month.short.nov{/lang}', '{lang}wcf.date.month.short.dec{/lang}' ],
 				'wcf.acp.search.noResults': '{lang}wcf.acp.search.noResults{/lang}',
 				'wcf.clipboard.item.unmarkAll': '{lang}wcf.clipboard.item.unmarkAll{/lang}',
 				'wcf.date.relative.now': '{lang}wcf.date.relative.now{/lang}',
@@ -61,6 +61,7 @@
 				'wcf.date.hour': '{lang}wcf.date.hour{/lang}',
 				'wcf.date.minute': '{lang}wcf.date.minute{/lang}',
 				'wcf.date.timeFormat': '{lang}wcf.date.timeFormat{/lang}',
+				'wcf.date.firstDayOfTheWeek': '{lang}wcf.date.firstDayOfTheWeek{/lang}',
 				'wcf.global.button.add': '{lang}wcf.global.button.add{/lang}',
 				'wcf.global.button.cancel': '{lang}wcf.global.button.cancel{/lang}',
 				'wcf.global.button.close': '{lang}wcf.global.button.close{/lang}',
@@ -91,6 +92,7 @@
 				'wcf.global.page.pageNavigation': '{lang}wcf.global.page.pageNavigation{/lang}',
 				'wcf.global.page.next': '{capture assign=pageNext}{lang}wcf.global.page.next{/lang}{/capture}{@$pageNext|encodeJS}',
 				'wcf.global.page.previous': '{capture assign=pagePrevious}{lang}wcf.global.page.previous{/lang}{/capture}{@$pagePrevious|encodeJS}',
+				'wcf.global.pageDirection': '{lang}wcf.global.pageDirection{/lang}',
 				'wcf.global.success': '{lang}wcf.global.success{/lang}',
 				'wcf.global.success.add': '{lang}wcf.global.success.add{/lang}',
 				'wcf.global.success.edit': '{lang}wcf.global.success.edit{/lang}',
@@ -106,6 +108,7 @@
 			WCF.Dropdown.init();
 			WCF.System.PageNavigation.init('.pageNavigation');
 			WCF.Date.Picker.init();
+			WCF.System.FlexibleMenu.init();
 			
 			{if $__wcf->user->userID}
 				new WCF.ACP.Search();
@@ -130,12 +133,53 @@
 								<a class="dropdownToggle framed" data-toggle="userMenu">{if PACKAGE_ID}{@$__wcf->getUserProfileHandler()->getAvatar()->getImageTag(24)} {/if}{lang}wcf.user.userNote{/lang}</a>
 								<ul class="dropdownMenu">
 									{if PACKAGE_ID > 1}
-										<li><a href="{@$__wcf->getPageMenu()->getLandingPage()->getLink()}">{lang}wcf.global.toLandingPage{/lang}</a></li>
+										<li><a href="{link controller='User' object=$__wcf->user forceFrontend=true}{/link}" class="box32">
+											<div class="framed">{@$__wcf->getUserProfileHandler()->getAvatar()->getImageTag(32)}</div>
+											
+											<div class="containerHeadline">
+												<h3>{$__wcf->user->username}</h3>
+												<small>{lang}wcf.user.myProfile{/lang}</small>
+											</div>
+										</a></li>
+										{if $__wcf->getUserProfileHandler()->canEditOwnProfile()}<li><a href="{link controller='User' object=$__wcf->user forceFrontend=true}editOnInit=true#about{/link}">{lang}wcf.user.editProfile{/lang}</a></li>{/if}
+										<li><a href="{link controller='Settings' forceFrontend=true}{/link}">{lang}wcf.user.menu.settings{/lang}</a></li>
+										
+										{event name='userMenuItems'}
+										
 										<li class="dropdownDivider"></li>
 									{/if}
 									<li><a href="{link controller='Logout'}t={@SECURITY_TOKEN}{/link}" onclick="WCF.System.Confirmation.show('{lang}wcf.user.logout.sure{/lang}', $.proxy(function (action) { if (action == 'confirm') window.location.href = $(this).attr('href'); }, this)); return false;">{lang}wcf.user.logout{/lang}</a></li>
 								</ul>
 							</li>
+							
+							{if PACKAGE_ID > 1}
+								<li id="jumpToPage" class="dropdown">
+									<a href="{link forceFrontend=true}{/link}" class="dropdownToggle" data-toggle="jumpToPage"><span class="icon icon16 icon-home"></span> <span>{lang}wcf.global.jumpToPage{/lang}</span></a>
+									<ul class="dropdownMenu">
+										{foreach from=$__wcf->getPageMenu()->getMenuItems('header') item=_menuItem}
+											<li><a href="{$_menuItem->getProcessor()->getLink()}">{lang}{$_menuItem->menuItem}{/lang}</a></li>
+										{/foreach}
+									</ul>
+								</li>
+								
+								{if $__wcf->session->getPermission('admin.system.package.canUpdatePackage') && $__wcf->getAvailableUpdates()}
+									<li>
+										<a href="{link controller='PackageUpdate'}{/link}"><span class="icon icon16 icon-refresh"></span> <span>{lang}wcf.acp.package.updates{/lang}</span> <span class="badge badgeInverse">{#$__wcf->getAvailableUpdates()}</span></a>
+									</li>
+								{/if}
+							{/if}
+														
+							<li id="woltlab" class="dropdown">
+								<a class="dropdownToggle" data-toggle="woltlab"><span class="icon icon16 icon-info-sign"></span> <span>WoltLab&reg;</span></a>
+								
+								<ul class="dropdownMenu">
+									<li><a class="externalURL" href="{@$__wcf->getPath()}acp/dereferrer.php?url={"http://www.woltlab.com"|rawurlencode}">{lang}wcf.acp.index.woltlab.website{/lang}</a></li>
+									<li><a class="externalURL" href="{@$__wcf->getPath()}acp/dereferrer.php?url={"http://www.woltlab.com/forum/"|rawurlencode}">{lang}wcf.acp.index.woltlab.forums{/lang}</a></li>
+									<li><a class="externalURL" href="{@$__wcf->getPath()}acp/dereferrer.php?url={"http://www.woltlab.com/index.php/TicketAdd/"|rawurlencode}">{lang}wcf.acp.index.woltlab.tickets{/lang}</a></li>
+									<li><a class="externalURL" href="{@$__wcf->getPath()}acp/dereferrer.php?url={"http://www.woltlab.com/pluginstore/"|rawurlencode}">{lang}wcf.acp.index.woltlab.pluginStore{/lang}</a></li>
+								</ul>
+							</li>
+							
 							{event name='topMenu'}
 						</ul>
 						

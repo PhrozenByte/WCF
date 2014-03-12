@@ -6,7 +6,7 @@ use wcf\system\clipboard\ClipboardHandler;
  * Handles marked clipboard items once DOM is loaded.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	action
@@ -14,12 +14,12 @@ use wcf\system\clipboard\ClipboardHandler;
  */
 class ClipboardLoadMarkedItemsAction extends ClipboardAction {
 	/**
-	 * @see	wcf\action\ClipboardAction::executeAction()
+	 * @see	\wcf\action\ClipboardAction::executeAction()
 	 */
 	protected function executeAction() { }
 	
 	/**
-	 * @see	wcf\action\ClipboardAction::getEditorItems()
+	 * @see	\wcf\action\ClipboardAction::getEditorItems()
 	 */
 	protected function getEditorItems() {
 		$returnValues = parent::getEditorItems();

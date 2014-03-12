@@ -12,7 +12,7 @@ use wcf\system\template\TemplateScriptingCompiler;
  * 	{fetch file='x.html' assign=var}
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.template.plugin
@@ -20,7 +20,7 @@ use wcf\system\template\TemplateScriptingCompiler;
  */
 class FetchCompilerTemplatePlugin implements ICompilerTemplatePlugin {
 	/**
-	 * @see	wcf\system\template\ICompilerTemplatePlugin::executeStart()
+	 * @see	\wcf\system\template\ICompilerTemplatePlugin::executeStart()
 	 */
 	public function executeStart($tagArgs, TemplateScriptingCompiler $compiler) {
 		if (!isset($tagArgs['file'])) {
@@ -36,7 +36,7 @@ class FetchCompilerTemplatePlugin implements ICompilerTemplatePlugin {
 	}
 	
 	/**
-	 * @see	wcf\system\template\ICompilerTemplatePlugin::executeEnd()
+	 * @see	\wcf\system\template\ICompilerTemplatePlugin::executeEnd()
 	 */
 	public function executeEnd(TemplateScriptingCompiler $compiler) {
 		throw new SystemException($compiler->formatSyntaxError("unknown tag {/fetch}", $compiler->getCurrentIdentifier(), $compiler->getCurrentLineNo()));

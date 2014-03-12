@@ -17,7 +17,7 @@ use wcf\system\template\TemplateEngine;
  * 	{htmlOptions object=$databaseObjectList selected=$foo}
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.template.plugin
@@ -31,7 +31,7 @@ class HtmlOptionsFunctionTemplatePlugin extends HtmlCheckboxesFunctionTemplatePl
 	protected $selected = array();
 	
 	/**
-	 * @see	wcf\system\template\IFunctionTemplatePlugin::execute()
+	 * @see	\wcf\system\template\IFunctionTemplatePlugin::execute()
 	 */
 	public function execute($tagArgs, TemplateEngine $tplObj) {
 		if (isset($tagArgs['object']) && ($tagArgs['object'] instanceof DatabaseObjectList)) {

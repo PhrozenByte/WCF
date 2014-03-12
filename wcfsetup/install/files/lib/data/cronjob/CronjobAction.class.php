@@ -12,7 +12,7 @@ use wcf\util\DateUtil;
  * Executes cronjob-related actions.
  * 
  * @author	Tim Duesterhus, Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.cronjob
@@ -20,32 +20,37 @@ use wcf\util\DateUtil;
  */
 class CronjobAction extends AbstractDatabaseObjectAction implements IToggleAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\cronjob\CronjobEditor';
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$permissionsCreate
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$permissionsCreate
 	 */
 	protected $permissionsCreate = array('admin.system.canManageCronjob');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$permissionsDelete
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$permissionsDelete
 	 */
 	protected $permissionsDelete = array('admin.system.canManageCronjob');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$permissionsUpdate
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$permissionsUpdate
 	 */
 	protected $permissionsUpdate = array('admin.system.canManageCronjob');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
 	 */
 	protected $allowGuestAccess = array('executeCronjobs');
 	
 	/**
-	 * @see	wcf\data\IDeleteAction::validateDelete()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$requireACP
+	 */
+	protected $requireACP = array('create', 'delete', 'update', 'toggle', 'execute');
+	
+	/**
+	 * @see	\wcf\data\IDeleteAction::validateDelete()
 	 */
 	public function validateDelete() {
 		parent::validateDelete();
@@ -58,7 +63,7 @@ class CronjobAction extends AbstractDatabaseObjectAction implements IToggleActio
 	}
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseAction::validateUpdate()
+	 * @see	\wcf\data\AbstractDatabaseAction::validateUpdate()
 	 */
 	public function validateUpdate() {
 		parent::validateUpdate();
@@ -71,7 +76,7 @@ class CronjobAction extends AbstractDatabaseObjectAction implements IToggleActio
 	}
 	
 	/**
-	 * @see	wcf\data\IToggleAction::validateToggle()
+	 * @see	\wcf\data\IToggleAction::validateToggle()
 	 */
 	public function validateToggle() {
 		parent::validateUpdate();
@@ -84,7 +89,7 @@ class CronjobAction extends AbstractDatabaseObjectAction implements IToggleActio
 	}
 	
 	/**
-	 * @see	wcf\data\IToggleAction::toggle()
+	 * @see	\wcf\data\IToggleAction::toggle()
 	 */
 	public function toggle() {
 		foreach ($this->objects as $cronjob) {

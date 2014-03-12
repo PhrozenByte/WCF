@@ -7,7 +7,7 @@ use wcf\system\WCF;
  * Shows a list with all users the active user is following.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	page
@@ -15,22 +15,22 @@ use wcf\system\WCF;
  */
 class FollowingPage extends MultipleLinkPage {
 	/**
-	 * @see	wcf\page\AbstractPage::$loginRequired
+	 * @see	\wcf\page\AbstractPage::$loginRequired
 	 */
 	public $loginRequired = true;
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::$objectListClassName
+	 * @see	\wcf\page\MultipleLinkPage::$objectListClassName
 	 */
 	public $objectListClassName = 'wcf\data\user\follow\UserFollowingList';
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$sqlOrderBy
+	 * @see	\wcf\data\DatabaseObjectList::$sqlOrderBy
 	 */
 	public $sqlOrderBy = 'user_follow.time DESC';
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::readData()
+	 * @see	\wcf\page\MultipleLinkPage::readData()
 	 */
 	protected function initObjectList() {
 		parent::initObjectList();
@@ -39,7 +39,7 @@ class FollowingPage extends MultipleLinkPage {
 	}
 	
 	/**
-	 * @see	wcf\page\Page::show()
+	 * @see	\wcf\page\Page::show()
 	 */
 	public function show() {
 		// set active tab

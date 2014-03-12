@@ -13,7 +13,7 @@ use wcf\system\WCF;
  * Shows the group edit form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -21,12 +21,12 @@ use wcf\system\WCF;
  */
 class UserGroupEditForm extends UserGroupAddForm {
 	/**
-	 * @see	wcf\acp\form\UserGroupAddForm::$menuItemName
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
-	public $menuItemName = 'wcf.acp.menu.link.group';
+	public $activeMenuItem = 'wcf.acp.menu.link.group';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.user.canEditGroup');
 	
@@ -38,12 +38,12 @@ class UserGroupEditForm extends UserGroupAddForm {
 	
 	/**
 	 * user group editor object
-	 * @var	wcf\data\user\group\UserGroupEditor
+	 * @var	\wcf\data\user\group\UserGroupEditor
 	 */
 	public $group = null;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -63,7 +63,7 @@ class UserGroupEditForm extends UserGroupAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		if (empty($_POST)) {
@@ -99,7 +99,7 @@ class UserGroupEditForm extends UserGroupAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -120,7 +120,7 @@ class UserGroupEditForm extends UserGroupAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
@@ -131,9 +131,14 @@ class UserGroupEditForm extends UserGroupAddForm {
 		if (I18nHandler::getInstance()->isPlainValue('groupName')) {
 			I18nHandler::getInstance()->remove($this->groupName);
 			$this->groupName = I18nHandler::getInstance()->getValue('groupName');
+			
+			UserGroup::getGroupByID($this->groupID)->setName($this->groupName);
 		}
 		else {
 			I18nHandler::getInstance()->save('groupName', $this->groupName, 'wcf.acp.group', 1);
+			
+			$groupNames = I18nHandler::getInstance()->getValues('groupName');
+			UserGroup::getGroupByID($this->groupID)->setName($groupNames[WCF::getLanguage()->languageID]);
 		}
 		$this->groupDescription = 'wcf.acp.group.groupDescription'.$this->group->groupID;
 		if (I18nHandler::getInstance()->isPlainValue('groupDescription')) {
@@ -145,13 +150,13 @@ class UserGroupEditForm extends UserGroupAddForm {
 		}
 		
 		$data = array(
-			'data' => array_merge(array(
+			'data' => array_merge($this->additionalFields, array(
 				'groupName' => $this->groupName,
 				'groupDescription' => $this->groupDescription,
 				'priority' => $this->priority,
 				'userOnlineMarking' => $this->userOnlineMarking,
 				'showOnTeamPage' => $this->showOnTeamPage
-			), $this->additionalFields),
+			)),
 			'options' => $optionValues
 		);
 		$this->objectAction = new UserGroupAction(array($this->groupID), 'update', $data);

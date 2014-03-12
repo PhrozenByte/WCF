@@ -10,7 +10,7 @@ use wcf\system\WCF;
  * This includes the call of the default event listeners for an action: readParameters and execute.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	action
@@ -36,12 +36,12 @@ abstract class AbstractAction implements IAction {
 	public $neededPermissions = array();
 	
 	/**
-	 * @see	wcf\form\IAction::__run()
+	 * @see	\wcf\form\IAction::__run()
 	 */
 	public final function __construct() { }
 	
 	/**
-	 * @see	wcf\action\IAction::__run()
+	 * @see	\wcf\action\IAction::__run()
 	 */
 	public function __run() {
 		// call default methods
@@ -50,7 +50,7 @@ abstract class AbstractAction implements IAction {
 	}
 	
 	/**
-	 * @see	wcf\action\IAction::readParameters()
+	 * @see	\wcf\action\IAction::readParameters()
 	 */
 	public function readParameters() {
 		// call readParameters event
@@ -58,7 +58,7 @@ abstract class AbstractAction implements IAction {
 	}
 	
 	/**
-	 * @see	wcf\action\IAction::checkModules()
+	 * @see	\wcf\action\IAction::checkModules()
 	 */
 	public function checkModules() {
 		// call checkModules event
@@ -73,7 +73,7 @@ abstract class AbstractAction implements IAction {
 	}
 	
 	/**
-	 * @see	wcf\action\IAction::checkPermissions()
+	 * @see	\wcf\action\IAction::checkPermissions()
 	 */
 	public function checkPermissions() {
 		// call checkPermissions event
@@ -86,7 +86,7 @@ abstract class AbstractAction implements IAction {
 	}
 	
 	/**
-	 * @see	wcf\action\IAction::execute()
+	 * @see	\wcf\action\IAction::execute()
 	 */
 	public function execute() {
 		// check if active user is logged in

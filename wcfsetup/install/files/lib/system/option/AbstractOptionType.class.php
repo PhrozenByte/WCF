@@ -6,7 +6,7 @@ use wcf\data\option\Option;
  * Provides a default implementation for object types.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.option
@@ -20,26 +20,26 @@ abstract class AbstractOptionType implements IOptionType {
 	protected $supportI18n = false;
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::validate()
+	 * @see	\wcf\system\option\IOptionType::validate()
 	 */
 	public function validate(Option $option, $newValue) {}
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::getData()
+	 * @see	\wcf\system\option\IOptionType::getData()
 	 */
 	public function getData(Option $option, $newValue) {
 		return $newValue;
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::getCSSClassName()
+	 * @see	\wcf\system\option\IOptionType::getCSSClassName()
 	 */
 	public function getCSSClassName() {
 		return '';
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::supportI18n()
+	 * @see	\wcf\system\option\IOptionType::supportI18n()
 	 */
 	public function supportI18n() {
 		return $this->supportI18n;

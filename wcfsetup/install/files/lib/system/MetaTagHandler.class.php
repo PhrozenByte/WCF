@@ -6,7 +6,7 @@ use wcf\util\StringUtil;
  * Handles meta tags.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.message
@@ -27,7 +27,7 @@ class MetaTagHandler extends SingletonFactory implements \Countable, \Iterator {
 	
 	/**
 	 * regex object
-	 * @var	wcf\system\Regex;
+	 * @var	\wcf\system\Regex;
 	 */
 	protected $regex = null;
 	
@@ -38,7 +38,7 @@ class MetaTagHandler extends SingletonFactory implements \Countable, \Iterator {
 	protected $objects = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$this->regex = new Regex('^https?://');
@@ -110,7 +110,7 @@ class MetaTagHandler extends SingletonFactory implements \Countable, \Iterator {
 	/**
 	 * CAUTION: This methods does not return the current iterator index,
 	 * rather than the object key which maps to that index.
-	 *
+	 * 
 	 * @see	\Iterator::key()
 	 */
 	public function key() {

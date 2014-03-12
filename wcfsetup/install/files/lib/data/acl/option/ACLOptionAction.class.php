@@ -7,7 +7,7 @@ use wcf\system\acl\ACLHandler;
  * Executes acl option-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.acl.option
@@ -15,9 +15,14 @@ use wcf\system\acl\ACLHandler;
  */
 class ACLOptionAction extends AbstractDatabaseObjectAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\acl\option\ACLOptionEditor';
+	
+	/**
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$requireACP
+	 */
+	protected $requireACP = array('loadAll');
 	
 	/**
 	 * Validates parameters for ACL options.

@@ -6,7 +6,7 @@ use wcf\util\StringUtil;
  * Provides a label form element.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.form.element
@@ -38,7 +38,7 @@ class LabelFormElement extends AbstractFormElement {
 	}
 	
 	/**
-	 * @see	wcf\system\form\IFormElement::getHTML()
+	 * @see	\wcf\system\form\IFormElement::getHTML()
 	 */
 	public function getHTML($formName) {
 		return <<<HTML

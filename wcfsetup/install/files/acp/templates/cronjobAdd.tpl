@@ -4,9 +4,7 @@
 	<h1>{lang}wcf.acp.cronjob.{$action}{/lang}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 <p class="info">{lang}wcf.acp.cronjob.intro{/lang}</p>
 
@@ -48,7 +46,7 @@
 			<dl{if $errorField == 'description'} class="formError"{/if}>
 				<dt><label for="description">{lang}wcf.acp.cronjob.description{/lang}</label></dt>
 				<dd>
-					<input type="text" id="description" name="description" value="{$description}" class="long" />
+					<input type="text" id="description" name="description" value="{$i18nPlainValues['description']}" class="long" />
 					{if $errorField == 'description'}
 						<small class="innerError">
 							{if $errorType == 'empty' || $errorType == 'multilingual'}
@@ -141,6 +139,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

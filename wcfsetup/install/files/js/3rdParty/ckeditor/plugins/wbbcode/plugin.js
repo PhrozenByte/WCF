@@ -2,7 +2,7 @@
  * BBCode Plugin for CKEditor
  * 
  * @author	Marcel Werk
- * @copyright 	2001-2013 WoltLab GmbH
+ * @copyright 	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
 (function() {
@@ -42,14 +42,11 @@
 		}, null, null, 9);
 		
 		// prevent drag and drop of images in Firefox
-		event.editor.document.on('drop', function(ev) {
-			if (ev.data.$.dataTransfer) {
-				var $html = ev.data.$.dataTransfer.getData('text/html');
-				if (/<img src="data:image\/[a-zA-Z0-9]+;base64/.exec($html)) {
-					ev.data.preventDefault(true);
-				}
-			}
-		});
+		if ($.browser.mozilla) {
+			event.editor.document.on('drop', function(ev) {
+				ev.data.preventDefault(true);
+			});
+		}
 		
 		event.editor.on('insertText', function(ev) {
 			$insertedText = ev.data;
@@ -76,7 +73,8 @@
 		insertFakeSubmitButton(event);
 		
 		// remove stupid title tag
-		$(event.editor.container.$).removeAttr('title');
+		// @todo: obsolete in ckeditor 4.2
+		$(event.editor.container.$).find('.cke_wysiwyg_div').removeAttr('title');
 		
 		if ($.browser.mozilla) {
 			fixFirefox();
@@ -115,7 +113,6 @@
 		var $tab;
 		var $name = event.data.name;
 		var $definition = event.data.definition;
-
 		if ($name == 'link') {
 			$definition.removeContents('target');
 			$definition.removeContents('upload');
@@ -131,6 +128,13 @@
 			$tab = $definition.getContents('info');
 			$tab.remove('txtAlt');
 			$tab.remove('basic');
+			
+			// remove preview, do NOT use $tab.remove() because that breaks the plugin
+			$definition.dialog.on('show', function(event) {
+				var $container = $(event.sender._.element.$).find('div[name=info]')
+				$container.find('> table > tbody > tr:eq(1)').hide();
+				$container.parent().css('height', 'auto');
+			});
 		}
 		else if ($name == 'table') {
 			$definition.removeContents('advanced');
@@ -209,7 +213,7 @@
 	 * Converts bbcodes to html.
 	 */
 	var toHtml = function(data, fixForBody) {
-		if ($.trim(data) === "") return "<p></p>";
+		//if ($.trim(data) === "") return "<p></p>";
 		
 		// remove 0x200B (unicode zero width space)
 		data = removeCrap(data);
@@ -243,7 +247,7 @@
 		var $cachedCodes = { };
 		data = data.replace(/\[code(.+?)\[\/code]/gi, function(match) {
 			var $key = match.hashCode();
-			$cachedCodes[$key] = match;
+			$cachedCodes[$key] = match.replace(/\$/g, '$$$$');
 			return '@@' + $key + '@@';
 		});
 		
@@ -352,10 +356,10 @@
 		html = html.replace(/&nbsp;/gi," ");
 		
 		// [email]
-		html = html.replace(/<a .*?href=(["'])mailto:(.+?)\1.*?>([\s\S]+?)<\/a>/gi, '[email=$2]$3[/email]');
+		html = html.replace(/<a [^>]*?href=(["'])mailto:(.+?)\1.*?>([\s\S]+?)<\/a>/gi, '[email=$2]$3[/email]');
 		
 		// [url]
-		html = html.replace(/<a .*?href=(["'])(.+?)\1.*?>([\s\S]+?)<\/a>/gi, function(match, x, url, text) {
+		html = html.replace(/<a [^>]*?href=(["'])(.+?)\1.*?>([\s\S]+?)<\/a>/gi, function(match, x, url, text) {
 			if (url == text) return '[url]' + url + '[/url]';
 			
 			return "[url='" + url + "']" + text + "[/url]";
@@ -377,7 +381,7 @@
 		html = html.replace(/<s>/gi, '[s]');
 		html = html.replace(/<\/s>/gi, '[/s]');
 		
-		// [sub
+		// [sub]
 		html = html.replace(/<sub>/gi, '[sub]');
 		html = html.replace(/<\/sub>/gi, '[/sub]');
 		

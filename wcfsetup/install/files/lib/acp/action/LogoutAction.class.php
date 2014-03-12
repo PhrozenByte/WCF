@@ -9,7 +9,7 @@ use wcf\util\HeaderUtil;
  * Does the user logout in the admin control panel.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.action
@@ -17,16 +17,16 @@ use wcf\util\HeaderUtil;
  */
 class LogoutAction extends AbstractSecureAction {
 	/**
-	 * @see wcf\action\AbstractAction::$loginRequired
+	 * @see	\wcf\action\AbstractAction::$loginRequired
 	 */
 	public $loginRequired = true;
 	
 	/**
-	 * @see	wcf\action\IAction::execute()
+	 * @see	\wcf\action\IAction::execute()
 	 */
 	public function execute() {
 		parent::execute();
-
+		
 		// do logout
 		WCF::getSession()->delete();
 		

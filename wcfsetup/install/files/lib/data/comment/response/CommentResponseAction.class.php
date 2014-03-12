@@ -15,7 +15,7 @@ use wcf\system\WCF;
  * Executes comment response-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.comment.response
@@ -23,29 +23,29 @@ use wcf\system\WCF;
  */
 class CommentResponseAction extends AbstractDatabaseObjectAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
 	 */
 	protected $allowGuestAccess = array('loadResponses');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\comment\response\CommentResponseEditor';
 	
 	/**
 	 * comment object
-	 * @var	wcf\data\comment\Comment
+	 * @var	\wcf\data\comment\Comment
 	 */
 	public $comment = null;
 	
 	/**
 	 * comment manager object
-	 * @var	wcf\system\comment\manager\ICommentManager
+	 * @var	\wcf\system\comment\manager\ICommentManager
 	 */
 	public $commentManager = null;
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::delete()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::delete()
 	 */
 	public function delete() {
 		if (empty($this->objects)) {
@@ -55,6 +55,8 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 		if (empty($this->objects)) {
 			return 0;
 		}
+		
+		$ignoreCounters = !empty($this->parameters['ignoreCounters']);
 		
 		// read object type ids for comments
 		$commentIDs = array();
@@ -77,27 +79,31 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 				$processors[$objectTypeID] = $objectType->getProcessor();
 				$responseIDs[$objectTypeID] = array();
 			}
-			
-			$processors[$objectTypeID]->updateCounter($comments[$response->commentID]->objectID, -1);
 			$responseIDs[$objectTypeID][] = $response->responseID;
 			
-			if (!isset($updateComments[$response->commentID])) {
-				$updateComments[$response->commentID] = 0;
+			if (!$ignoreCounters) {
+				$processors[$objectTypeID]->updateCounter($comments[$response->commentID]->objectID, -1);
+				
+				if (!isset($updateComments[$response->commentID])) {
+					$updateComments[$response->commentID] = 0;
+				}
+				
+				$updateComments[$response->commentID]++;
 			}
-			
-			$updateComments[$response->commentID]++;
 		}
 		
 		// remove responses
 		$count = parent::delete();
 		
 		// update comment responses and cached response ids
-		foreach ($comments as $comment) {
-			$commentEditor = new CommentEditor($comment);
-			$commentEditor->updateResponseIDs();
-			$commentEditor->updateCounters(array(
-				'responses' => -1 * $updateComments[$comment->commentID]
-			));
+		if (!$ignoreCounters) {
+			foreach ($comments as $comment) {
+				$commentEditor = new CommentEditor($comment);
+				$commentEditor->updateResponseIDs();
+				$commentEditor->updateCounters(array(
+					'responses' => -1 * $updateComments[$comment->commentID]
+				));
+			}
 		}
 		
 		foreach ($responseIDs as $objectTypeID => $objectIDs) {
@@ -138,7 +144,7 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 	
 	/**
 	 * Returns parsed responses for given comment id.
-	 *
+	 * 
 	 * @return	array
 	 */
 	public function loadResponses() {

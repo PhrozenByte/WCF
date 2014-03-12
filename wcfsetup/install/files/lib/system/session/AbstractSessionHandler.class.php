@@ -6,7 +6,7 @@ use wcf\system\SingletonFactory;
  * Abstract implementation for application-specific session handlers.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.session
@@ -15,12 +15,12 @@ use wcf\system\SingletonFactory;
 abstract class AbstractSessionHandler extends SingletonFactory {
 	/**
 	 * SessionHandler object
-	 * @var	wcf\system\session\SessionHandler
+	 * @var	\wcf\system\session\SessionHandler
 	 */
 	protected $sessionHandler = null;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected final function init() {
 		$this->sessionHandler = SessionHandler::getInstance();

@@ -1,8 +1,11 @@
 <?php
 namespace wcf\data\application;
 use wcf\data\AbstractDatabaseObjectAction;
+use wcf\system\cache\builder\ApplicationCacheBuilder;
 use wcf\system\exception\PermissionDeniedException;
 use wcf\system\exception\UserInputException;
+use wcf\system\language\LanguageFactory;
+use wcf\system\Regex;
 use wcf\system\WCF;
 use wcf\util\FileUtil;
 use wcf\util\StringUtil;
@@ -11,7 +14,7 @@ use wcf\util\StringUtil;
  * Executes application-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.application
@@ -19,15 +22,20 @@ use wcf\util\StringUtil;
  */
 class ApplicationAction extends AbstractDatabaseObjectAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\application\ApplicationEditor';
 	
 	/**
 	 * application editor object
-	 * @var	wcf\data\application\ApplicationEditor
+	 * @var	\wcf\data\application\ApplicationEditor
 	 */
 	public $applicationEditor = null;
+	
+	/**
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$requireACP
+	 */
+	protected $requireACP = array('setAsPrimary');
 	
 	/**
 	 * Assigns a list of applications to a group and computes cookie domain and path.
@@ -45,9 +53,10 @@ class ApplicationAction extends AbstractDatabaseObjectAction {
 		
 		// calculate cookie path
 		$domains = array();
+		$regex = new Regex(':[0-9]+');
 		foreach ($this->objects as $application) {
 			$domainName = $application->domainName;
-			if (StringUtil::endsWith($domainName, $application->cookieDomain)) {
+			if (StringUtil::endsWith($regex->replace($domainName, ''), $application->cookieDomain)) {
 				$domainName = $application->cookieDomain;
 			}
 			
@@ -93,6 +102,12 @@ class ApplicationAction extends AbstractDatabaseObjectAction {
 			}
 		}
 		WCF::getDB()->commitTransaction();
+		
+		// rebuild templates
+		LanguageFactory::getInstance()->deleteLanguageCache();
+		
+		// reset application cache
+		ApplicationCacheBuilder::getInstance()->reset();
 	}
 	
 	/**

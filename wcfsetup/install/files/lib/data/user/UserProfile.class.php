@@ -22,7 +22,7 @@ use wcf\util\StringUtil;
  * Decorates the user object and provides functions to retrieve data for user profiles.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user
@@ -30,13 +30,13 @@ use wcf\util\StringUtil;
  */
 class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider {
 	/**
-	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	\wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\user\User';
 	
 	/**
 	 * cached list of user profiles
-	 * @var	array<wcf\data\user\UserProfile>
+	 * @var	array<\wcf\data\user\UserProfile>
 	 */
 	protected static $userProfiles = array();
 	
@@ -60,13 +60,13 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 	
 	/**
 	 * user avatar
-	 * @var	wcf\data\user\avatar\IUserAvatar
+	 * @var	\wcf\data\user\avatar\IUserAvatar
 	 */
 	protected $avatar = null;
 	
 	/**
 	 * user rank object
-	 * @var	wcf\data\user\rank\UserRank
+	 * @var	\wcf\data\user\rank\UserRank
 	 */
 	protected $rank = null;
 	
@@ -97,7 +97,7 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 	const ACCESS_NOBODY = 3;
 	
 	/**
-	 * @see	wcf\data\user\User::__toString()
+	 * @see	\wcf\data\user\User::__toString()
 	 */
 	public function __toString() {
 		return $this->getDecoratedObject()->__toString();
@@ -253,31 +253,33 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 	/**
 	 * Gets the user's avatar.
 	 * 
-	 * @return	wcf\data\user\avatar\IUserAvatar
+	 * @return	\wcf\data\user\avatar\IUserAvatar
 	 */
 	public function getAvatar() {
 		if ($this->avatar === null) {
 			if (!$this->disableAvatar) {
-				if ($this->avatarID) {
-					if (!$this->fileHash) {
-						// load storage data
-						UserStorageHandler::getInstance()->loadStorage(array($this->userID));
-						$data = UserStorageHandler::getInstance()->getStorage(array($this->userID), 'avatar');
-						
-						if ($data[$this->userID] === null) {
-							$this->avatar = new UserAvatar($this->avatarID);
-							UserStorageHandler::getInstance()->update($this->userID, 'avatar', serialize($this->avatar));
+				if ($this->canSeeAvatar()) {
+					if ($this->avatarID) {
+						if (!$this->fileHash) {
+							// load storage data
+							UserStorageHandler::getInstance()->loadStorage(array($this->userID));
+							$data = UserStorageHandler::getInstance()->getStorage(array($this->userID), 'avatar');
+							
+							if ($data[$this->userID] === null) {
+								$this->avatar = new UserAvatar($this->avatarID);
+								UserStorageHandler::getInstance()->update($this->userID, 'avatar', serialize($this->avatar));
+							}
+							else {
+								$this->avatar = unserialize($data[$this->userID]);
+							}
 						}
 						else {
-							$this->avatar = unserialize($data[$this->userID]);
+							$this->avatar = new UserAvatar(null, $this->getDecoratedObject()->data);
 						}
 					}
-					else {
-						$this->avatar = new UserAvatar(null, $this->getDecoratedObject()->data);
+					else if (MODULE_GRAVATAR && $this->enableGravatar) {
+						$this->avatar = new Gravatar($this->userID, $this->email);
 					}
-				}
-				else if (MODULE_GRAVATAR && $this->enableGravatar) {
-					$this->avatar = new Gravatar($this->userID, $this->email);
 				}
 			}
 			
@@ -288,6 +290,15 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 		}
 		
 		return $this->avatar;
+	}
+	
+	/**
+	 * Returns true if the active user can view the avatar of this user.
+	 * 
+	 * @return	boolean
+	 */
+	public function canSeeAvatar() {
+		return (WCF::getUser()->userID == $this->userID || WCF::getSession()->getPermission('user.profile.avatar.canSeeAvatars'));
 	}
 	
 	/**
@@ -341,7 +352,7 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 	 * Returns a new user profile object.
 	 * 
 	 * @param	integer				$userID
-	 * @return	wcf\data\user\UserProfile
+	 * @return	\wcf\data\user\UserProfile
 	 */
 	public static function getUserProfile($userID) {
 		$users = self::getUserProfiles(array($userID));
@@ -353,7 +364,7 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 	 * Returns a list of user profiles.
 	 * 
 	 * @param	array				$userIDs
-	 * @return	array<wcf\data\user\UserProfile>
+	 * @return	array<\wcf\data\user\UserProfile>
 	 */
 	public static function getUserProfiles(array $userIDs) {
 		$users = array();
@@ -384,7 +395,7 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 	 * Returns the user profile of the user with the given name.
 	 * 
 	 * @param	string				$username
-	 * @return	wcf\data\user\UserProfile
+	 * @return	\wcf\data\user\UserProfile
 	 */
 	public static function getUserProfileByUsername($username) {
 		$users = self::getUserProfilesByUsername(array($username));
@@ -396,7 +407,7 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 	 * Returns the user profiles of the users with the given names.
 	 * 
 	 * @param	array<string>			$usernames
-	 * @return	array<wcf\data\user\UserProfile>
+	 * @return	array<\wcf\data\user\UserProfile>
 	 */
 	public static function getUserProfilesByUsername(array $usernames) {
 		$users = array();
@@ -440,7 +451,9 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 		// revert usernames to original case
 		foreach ($users as $username => $user) {
 			unset($users[$username]);
-			$users[$caseSensitiveUsernames[$username]] = $user;
+			if (isset($caseSensitiveUsernames[$username])) {
+				$users[$caseSensitiveUsernames[$username]] = $user;
+			}
 		}
 		
 		return $users;
@@ -484,19 +497,67 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 	/**
 	 * Returns the age of this user.
 	 * 
+	 * @param	integer		$year
 	 * @return	integer
 	 */
-	public function getAge() {
-		if ($this->__age === null) {
-			if ($this->birthday && $this->birthdayShowYear) {
-				$this->__age = DateUtil::getAge($this->birthday);
+	public function getAge($year = null) {
+		if ($year !== null) {
+			if ($this->birthdayShowYear) {
+				$birthdayYear = 0;
+				$value = explode('-', $this->birthday);
+				if (isset($value[0])) $birthdayYear = intval($value[0]);
+				if ($birthdayYear) {
+					return $year - $birthdayYear;
+				}
+				
 			}
-			else {
-				$this->__age = 0;
+			
+			return 0;
+		}
+		else {
+			if ($this->__age === null) {
+				if ($this->birthday && $this->birthdayShowYear) {
+					$this->__age = DateUtil::getAge($this->birthday);
+				}
+				else {
+					$this->__age = 0;
+				}
+			}
+		
+			return $this->__age;
+		}
+	}
+	
+	/**
+	 * Returns the formatted birthday of this user.
+	 *
+	 * @param	integer		$year
+	 * @return	string
+	 */
+	public function getBirthday($year = null) {
+		// split date
+		$birthdayYear = $month = $day = 0;
+		$value = explode('-', $this->birthday);
+		if (isset($value[0])) $birthdayYear = intval($value[0]);
+		if (isset($value[1])) $month = intval($value[1]);
+		if (isset($value[2])) $day = intval($value[2]);
+		
+		if (!$month || !$day) return '';
+		
+		$d = new \DateTime();
+		$d->setTimezone(WCF::getUser()->getTimeZone());
+		$d->setDate($birthdayYear, $month, $day);
+		$dateFormat = (($this->birthdayShowYear && $birthdayYear) ? WCF::getLanguage()->get(DateUtil::DATE_FORMAT) : str_replace('Y', '', WCF::getLanguage()->get(DateUtil::DATE_FORMAT)));
+		$birthday = DateUtil::localizeDate($d->format($dateFormat), $dateFormat, WCF::getLanguage());
+		
+		if ($this->birthdayShowYear) {
+			$age = $this->getAge($year);
+			if ($age > 0) {
+				$birthday .= ' ('.$age.')';
 			}
 		}
 		
-		return $this->__age;
+		return $birthday;
 	}
 	
 	/**
@@ -536,7 +597,7 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 	/**
 	 * Returns the user rank.
 	 * 
-	 * @return	wcf\data\user\rank\UserRank
+	 * @return	\wcf\data\user\rank\UserRank
 	 */
 	public function getRank() {
 		if ($this->rank === null) {
@@ -608,7 +669,7 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 	}
 	
 	/**
-	 * @see	wcf\system\breadcrumb\IBreadcrumbProvider::getBreadcrumb()
+	 * @see	\wcf\system\breadcrumb\IBreadcrumbProvider::getBreadcrumb()
 	 */
 	public function getBreadcrumb() {
 		return new Breadcrumb($this->username, LinkHandler::getInstance()->getLink('User', array(
@@ -698,7 +759,7 @@ class UserProfile extends DatabaseObjectDecorator implements IBreadcrumbProvider
 	
 	/**
 	 * Returns the formatted value of the user option with the given name.
-	 *
+	 * 
 	 * @param	string		$name
 	 * @return	mixed
 	 */

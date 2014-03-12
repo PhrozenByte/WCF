@@ -7,7 +7,7 @@ use wcf\system\WCF;
  * Represents a watched object.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.object.watch
@@ -15,12 +15,12 @@ use wcf\system\WCF;
  */
 class UserObjectWatch extends DatabaseObject {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'user_object_watch';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'watchID';
 	
@@ -31,7 +31,7 @@ class UserObjectWatch extends DatabaseObject {
 	 * @param	integer		$objectTypeID
 	 * @param	integer		$userID
 	 * @param	integer		$objectID
-	 * @return	wcf\data\user\object\watch\UserObjectWatch
+	 * @return	\wcf\data\user\object\watch\UserObjectWatch
 	 */
 	public static function getUserObjectWatch($objectTypeID, $userID, $objectID) {
 		$sql = "SELECT	*

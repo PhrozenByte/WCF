@@ -13,7 +13,7 @@ use wcf\util\StringUtil;
  * Handles an AJAX-based package uninstallation.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.action
@@ -27,12 +27,12 @@ class UninstallPackageAction extends InstallPackageAction {
 	protected $packageID = 0;
 	
 	/**
-	 * @see	wcf\action\AbstractDialogAction::$templateName
+	 * @see	\wcf\action\AbstractDialogAction::$templateName
 	 */
 	public $templateName = 'packageUninstallationStep';
 	
 	/**
-	 * @see	wcf\action\IAction::readParameters()
+	 * @see	\wcf\action\IAction::readParameters()
 	 */
 	public function readParameters() {
 		AbstractDialogAction::readParameters();
@@ -159,7 +159,7 @@ class UninstallPackageAction extends InstallPackageAction {
 	}
 	
 	/**
-	 * @see	wcf\action\AbstractDialogAction::validateStep()
+	 * @see	\wcf\action\AbstractDialogAction::validateStep()
 	 */
 	protected function validateStep() {
 		switch ($this->step) {
@@ -175,7 +175,7 @@ class UninstallPackageAction extends InstallPackageAction {
 	}
 	
 	/**
-	 * @see	wcf\acp\action\InstallPackageAction::getCurrentAction()
+	 * @see	\wcf\acp\action\InstallPackageAction::getCurrentAction()
 	 */
 	protected function getCurrentAction($queueID) {
 		if ($queueID === null) {
@@ -188,7 +188,7 @@ class UninstallPackageAction extends InstallPackageAction {
 			$installationType = $this->installation->nodeBuilder->getInstallationTypeByQueue($queueID);
 			$currentAction = WCF::getLanguage()->getDynamicVariable('wcf.acp.package.uninstallation.step.'.$installationType, array('packageName' => $packageName));
 		}
-	
+		
 		return $currentAction;
 	}
 }

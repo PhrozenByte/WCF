@@ -5,7 +5,7 @@ namespace wcf\data;
  * Default interface for DatabaseObject processors.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data
@@ -15,7 +15,7 @@ interface IDatabaseObjectProcessor {
 	/**
 	 * Creates a new instance of a database object processor.
 	 * 
-	 * @param	wcf\data\DatabaseObject		$object
+	 * @param	\wcf\data\DatabaseObject		$object
 	 */
 	public function __construct(DatabaseObject $object);
 	

@@ -5,7 +5,7 @@ namespace wcf\data;
  * Default interface for message database objects.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data
@@ -44,7 +44,7 @@ interface IMessage extends IUserContent {
 	/**
 	 * Returns formatted message text.
 	 * 
-	 * @see	wcf\data\IMessage::getFormattedMessage()
+	 * @see	\wcf\data\IMessage::getFormattedMessage()
 	 */
 	public function __toString();
 }

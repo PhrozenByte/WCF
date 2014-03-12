@@ -7,13 +7,12 @@ use wcf\system\database\util\PreparedStatementConditionBuilder;
 use wcf\system\exception\SystemException;
 use wcf\system\SingletonFactory;
 use wcf\system\WCF;
-use wcf\util\StringUtil;
 
 /**
  * Manages the tagging of objects.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.tagging
@@ -78,7 +77,7 @@ class TagEngine extends SingletonFactory {
 		// save tags
 		$sql = "INSERT INTO	wcf".WCF_N."_tag_to_object
 					(objectID, tagID, objectTypeID, languageID)
-			VALUES 		(?, ?, ?, ?)";
+			VALUES		(?, ?, ?, ?)";
 		WCF::getDB()->beginTransaction();
 		$statement = WCF::getDB()->prepareStatement($sql);
 		foreach ($tagIDs as $tagID) {
@@ -135,15 +134,28 @@ class TagEngine extends SingletonFactory {
 	 * @param	string			$objectType
 	 * @param	integer			$objectID
 	 * @param	array<integer>		$languageIDs
-	 * @return	array<wcf\data\tag\Tag>
+	 * @return	array<\wcf\data\tag\Tag>
 	 */
 	public function getObjectTags($objectType, $objectID, array $languageIDs = array()) {
+		$tags = $this->getObjectsTags($objectType, array($objectID), $languageIDs);
+		
+		return isset($tags[$objectID]) ? $tags[$objectID] : array();
+	}
+	
+	/**
+	 * Returns all tags set for given objects.
+	 * 
+	 * @param	string			$objectType
+	 * @param	array<integer>		$objectIDs
+	 * @param	array<integer>		$languageIDs
+	 * @return	array
+	 */
+	public function getObjectsTags($objectType, array $objectIDs, array $languageIDs = array()) {
 		$objectTypeID = $this->getObjectTypeID($objectType);
 		
-		// get tags
 		$conditions = new PreparedStatementConditionBuilder();
 		$conditions->add("tag_to_object.objectTypeID = ?", array($objectTypeID));
-		$conditions->add("tag_to_object.objectID = ?", array($objectID));
+		$conditions->add("tag_to_object.objectID IN (?)", array($objectIDs));
 		if (!empty($languageIDs)) {
 			foreach ($languageIDs as $index => $languageID) {
 				if (!$languageID) unset($languageIDs[$index]);
@@ -154,7 +166,7 @@ class TagEngine extends SingletonFactory {
 			}
 		}
 		
-		$sql = "SELECT		tag.*
+		$sql = "SELECT		tag.*, tag_to_object.objectID
 			FROM		wcf".WCF_N."_tag_to_object tag_to_object
 			LEFT JOIN	wcf".WCF_N."_tag tag
 			ON		(tag.tagID = tag_to_object.tagID)
@@ -163,9 +175,11 @@ class TagEngine extends SingletonFactory {
 		$statement->execute($conditions->getParameters());
 		
 		$tags = array();
-		
-		while ($row = $statement->fetchArray()) {
-			$tags[$row['tagID']] = new Tag(null, $row);
+		while ($tag = $statement->fetchObject('wcf\data\tag\Tag')) {
+			if (!isset($tags[$tag->objectID])) {
+				$tags[$tag->objectID] = array();
+			}
+			$tags[$tag->objectID][$tag->tagID] = $tag;
 		}
 		
 		return $tags;

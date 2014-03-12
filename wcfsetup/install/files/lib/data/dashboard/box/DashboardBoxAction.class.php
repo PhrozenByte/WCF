@@ -13,7 +13,7 @@ use wcf\util\ArrayUtil;
  * Executes dashboard box-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.dashboard.box
@@ -22,7 +22,7 @@ use wcf\util\ArrayUtil;
 class DashboardBoxAction extends AbstractDatabaseObjectAction implements ISortableAction {
 	/**
 	 * list of available dashboard boxes
-	 * @var	array<wcf\data\dashboard\box\DashboardBox>
+	 * @var	array<\wcf\data\dashboard\box\DashboardBox>
 	 */
 	public $boxes = array();
 	
@@ -34,12 +34,17 @@ class DashboardBoxAction extends AbstractDatabaseObjectAction implements ISortab
 	
 	/**
 	 * object type object
-	 * @var	wcf\data\object\type\ObjectType
+	 * @var	\wcf\data\object\type\ObjectType
 	 */
 	public $objectType = null;
 	
 	/**
-	 * @see	wcf\data\ISortableAction::validateUpdatePosition()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$requireACP
+	 */
+	protected $requireACP = array('updatePosition');
+	
+	/**
+	 * @see	\wcf\data\ISortableAction::validateUpdatePosition()
 	 */
 	public function validateUpdatePosition() {
 		// validate permissions
@@ -90,7 +95,7 @@ class DashboardBoxAction extends AbstractDatabaseObjectAction implements ISortab
 	}
 	
 	/**
-	 * @see	wcf\data\ISortableAction::updatePosition()
+	 * @see	\wcf\data\ISortableAction::updatePosition()
 	 */
 	public function updatePosition() {
 		// remove previous settings

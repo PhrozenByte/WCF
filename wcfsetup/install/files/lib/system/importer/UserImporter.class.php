@@ -1,18 +1,17 @@
 <?php
 namespace wcf\system\importer;
 use wcf\data\user\group\UserGroup;
+use wcf\data\user\option\UserOptionList;
 use wcf\data\user\User;
 use wcf\data\user\UserEditor;
-use wcf\system\database\DatabaseException;
 use wcf\system\language\LanguageFactory;
 use wcf\system\WCF;
-use wcf\util\StringUtil;
 
 /**
  * Imports users.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.importer
@@ -20,51 +19,68 @@ use wcf\util\StringUtil;
  */
 class UserImporter extends AbstractImporter {
 	/**
-	 * @see wcf\system\importer\AbstractImporter::$className
+	 * @see	\wcf\system\importer\AbstractImporter::$className
 	 */
 	protected $className = 'wcf\data\user\User';
 	
 	/**
-	 * list of group memberships
-	 * @var array
+	 * ids of default notification events
+	 * @var	array<integer>
 	 */
-	protected $userToGroups = array();
+	protected $eventIDs = array();
 	
 	/**
-	 * list of user languages
-	 * @var array
+	 * list of user options
+	 * @var	array<\wcf\data\user\option\UserOption>
 	 */
-	protected $userToLanguages = array();
-	
-	/**
-	 * list of imported user ids
-	 * @var array<integer>
-	 */
-	protected $userIDs = array();
+	protected $userOptions = array();
 	
 	/**
 	 * Creates a new UserImporter object.
 	 */
 	public function __construct() {
-		register_shutdown_function(array($this, 'finalizeImport'));
+		// get default notification events
+		$sql = "SELECT	eventID
+			FROM	wcf".WCF_N."_user_notification_event
+			WHERE	preset = ?";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		$statement->execute(array(1));
+		while ($row = $statement->fetchArray()) {
+			$this->eventIDs[] = $row['eventID'];
+		}
+		
+		$userOptionList = new UserOptionList();
+		$userOptionList->readObjects();
+		$this->userOptions = $userOptionList->getObjects();
 	}
 	
 	/**
-	 * @see wcf\system\importer\IImporter::import()
+	 * @see	\wcf\system\importer\IImporter::import()
 	 */
 	public function import($oldID, array $data, array $additionalData = array()) {
 		// resolve duplicates
-		$existingUser = User::getUserByUsername($data['username']);
-		if ($existingUser->userID) {
-			if (ImportHandler::getInstance()->getUserMergeMode() == 1 || (ImportHandler::getInstance()->getUserMergeMode() == 3 && mb_strtolower($existingUser->email) != mb_strtolower($data['email']))) {
-				// rename user
-				$data['username'] = self::resolveDuplicate($data['username']);
-			}
-			else {
+		if (ImportHandler::getInstance()->getUserMergeMode() == 4) {
+			$existingUser = User::getUserByEmail($data['email']);
+			if ($existingUser->userID) {
 				// merge user
 				ImportHandler::getInstance()->saveNewID('com.woltlab.wcf.user', $oldID, $existingUser->userID);
-				
+					
 				return 0;
+			}
+		}
+		else {
+			$existingUser = User::getUserByUsername($data['username']);
+			if ($existingUser->userID) {
+				if (ImportHandler::getInstance()->getUserMergeMode() == 1 || (ImportHandler::getInstance()->getUserMergeMode() == 3 && mb_strtolower($existingUser->email) != mb_strtolower($data['email']))) {
+					// rename user
+					$data['username'] = self::resolveDuplicate($data['username']);
+				}
+				else {
+					// merge user
+					ImportHandler::getInstance()->saveNewID('com.woltlab.wcf.user', $oldID, $existingUser->userID);
+					
+					return 0;
+				}
 			}
 		}
 		
@@ -72,15 +88,6 @@ class UserImporter extends AbstractImporter {
 		if (is_numeric($oldID)) {
 			$user = new User($oldID);
 			if (!$user->userID) $data['userID'] = $oldID;
-		}
-		
-		// get group ids
-		$groupIDs = array();
-		if (isset($additionalData['groupIDs'])) {
-			foreach ($additionalData['groupIDs'] as $oldGroupID) {
-				$newGroupID = ImportHandler::getInstance()->getNewID('com.woltlab.wcf.user.group', $oldGroupID);
-				if ($newGroupID) $groupIDs[] = $newGroupID;
-			}
 		}
 		
 		// handle user options
@@ -94,14 +101,36 @@ class UserImporter extends AbstractImporter {
 					$userOptions[$optionID] = $optionValue;
 				}
 			}
-		}
-		
-		// handle languages
-		$languageIDs = array();
-		if (isset($additionalData['languages'])) {
-			foreach ($additionalData['languages'] as $languageCode) {
-				$language = LanguageFactory::getInstance()->getLanguageByCode($languageCode);
-				if ($language !== null) $languageIDs[] = $language->languageID;
+			
+			// fix option values
+			foreach ($userOptions as $optionID => &$optionValue) {
+				switch ($this->userOptions[$optionID]->optionType) {
+					case 'boolean':
+						if ($optionValue) $optionValue = 1;
+						else $optionValue = 0;
+						break;
+							
+					case 'integer':
+						$optionValue = intval($optionValue);
+						if ($optionValue > 2147483647) $optionValue = 2147483647;
+						break;
+							
+					case 'float':
+						$optionValue = floatval($optionValue);
+						break;
+							
+					case 'textarea':
+						if (strlen($optionValue) > 16777215) $optionValue = substr($optionValue, 0, 16777215);
+						break;
+							
+					case 'birthday':
+					case 'date':
+						if (!preg_match('/^\d{4}\-\d{2}\-\d{2}$/', $optionValue)) $optionValue = '0000-00-00';
+						break;
+						
+					default:
+						if (strlen($optionValue) > 65535) $optionValue = substr($optionValue, 0, 65535);
+				}
 			}
 		}
 		
@@ -112,10 +141,63 @@ class UserImporter extends AbstractImporter {
 		// updates user options
 		$userEditor->updateUserOptions($userOptions);
 		
-		// store data
-		$this->userIDs[] = $user->userID;
-		$this->userToGroups[$user->userID] = $groupIDs;
-		$this->userToLanguages[$user->userID] = $languageIDs;
+		// save user groups
+		$groupIDs = array();
+		if (isset($additionalData['groupIDs'])) {
+			foreach ($additionalData['groupIDs'] as $oldGroupID) {
+				$newGroupID = ImportHandler::getInstance()->getNewID('com.woltlab.wcf.user.group', $oldGroupID);
+				if ($newGroupID) $groupIDs[] = $newGroupID;
+			}
+		}
+		
+		if (!$user->activationCode) $defaultGroupIDs = UserGroup::getGroupIDsByType(array(UserGroup::EVERYONE, UserGroup::USERS));
+		else $defaultGroupIDs = UserGroup::getGroupIDsByType(array(UserGroup::EVERYONE, UserGroup::GUESTS));
+		
+		$groupIDs = array_merge($groupIDs, $defaultGroupIDs);
+		$sql = "INSERT IGNORE INTO	wcf".WCF_N."_user_to_group
+						(userID, groupID)
+			VALUES			(?, ?)";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		foreach ($groupIDs as $groupID) {
+			$statement->execute(array(
+				$user->userID,
+				$groupID
+			));
+		}
+		
+		// save languages
+		$sql = "INSERT IGNORE INTO	wcf".WCF_N."_user_to_language
+						(userID, languageID)
+			VALUES			(?, ?)";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		$languageIDs = array();
+		if (isset($additionalData['languages'])) {
+			foreach ($additionalData['languages'] as $languageCode) {
+				$language = LanguageFactory::getInstance()->getLanguageByCode($languageCode);
+				if ($language !== null) $languageIDs[] = $language->languageID;
+			}
+		}
+		if (empty($languageIDs)) {
+			$languageIDs[] = LanguageFactory::getInstance()->getDefaultLanguageID();
+		}
+		foreach ($languageIDs as $languageID) {
+			$statement->execute(array(
+				$user->userID,
+				$languageID
+			));
+		}
+		
+		// save default user events
+		$sql = "INSERT IGNORE INTO	wcf".WCF_N."_user_notification_event_to_user
+						(userID, eventID)
+			VALUES			(?, ?)";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		foreach ($this->eventIDs as $eventID) {
+			$statement->execute(array(
+				$user->userID,
+				$eventID
+			));
+		}
 		
 		// save mapping
 		ImportHandler::getInstance()->saveNewID('com.woltlab.wcf.user', $oldID, $user->userID);
@@ -124,72 +206,10 @@ class UserImporter extends AbstractImporter {
 	}
 	
 	/**
-	 * Finalizes the user import.
-	 */
-	public function finalizeImport() {
-		if (empty($this->userIDs)) return;
-		
-		// save groups
-		$sql = "INSERT IGNORE INTO	wcf".WCF_N."_user_to_group
-						(userID, groupID)
-			VALUES			(?, ?)";
-		$statement = WCF::getDB()->prepareStatement($sql);
-		WCF::getDB()->beginTransaction();
-		foreach ($this->userToGroups as $userID => $groupIDs) {
-			$groupIDs = array_merge($groupIDs, UserGroup::getGroupIDsByType(array(UserGroup::EVERYONE, UserGroup::USERS)));
-			
-			foreach ($groupIDs as $groupID) {
-				$statement->execute(array($userID, $groupID));
-			}
-		}
-		WCF::getDB()->commitTransaction();
-		
-		// save languages
-		$sql = "INSERT IGNORE INTO	wcf".WCF_N."_user_to_language
-						(userID, languageID)
-			VALUES			(?, ?)";
-		$statement = WCF::getDB()->prepareStatement($sql);
-		WCF::getDB()->beginTransaction();
-		foreach ($this->userToLanguages as $userID => $languageIDs) {
-			if (empty($languageIDs)) $languageIDs = array(LanguageFactory::getInstance()->getDefaultLanguageID());
-			foreach ($languageIDs as $languageID) {
-				$statement->execute(array($userID, $languageID));
-			}
-		}
-		WCF::getDB()->commitTransaction();
-		
-		// get default notification events
-		$eventIDs = array();
-		$sql = "SELECT	eventID
-			FROM	wcf".WCF_N."_user_notification_event
-			WHERE	preset = ?";
-		$statement = WCF::getDB()->prepareStatement($sql);
-		$statement->execute(array(1));
-		while ($row = $statement->fetchArray()) {
-			$eventIDs[] = $row['eventID'];
-		}
-		
-		$sql = "INSERT IGNORE INTO	wcf".WCF_N."_user_notification_event_to_user
-						(userID, eventID)
-			VALUES			(?, ?)";
-		$statement = WCF::getDB()->prepareStatement($sql);
-		WCF::getDB()->beginTransaction();
-		foreach ($this->userIDs as $userID) {
-			foreach ($eventIDs as $eventID) {
-				$statement->execute(array($userID, $eventID));
-			}
-		}
-		WCF::getDB()->commitTransaction();
-		
-		// reset user ids
-		$this->userIDs = array();
-	}
-	
-	/**
-	 * Revolves duplicate user names.
-	 *
+	 * Revolves duplicate user names and returns the new user name.
+	 * 
 	 * @param	string		$username
-	 * @return 	string		new username
+	 * @return	string
 	 */
 	private static function resolveDuplicate($username) {
 		$i = 0;
@@ -207,7 +227,7 @@ class UserImporter extends AbstractImporter {
 			if (empty($row['userID'])) break;
 		}
 		while (true);
-	
+		
 		return $newUsername;
 	}
 }

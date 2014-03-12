@@ -7,7 +7,7 @@ use wcf\system\SingletonFactory;
  * Handles BBCodes displayed as buttons within the WYSIWYG editor.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode
@@ -16,18 +16,18 @@ use wcf\system\SingletonFactory;
 class BBCodeHandler extends SingletonFactory {
 	/**
 	 * list of BBCodes allowed for usage
-	 * @var	array<wcf\data\bbcode\BBCode>
+	 * @var	array<\wcf\data\bbcode\BBCode>
 	 */
 	protected $allowedBBCodes = array();
 	
 	/**
 	 * list of BBCodes displayed as buttons
-	 * @var	array<wcf\data\bbcode\BBCode>
+	 * @var	array<\wcf\data\bbcode\BBCode>
 	 */
 	protected $buttonBBCodes = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		foreach (BBCodeCache::getInstance()->getBBCodes() as $bbcode) {
@@ -62,11 +62,17 @@ class BBCodeHandler extends SingletonFactory {
 	/**
 	 * Returns a list of BBCodes displayed as buttons.
 	 * 
-	 * @return	array<wcf\data\bbcode\BBCode>
+	 * @return	array<\wcf\data\bbcode\BBCode>
 	 */
 	public function getButtonBBCodes() {
-		// todo: check if BBCodes are available
-		return $this->buttonBBCodes;
+		$buttons = array();
+		foreach ($this->buttonBBCodes as $bbcode) {
+			if ($this->isAvailableBBCode($bbcode->bbcodeTag)) {
+				$buttons[] = $bbcode;
+			}
+		}
+		
+		return $buttons;
 	}
 	
 	/**

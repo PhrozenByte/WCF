@@ -9,7 +9,7 @@ use wcf\util\StringUtil;
  * Highlights syntax of xml sourcecode.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode.highlighter
@@ -17,44 +17,44 @@ use wcf\util\StringUtil;
  */
 class XmlHighlighter extends Highlighter {
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$allowsNewslinesInQuotes
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$allowsNewslinesInQuotes
 	 */
 	protected $allowsNewslinesInQuotes = true;
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$quotes
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$quotes
 	 */
 	protected $quotes = array('"');
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$singleLineComment
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$singleLineComment
 	 */
 	protected $singleLineComment = array();
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$commentStart
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$commentStart
 	 */
 	protected $commentStart = array("<!--");
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$commentEnd
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$commentEnd
 	 */
 	protected $commentEnd = array("-->");
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$separators
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$separators
 	 */
 	protected $separators = array("<", ">");
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::$operators
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::$operators
 	 */
 	protected $operators = array();
 	
 	const XML_ATTRIBUTE_NAME = '[a-z0-9](?:(?:(?<!-)-)?[a-z0-9])*';
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::highlightKeywords()
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::highlightKeywords()
 	 */
 	protected function highlightKeywords($string) {
 		$string = parent::highlightKeywords($string);
@@ -72,21 +72,28 @@ class XmlHighlighter extends Highlighter {
 	}
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::cacheQuotes()
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::cacheQuotes()
 	 */
 	protected function cacheQuotes($string) {
+		$string = parent::cacheQuotes($string);
+		
 		// highlight CDATA-Tags as quotes
 		$string = Regex::compile('<!\[CDATA\[.*?\]\]>', Regex::DOT_ALL)->replace($string, new Callback(function (array $matches) {
 			return StringStack::pushToStringStack('<span class="hlQuotes">'.StringUtil::encodeHTML($matches[0]).'</span>', 'highlighterQuotes');
 		}));
 		
-		$string = parent::cacheQuotes($string);
-		
 		return $string;
 	}
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::highlightNumbers()
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::highlightQuotes()
+	 */
+	protected function highlightQuotes($string) {
+		return StringStack::reinsertStrings(parent::highlightQuotes($string), 'highlighterQuotes');
+	}
+	
+	/**
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::highlightNumbers()
 	 */
 	protected function highlightNumbers($string) {
 		// do not highlight numbers

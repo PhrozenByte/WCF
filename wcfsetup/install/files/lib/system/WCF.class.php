@@ -9,6 +9,7 @@ use wcf\system\application\ApplicationHandler;
 use wcf\system\cache\builder\CoreObjectCacheBuilder;
 use wcf\system\cache\builder\PackageUpdateCacheBuilder;
 use wcf\system\cronjob\CronjobScheduler;
+use wcf\system\event\EventHandler;
 use wcf\system\exception\AJAXException;
 use wcf\system\exception\IPrintableException;
 use wcf\system\exception\NamedUserException;
@@ -27,7 +28,7 @@ use wcf\util\ClassUtil;
 use wcf\util\FileUtil;
 use wcf\util\StringUtil;
 
-// try to disable execution time limit
+// try to set a time-limit to infinite
 @set_time_limit(0);
 
 // fix timezone warning issue
@@ -36,7 +37,7 @@ if (!@ini_get('date.timezone')) {
 }
 
 // define current wcf version
-define('WCF_VERSION', '2.0.0 Beta 9 (Maelstrom)');
+define('WCF_VERSION', '2.0.3 (Maelstrom)');
 
 // define current unix timestamp
 define('TIME_NOW', time());
@@ -51,7 +52,7 @@ if (!defined('NO_IMPORTS')) {
  * It holds the database connection, access to template and language engine.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system
@@ -60,9 +61,15 @@ if (!defined('NO_IMPORTS')) {
 class WCF {
 	/**
 	 * list of currently loaded applications
-	 * @var	array<wcf\system\application\IApplication>
+	 * @var	array<\wcf\data\application\Application>
 	 */
 	protected static $applications = array();
+	
+	/**
+	 * list of currently loaded application objects
+	 * @var	array<\wcf\system\application\IApplication>
+	 */
+	protected static $applicationObjects = array();
 	
 	/**
 	 * list of autoload directories
@@ -72,7 +79,7 @@ class WCF {
 	
 	/**
 	 * list of unique instances of each core object
-	 * @var	array<wcf\system\SingletonFactory>
+	 * @var	array<\wcf\system\SingletonFactory>
 	 */
 	protected static $coreObject = array();
 	
@@ -84,13 +91,13 @@ class WCF {
 	
 	/**
 	 * database object
-	 * @var	wcf\system\database\Database
+	 * @var	\wcf\system\database\Database
 	 */
 	protected static $dbObj = null;
 	
 	/**
 	 * language object
-	 * @var	wcf\system\language\Language
+	 * @var	\wcf\system\language\Language
 	 */
 	protected static $languageObj = null;
 	
@@ -102,15 +109,21 @@ class WCF {
 	
 	/**
 	 * session object
-	 * @var	wcf\system\session\SessionHandler
+	 * @var	\wcf\system\session\SessionHandler
 	 */
 	protected static $sessionObj = null;
 	
 	/**
 	 * template object
-	 * @var	wcf\system\template\TemplateEngine
+	 * @var	\wcf\system\template\TemplateEngine
 	 */
 	protected static $tplObj = null;
+	
+	/**
+	 * true if Zend Opcache is loaded and enabled
+	 * @var	boolean
+	 */
+	protected static $zendOpcacheEnabled = null;
 	
 	/**
 	 * Calls all init functions of the WCF class.
@@ -133,6 +146,8 @@ class WCF {
 		$this->initCoreObjects();
 		$this->initApplications();
 		$this->initBlacklist();
+		
+		EventHandler::getInstance()->fireAction($this, 'initialized');
 	}
 	
 	/**
@@ -205,7 +220,7 @@ class WCF {
 	/**
 	 * Returns the database object.
 	 * 
-	 * @return	wcf\system\database\Database
+	 * @return	\wcf\system\database\Database
 	 */
 	public static final function getDB() {
 		return self::$dbObj;
@@ -214,7 +229,7 @@ class WCF {
 	/**
 	 * Returns the session object.
 	 * 
-	 * @return	wcf\system\session\SessionHandler
+	 * @return	\wcf\system\session\SessionHandler
 	 */
 	public static final function getSession() {
 		return self::$sessionObj;
@@ -223,7 +238,7 @@ class WCF {
 	/**
 	 * Returns the user object.
 	 * 
-	 * @return	wcf\data\user\User
+	 * @return	\wcf\data\user\User
 	 */
 	public static final function getUser() {
 		return self::getSession()->getUser();
@@ -232,7 +247,7 @@ class WCF {
 	/**
 	 * Returns the language object.
 	 * 
-	 * @return	wcf\data\language\Language
+	 * @return	\wcf\data\language\Language
 	 */
 	public static final function getLanguage() {
 		return self::$languageObj;
@@ -241,7 +256,7 @@ class WCF {
 	/**
 	 * Returns the template object.
 	 * 
-	 * @return	wcf\system\template\TemplateEngine
+	 * @return	\wcf\system\template\TemplateEngine
 	 */
 	public static final function getTPL() {
 		return self::$tplObj;
@@ -438,9 +453,9 @@ class WCF {
 	/**
 	 * Loads an application.
 	 * 
-	 * @param	wcf\data\application\Application		$application
+	 * @param	\wcf\data\application\Application		$application
 	 * @param	boolean						$isDependentApplication
-	 * @return	wcf\system\application\IApplication
+	 * @return	\wcf\system\application\IApplication
 	 */
 	protected function loadApplication(Application $application, $isDependentApplication = false) {
 		$applicationObject = null;
@@ -481,8 +496,8 @@ class WCF {
 			}
 			
 			// init application and assign it as template variable
-			$applicationObject = call_user_func(array($className, 'getInstance'));
-			$this->getTPL()->assign('__'.$abbreviation, $applicationObject);
+			self::$applicationObjects[$application->packageID] = call_user_func(array($className, 'getInstance'));
+			$this->getTPL()->assign('__'.$abbreviation, self::$applicationObjects[$application->packageID]);
 		}
 		else {
 			unset(self::$autoloadDirectories[$abbreviation]);
@@ -501,7 +516,21 @@ class WCF {
 		// register application
 		self::$applications[$abbreviation] = $application;
 		
-		return $applicationObject;
+		return self::$applicationObjects[$application->packageID];
+	}
+	
+	/**
+	 * Returns the corresponding application object. Does not support the 'wcf' pseudo application.
+	 * 
+	 * @param	wcf\data\application\Application	$application
+	 * @return	\wcf\system\application\IApplication
+	 */
+	public static function getApplicationObject(Application $application) {
+		if (isset(self::$applicationObjects[$application->packageID])) {
+			return self::$applicationObjects[$application->packageID];
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -570,7 +599,7 @@ class WCF {
 	
 	/**
 	 * Includes the required util or exception classes automatically.
-	 *
+	 * 
 	 * @param	string		$className
 	 * @see		spl_autoload_register()
 	 */
@@ -591,7 +620,7 @@ class WCF {
 	}
 	
 	/**
-	 * @see	wcf\system\WCF::__callStatic()
+	 * @see	\wcf\system\WCF::__callStatic()
 	 */
 	public final function __call($name, array $arguments) {
 		// bug fix to avoid php crash, see http://bugs.php.net/bug.php?id=55020
@@ -703,7 +732,7 @@ class WCF {
 	
 	/**
 	 * Returns the URI of the current page.
-	 *
+	 * 
 	 * @return	string
 	 */
 	public static function getRequestURI() {
@@ -730,9 +759,34 @@ class WCF {
 	}
 	
 	/**
+	 * Resets Zend Opcache cache if installed and enabled.
+	 * 
+	 * @param	string		$script
+	 */
+	public static function resetZendOpcache($script = '') {
+		if (self::$zendOpcacheEnabled === null) {
+			self::$zendOpcacheEnabled = false;
+			
+			if (extension_loaded('Zend Opcache') && @ini_get('opcache.enable')) {
+				self::$zendOpcacheEnabled = true;
+			}
+			
+		}
+		
+		if (self::$zendOpcacheEnabled) {
+			if (empty($script)) {
+				opcache_reset();
+			}
+			else {
+				opcache_invalidate($script, true);
+			}
+		}
+	}
+	
+	/**
 	 * Returns style handler.
 	 * 
-	 * @return	wcf\system\style\StyleHandler
+	 * @return	\wcf\system\style\StyleHandler
 	 */
 	public function getStyleHandler() {
 		return StyleHandler::getInstance();

@@ -5,7 +5,7 @@ namespace wcf\system\cache\source;
  * Any cache sources should implement this interface.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cache.source
@@ -14,7 +14,7 @@ namespace wcf\system\cache\source;
 interface ICacheSource {
 	/**
 	 * Flushes a specific cache, optionally removing caches which share the same name.
-	 *
+	 * 
 	 * @param	string		$cacheName
 	 * @param	boolean		$useWildcard
 	 */

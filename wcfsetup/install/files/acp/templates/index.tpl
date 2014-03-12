@@ -8,22 +8,12 @@
 	//]]>
 </script>
 
-<style type="text/css">
-	#news iframe {
-		width: 100%;	
-	}
-</style>
-
 <header class="boxHeadline">
 	<h1>{lang}wcf.global.acp{/lang}</h1>
 </header>
 
 {if $inRescueMode}
 	<p style="background-color: rgb(255, 153, 153); border: 2px solid rgb(255, 0, 0); padding: 1em;">{lang}wcf.acp.index.inRescueMode{/lang}</p>
-{/if}
-
-{if $__wcf->session->getPermission('admin.system.package.canUpdatePackage') && $__wcf->getAvailableUpdates()}
-	<p class="info">{lang}wcf.global.availableUpdates{/lang}</p>
 {/if}
 
 {if $usersAwaitingApproval}
@@ -45,23 +35,25 @@
 	
 	{if ENABLE_WOLTLAB_NEWS}
 		<div id="news" class="container containerPadding hidden tabMenuContent">
-			{if $__wcf->language->languageCode == 'de'}
-				<a class="twitter-timeline" href="https://twitter.com/woltlab_de" data-chrome="nofooter transparent" data-widget-id="339042086949093376">Tweets von @woltlab_de</a>
-			{else}
-				<a class="twitter-timeline" href="https://twitter.com/woltlab" data-chrome="nofooter transparent" data-widget-id="335166618281865217">Tweets by @woltlab</a>
-			{/if}
-			{literal}
-				<script data-relocate="true">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-			{/literal}
+			<div id="news-twitter-timeline">
+				{if $__wcf->language->languageCode == 'de'}
+					<a class="twitter-timeline" href="https://twitter.com/woltlab_de" data-chrome="nofooter transparent" data-widget-id="339042086949093376">Tweets von @woltlab_de</a>
+				{else}
+					<a class="twitter-timeline" href="https://twitter.com/woltlab" data-chrome="nofooter transparent" data-widget-id="335166618281865217">Tweets by @woltlab</a>
+				{/if}
+				{literal}
+					<script data-relocate="true">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+				{/literal}
+			</div>
 		</div>
 	{/if}
 	
 	<div id="system" class="container containerPadding hidden tabMenuContent">
 		<fieldset>
 			<legend>{lang}wcf.acp.index.system.software{/lang}</legend>
-		
+			
 			{event name='softwareVersions'}
-		
+			
 			<dl>
 				<dt>{lang}wcf.acp.index.system.software.wcfVersion{/lang}</dt>
 				<dd>{@WCF_VERSION}</dd>
@@ -72,7 +64,7 @@
 		
 		<fieldset>
 			<legend>{lang}wcf.acp.index.system.server{/lang}</legend>
-		
+			
 			<dl>
 				<dt>{lang}wcf.acp.index.system.os{/lang}</dt>
 				<dd>{$server[os]}</dd>
@@ -85,7 +77,13 @@
 			
 			<dl>
 				<dt>{lang}wcf.acp.index.system.php{/lang}</dt>
-				<dd><a href="{link controller='PHPInfo'}{/link}">{PHP_VERSION}</a></dd>
+				<dd>
+					{if $__wcf->session->getPermission('admin.system.package.canInstallPackage') && $__wcf->session->getPermission('admin.system.package.canUpdatePackage')}
+						<a href="{link controller='PHPInfo'}{/link}">{PHP_VERSION}</a>
+					{else}
+						{PHP_VERSION}
+					{/if}
+				</dd>
 			</dl>
 			
 			<dl>
@@ -109,7 +107,7 @@
 	<div id="credits" class="container containerPadding hidden tabMenuContent">
 		<fieldset>
 			<legend>{lang}wcf.acp.index.credits{/lang}</legend>
-		
+			
 			<dl>
 				<dt>{lang}wcf.acp.index.credits.developedBy{/lang}</dt>
 				<dd><a href="{@$__wcf->getPath()}acp/dereferrer.php?url={"http://www.woltlab.com"|rawurlencode}" class="externalURL">WoltLab&reg; GmbH</a></dd>
@@ -160,7 +158,7 @@
 			
 			<dl>
 				<dt></dt>
-				<dd>Copyright &copy; 2001-2013 WoltLab&reg; GmbH. All rights reserved.</dd>
+				<dd>Copyright &copy; 2001-2014 WoltLab&reg; GmbH. All rights reserved.</dd>
 			</dl>
 			
 			<dl>

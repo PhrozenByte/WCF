@@ -7,7 +7,7 @@ use wcf\data\DatabaseObjectDecorator;
  * Represents a viewable application.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.application
@@ -15,20 +15,20 @@ use wcf\data\DatabaseObjectDecorator;
  */
 class ViewableApplication extends DatabaseObjectDecorator {
 	/**
-	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	\wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\application\Application';
 	
 	/**
 	 * package object
-	 * @var	wcf\data\package\Package
+	 * @var	\wcf\data\package\Package
 	 */
 	protected $package = null;
 	
 	/**
 	 * Returns package object.
 	 * 
-	 * @return	wcf\data\package\Package
+	 * @return	\wcf\data\package\Package
 	 */
 	public function getPackage() {
 		if ($this->package === null) {

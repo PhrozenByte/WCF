@@ -11,7 +11,7 @@ use wcf\util\StringUtil;
  * Handles clipboard items.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	action
@@ -67,7 +67,7 @@ class ClipboardAction extends AJAXInvokeAction {
 	protected $objectTypeID = 0;
 	
 	/**
-	 * @see	wcf\action\Action::readParameters()
+	 * @see	\wcf\action\Action::readParameters()
 	 */
 	public function readParameters() {
 		AbstractSecureAction::readParameters();
@@ -81,7 +81,7 @@ class ClipboardAction extends AJAXInvokeAction {
 	}
 	
 	/**
-	 * @see	wcf\action\Action::execute()
+	 * @see	\wcf\action\Action::execute()
 	 */
 	public function execute() {
 		AbstractSecureAction::execute();

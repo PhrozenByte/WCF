@@ -2,7 +2,6 @@
 namespace wcf\acp\form;
 use wcf\data\category\Category;
 use wcf\data\category\CategoryNodeTree;
-use wcf\data\package\PackageCache;
 use wcf\data\smiley\SmileyAction;
 use wcf\data\smiley\SmileyEditor;
 use wcf\form\AbstractForm;
@@ -17,7 +16,7 @@ use wcf\util\StringUtil;
  * Shows the smiley add form.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -25,17 +24,17 @@ use wcf\util\StringUtil;
  */
 class SmileyAddForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.smiley.add';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$templateName
+	 * @see	\wcf\page\AbstractPage::$templateName
 	 */
 	public $templateName = 'smileyAdd';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.content.smiley.canManageSmiley');
 	
@@ -77,12 +76,12 @@ class SmileyAddForm extends AbstractForm {
 	
 	/**
 	 * node tree with available smiley categories
-	 * @var	wcf\data\category\CategoryNodeTree
+	 * @var	\wcf\data\category\CategoryNodeTree
 	 */
 	public $categoryNodeTree = null;
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -102,7 +101,7 @@ class SmileyAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -119,9 +118,8 @@ class SmileyAddForm extends AbstractForm {
 		I18nHandler::getInstance()->register('smileyTitle');
 	}
 	
-	
 	/**
-	 * @see	wcf\page\IForm::readFormParameters()
+	 * @see	\wcf\page\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -138,13 +136,13 @@ class SmileyAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IForm::save()
+	 * @see	\wcf\page\IForm::save()
 	 */
 	public function save() {
 		parent::save();
 		
 		$this->objectAction = new SmileyAction(array(), 'create', array(
-			'data' => array(
+			'data' => array_merge($this->additionalFields, array(
 				'smileyTitle' => $this->smileyTitle,
 				'smileyCode' => $this->smileyCode,
 				'aliases' => $this->aliases,
@@ -152,7 +150,7 @@ class SmileyAddForm extends AbstractForm {
 				'showOrder' => $this->showOrder,
 				'categoryID' => $this->categoryID ?: null,
 				'packageID' => 1
-			)
+			))
 		));
 		$this->objectAction->executeAction();
 		$returnValues = $this->objectAction->getReturnValues();
@@ -173,6 +171,7 @@ class SmileyAddForm extends AbstractForm {
 		$this->categoryID = 0;
 		$this->showOrder = 0;
 		$this->smileyPath = '';
+		$this->aliases = '';
 		
 		I18nHandler::getInstance()->reset();
 		
@@ -183,7 +182,7 @@ class SmileyAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IForm::validate()
+	 * @see	\wcf\page\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -213,7 +212,7 @@ class SmileyAddForm extends AbstractForm {
 			throw new UserInputException('smileyPath');
 		}
 		
-		if (!file_exists(WCF_DIR.$this->smileyPath)) {
+		if (!is_file(WCF_DIR.$this->smileyPath)) {
 			throw new UserInputException('smileyPath', 'notFound');
 		}
 		

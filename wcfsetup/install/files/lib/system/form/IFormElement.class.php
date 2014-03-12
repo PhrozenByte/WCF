@@ -5,7 +5,7 @@ namespace wcf\system\form;
  * Interface for form elements.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.form
@@ -15,7 +15,7 @@ interface IFormElement {
 	/**
 	 * Creates a new object of type FormElement.
 	 * 
-	 * @param	wcf\system\form\IFormElementContainer		$parent
+	 * @param	\wcf\system\form\IFormElementContainer		$parent
 	 */
 	public function __construct(IFormElementContainer $parent);
 	
@@ -50,7 +50,7 @@ interface IFormElement {
 	/**
 	 * Returns element's parent container element.
 	 * 
-	 * @return	wcf\system\form\IFormElementContainer
+	 * @return	\wcf\system\form\IFormElementContainer
 	 */
 	public function getParent();
 	

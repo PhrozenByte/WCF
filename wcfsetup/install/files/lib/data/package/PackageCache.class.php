@@ -7,7 +7,7 @@ use wcf\system\SingletonFactory;
  * Manages the package cache.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.package
@@ -21,7 +21,7 @@ class PackageCache extends SingletonFactory {
 	protected $packages = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$this->packages = PackageCacheBuilder::getInstance()->getData();
@@ -31,7 +31,7 @@ class PackageCache extends SingletonFactory {
 	 * Returns a specific package.
 	 * 
 	 * @param	integer		$packageID
-	 * @return	wcf\data\package\Package
+	 * @return	\wcf\data\package\Package
 	 */
 	public function getPackage($packageID) {
 		if (isset($this->packages['packages'][$packageID])) {
@@ -43,7 +43,7 @@ class PackageCache extends SingletonFactory {
 	
 	/**
 	 * Returns the id of a specific package or 'null' if not found.
-	 *
+	 * 
 	 * @param	string		$package
 	 * @return	string
 	 */
@@ -58,7 +58,7 @@ class PackageCache extends SingletonFactory {
 	/**
 	 * Returns all packages.
 	 * 
-	 * @return	array<wcf\data\package\Package>
+	 * @return	array<\wcf\data\package\Package>
 	 */
 	public function getPackages() {
 		return $this->packages;
@@ -68,7 +68,7 @@ class PackageCache extends SingletonFactory {
 	 * Returns a specific package.
 	 * 
 	 * @param	string		$package
-	 * @return	wcf\data\package\Package
+	 * @return	\wcf\data\package\Package
 	 */
 	public function getPackageByIdentifier($package) {
 		$packageID = $this->getPackageID($package);

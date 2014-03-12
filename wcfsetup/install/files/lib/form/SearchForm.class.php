@@ -20,7 +20,7 @@ use wcf\util\StringUtil;
  * Shows the search form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	form
@@ -70,12 +70,12 @@ class SearchForm extends RecaptchaForm {
 	public $results = array();
 	
 	/**
-	 * @see	wcf\page\SortablePage::$sortField
+	 * @see	\wcf\page\SortablePage::$sortField
 	 */
 	public $sortField = SEARCH_DEFAULT_SORT_FIELD;
 	
 	/**
-	 * @see	wcf\page\SortablePage::$sortOrder
+	 * @see	\wcf\page\SortablePage::$sortOrder
 	 */
 	public $sortOrder = SEARCH_DEFAULT_SORT_ORDER;
 	
@@ -92,7 +92,7 @@ class SearchForm extends RecaptchaForm {
 	public $username = '';
 	
 	/**
-	 * @see	wcf\form\RecaptchaForm::$useCaptcha
+	 * @see	\wcf\form\RecaptchaForm::$useCaptcha
 	 */
 	public $useCaptcha = SEARCH_USE_CAPTCHA;
 	
@@ -110,7 +110,7 @@ class SearchForm extends RecaptchaForm {
 	
 	/**
 	 * PreparedStatementConditionBuilder object
-	 * @var	wcf\system\database\util\PreparedStatementConditionBuilder
+	 * @var	\wcf\system\database\util\PreparedStatementConditionBuilder
 	 */
 	public $searchIndexCondition = null;
 	
@@ -145,7 +145,7 @@ class SearchForm extends RecaptchaForm {
 	public $submit = false;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -184,6 +184,11 @@ class SearchForm extends RecaptchaForm {
 			}
 		}
 		
+		// disable check for security token for GET requests
+		if ($this->submit) {
+			$_POST['t'] = WCF::getSession()->getSecurityToken();
+		}
+		
 		// sort order
 		if (isset($_REQUEST['sortField'])) {
 			$this->sortField = $_REQUEST['sortField'];
@@ -210,7 +215,7 @@ class SearchForm extends RecaptchaForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -223,7 +228,7 @@ class SearchForm extends RecaptchaForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -281,7 +286,7 @@ class SearchForm extends RecaptchaForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
@@ -343,7 +348,7 @@ class SearchForm extends RecaptchaForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -366,7 +371,7 @@ class SearchForm extends RecaptchaForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::show()
+	 * @see	\wcf\page\IPage::show()
 	 */
 	public function show() {
 		if (empty($_POST) && $this->submit) {

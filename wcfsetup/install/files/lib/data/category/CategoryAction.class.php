@@ -15,7 +15,7 @@ use wcf\system\WCF;
  * Executes category-related actions.
  * 
  * @author	Matthias Schmidt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.category
@@ -24,12 +24,17 @@ use wcf\system\WCF;
 class CategoryAction extends AbstractDatabaseObjectAction implements ISortableAction, IToggleAction, IToggleContainerAction {
 	/**
 	 * categorized object type
-	 * @var	wcf\data\object\type\ObjectType
+	 * @var	\wcf\data\object\type\ObjectType
 	 */
 	protected $objectType = null;
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::delete()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$requireACP
+	 */
+	protected $requireACP = array('create', 'delete', 'toggle', 'update', 'updatePosition');
+	
+	/**
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::delete()
 	 */
 	public function delete() {
 		$returnValue = parent::delete();
@@ -43,7 +48,7 @@ class CategoryAction extends AbstractDatabaseObjectAction implements ISortableAc
 	}
 	
 	/**
-	 * @see	wcf\data\IToggleAction::toggle()
+	 * @see	\wcf\data\IToggleAction::toggle()
 	 */
 	public function toggle() {
 		foreach ($this->objects as $categoryEditor) {
@@ -54,7 +59,7 @@ class CategoryAction extends AbstractDatabaseObjectAction implements ISortableAc
 	}
 	
 	/**
-	 * @see	wcf\data\IToggleContainerAction::toggleContainer()
+	 * @see	\wcf\data\IToggleContainerAction::toggleContainer()
 	 */
 	public function toggleContainer() {
 		$collapsibleObjectTypeName = $this->objects[0]->getProcessor()->getObjectTypeName('com.woltlab.wcf.collapsibleContent');
@@ -75,21 +80,30 @@ class CategoryAction extends AbstractDatabaseObjectAction implements ISortableAc
 	}
 	
 	/**
-	 * @see	wcf\data\ISortableAction::updatePosition()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::update()
+	 */
+	public function update() {
+		// check if showOrder needs to be recalculated
+		if (count($this->objects) == 1 && isset($this->parameters['data']['parentCategoryID']) && isset($this->parameters['data']['showOrder'])) {
+			if ($this->objects[0]->parentCategoryID != $this->parameters['data']['parentCategoryID'] || $this->objects[0]->showOrder != $this->parameters['data']['showOrder']) {
+				$this->parameters['data']['showOrder'] = $this->objects[0]->updateShowOrder($this->parameters['data']['parentCategoryID'], $this->parameters['data']['showOrder']);
+			}
+		}
+		
+		parent::update();
+	}
+	
+	/**
+	 * @see	\wcf\data\ISortableAction::updatePosition()
 	 */
 	public function updatePosition() {
-		$showOrders = array();
-		
 		WCF::getDB()->beginTransaction();
 		foreach ($this->parameters['data']['structure'] as $parentCategoryID => $categoryIDs) {
-			if (!isset($showOrders[$parentCategoryID])) {
-				$showOrders[$parentCategoryID] = 1;
-			}
-			
+			$showOrder = 1;
 			foreach ($categoryIDs as $categoryID) {
 				$this->objects[$categoryID]->update(array(
 					'parentCategoryID' => $parentCategoryID ? $this->objects[$parentCategoryID]->categoryID : 0,
-					'showOrder' => $showOrders[$parentCategoryID]++
+					'showOrder' => $showOrder++
 				));
 			}
 		}
@@ -97,7 +111,7 @@ class CategoryAction extends AbstractDatabaseObjectAction implements ISortableAc
 	}
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::validateDelete()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::validateDelete()
 	 */
 	public function validateCreate() {
 		$this->readInteger('objectTypeID', false, 'data');
@@ -112,7 +126,7 @@ class CategoryAction extends AbstractDatabaseObjectAction implements ISortableAc
 	}
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::validateDelete()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::validateDelete()
 	 */
 	public function validateDelete() {
 		// read objects
@@ -132,21 +146,21 @@ class CategoryAction extends AbstractDatabaseObjectAction implements ISortableAc
 	}
 	
 	/**
-	 * @see	wcf\data\IToggleAction::validateToggle()
+	 * @see	\wcf\data\IToggleAction::validateToggle()
 	 */
 	public function validateToggle() {
 		$this->validateUpdate();
 	}
 	
 	/**
-	 * @see	wcf\data\IToggleContainerAction::validateToggleContainer()
+	 * @see	\wcf\data\IToggleContainerAction::validateToggleContainer()
 	 */
 	public function validateToggleContainer() {
 		$this->validateUpdate();
 	}
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::validateUpdate()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::validateUpdate()
 	 */
 	public function validateUpdate() {
 		// read objects
@@ -166,7 +180,7 @@ class CategoryAction extends AbstractDatabaseObjectAction implements ISortableAc
 	}
 	
 	/**
-	 * @see	wcf\data\ISortableAction::validateUpdatePosition()
+	 * @see	\wcf\data\ISortableAction::validateUpdatePosition()
 	 */
 	public function validateUpdatePosition() {
 		// validate 'structure' parameter

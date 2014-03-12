@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="WCF">
 	<description>WoltLab Community Framework Coding Standard</description>
-	<exclude-pattern>*/wcfsetup/test.php</exclude-pattern>
-	<exclude-pattern>*/wcfsetup/install.php</exclude-pattern>
+	<exclude-pattern>*/zend/*</exclude-pattern>
 	<exclude-pattern>*/CodeSniff/*</exclude-pattern>
 	
 	<rule ref="Generic.Classes.DuplicateClassName" />
@@ -37,7 +36,6 @@
 	<rule ref="WCF.Namespaces.ClassMustBeImported" />
 	<rule ref="WCF.Namespaces.SortedUseDeclaration" />
 	<rule ref="WCF.Namespaces.UseDeclaration" />
-	<!--rule ref="WCF.PHP.DiscouragePCRE" /--> <!-- TODO: Sniff is disabled by commenting out the extends in the sniff file! -->
 	<rule ref="WCF.WhiteSpace.SuperfluousWhitespace" />
 	<rule ref="Zend.Files.ClosingTag" />
 	

@@ -15,6 +15,8 @@
 
 {if $errorField == 'search'}
 	<p class="error">{lang}wcf.acp.user.search.error.noMatches{/lang}</p>
+{else}
+	{include file='formError'}
 {/if}
 
 <div class="contentNavigation">
@@ -76,7 +78,7 @@
 					<dl>
 						<dt><label for="email">{lang}wcf.user.email{/lang}</label></dt>
 						<dd>
-							<input type="email" id="email" name="email" value="{$email}" class="medium" />
+							<input type="text" id="email" name="email" value="{$email}" class="medium" />
 						</dd>
 					</dl>
 				{/if}
@@ -230,6 +232,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

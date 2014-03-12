@@ -8,7 +8,7 @@ use wcf\util\StringUtil;
  * MemcachedCacheSource is an implementation of CacheSource that uses a Memcached server to store cached variables.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cache.source
@@ -89,12 +89,12 @@ class MemcachedCacheSource implements ICacheSource {
 	}
 	
 	/**
-	 * @see	wcf\system\cache\source\ICacheSource::flush()
+	 * @see	\wcf\system\cache\source\ICacheSource::flush()
 	 */
 	public function flush($cacheName, $useWildcard) {
 		$cacheName = $this->prefix . $cacheName;
 		
-		$resources = ($useWildcard) ? $this->getResources('~^' .  $cacheName. '(-[a-f0-9]+)?$~') : array($cacheName);
+		$resources = ($useWildcard) ? $this->getResources('~^' . $cacheName. '(-[a-f0-9]+)?$~') : array($cacheName);
 		foreach ($resources as $resource) {
 			$this->memcached->delete($resource);
 			$this->updateMaster(null, $resource);
@@ -102,7 +102,7 @@ class MemcachedCacheSource implements ICacheSource {
 	}
 	
 	/**
-	 * @see	wcf\system\cache\source\ICacheSource::flushAll()
+	 * @see	\wcf\system\cache\source\ICacheSource::flushAll()
 	 */
 	public function flushAll() {
 		// read all keys
@@ -121,7 +121,7 @@ class MemcachedCacheSource implements ICacheSource {
 	}
 	
 	/**
-	 * @see	wcf\system\cache\source\ICacheSource::get()
+	 * @see	\wcf\system\cache\source\ICacheSource::get()
 	 */
 	public function get($cacheName, $maxLifetime) {
 		$cacheName = $this->prefix . $cacheName;
@@ -140,7 +140,7 @@ class MemcachedCacheSource implements ICacheSource {
 	}
 	
 	/**
-	 * @see	wcf\system\cache\source\ICacheSource::set()
+	 * @see	\wcf\system\cache\source\ICacheSource::set()
 	 */
 	public function set($cacheName, $value, $maxLifetime) {
 		$cacheName = $this->prefix . $cacheName;
@@ -224,17 +224,8 @@ class MemcachedCacheSource implements ICacheSource {
 	 * @return	integer
 	 */
 	protected function getTTL($maxLifetime = 0) {
-		if ($maxLifetime) {
-			// max lifetime is a timestamp -> http://www.php.net/manual/en/memcached.expiration.php
-			if ($maxLifetime > (60 * 60 * 24 * 30)) {
-				// timestamp is in the past, discard
-				if ($maxLifetime < TIME_NOW) {
-					$maxLifetime = 0;
-				}
-			}
-		}
-		
-		if ($maxLifetime) {
+		// max lifetime is a timestamp -> http://www.php.net/manual/en/memcached.expiration.php
+		if ($maxLifetime && ($maxLifetime <= (60 * 60 * 24 * 30) || $maxLifetime >= TIME_NOW)) {
 			return $maxLifetime;
 		}
 		

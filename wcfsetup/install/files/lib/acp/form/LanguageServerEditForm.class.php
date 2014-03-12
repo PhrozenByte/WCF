@@ -10,7 +10,7 @@ use wcf\system\WCF;
  * Shows the language server edit form.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -18,7 +18,7 @@ use wcf\system\WCF;
  */
 class LanguageServerEditForm extends LanguageServerAddForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.language.server';
 	
@@ -30,12 +30,12 @@ class LanguageServerEditForm extends LanguageServerAddForm {
 	
 	/**
 	 * active language server
-	 * @var	wcf\data\language\server\LanguageServer
+	 * @var	\wcf\data\language\server\LanguageServer
 	 */
 	public $languageServer = null;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -48,15 +48,15 @@ class LanguageServerEditForm extends LanguageServerAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
 		
 		// save server
-		$this->objectAction = new LanguageServerAction(array($this->languageServerID), 'update', array('data' => array(
+		$this->objectAction = new LanguageServerAction(array($this->languageServerID), 'update', array('data' => array_merge($this->additionalFields, array(
 			'serverURL' => $this->server
-		)));
+		))));
 		$this->objectAction->executeAction();
 		$this->saved();
 		
@@ -65,7 +65,7 @@ class LanguageServerEditForm extends LanguageServerAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -76,7 +76,7 @@ class LanguageServerEditForm extends LanguageServerAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

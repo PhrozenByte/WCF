@@ -17,7 +17,7 @@ use wcf\util\StringUtil;
  * Provides methods to create and manage polls.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.poll
@@ -26,7 +26,7 @@ use wcf\util\StringUtil;
 class PollManager extends SingletonFactory {
 	/**
 	 * list of object types
-	 * @var	array<wcf\data\object\type\ObjectType>
+	 * @var	array<\wcf\data\object\type\ObjectType>
 	 */
 	protected $cache = array();
 	
@@ -44,7 +44,7 @@ class PollManager extends SingletonFactory {
 	
 	/**
 	 * poll object
-	 * @var	wcf\data\poll\Poll
+	 * @var	\wcf\data\poll\Poll
 	 */
 	protected $poll = null;
 	
@@ -75,7 +75,7 @@ class PollManager extends SingletonFactory {
 	protected $pollOptions = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$objectTypes = ObjectTypeCache::getInstance()->getObjectTypes('com.woltlab.wcf.poll');
@@ -183,7 +183,7 @@ class PollManager extends SingletonFactory {
 			$this->pollData['isPublic'] = $this->poll->isPublic;
 		}
 		
-		//  poll options
+		// poll options
 		if (isset($_POST['pollOptions']) && is_array($_POST['pollOptions'])) {
 			foreach ($_POST['pollOptions'] as $showOrder => $value) {
 				list($optionID, $optionValue) = explode('_', $value, 2);
@@ -204,9 +204,11 @@ class PollManager extends SingletonFactory {
 			return;
 		}
 		
-		// end time is in the past
-		if ($this->pollData['endTime'] != 0 && $this->pollData['endTime'] <= TIME_NOW && ($this->poll === null || $this->poll->endTime != $this->pollData['endTime'])) {
-			throw new UserInputException('pollEndTime', 'notValid');
+		if ($this->pollData['endTime'] && $this->pollData['endTime'] <= TIME_NOW) {
+			if ($this->poll === null || $this->poll->endTime >= TIME_NOW) {
+				// end time is in the past
+				throw new UserInputException('pollEndTime', 'notValid');
+			}
 		}
 		
 		// no options given
@@ -323,7 +325,7 @@ class PollManager extends SingletonFactory {
 	 * Returns a list of polls including options and vote state for current user.
 	 * 
 	 * @param	array<integer>		$pollIDs
-	 * @return	array<wcf\data\poll\Poll>
+	 * @return	array<\wcf\data\poll\Poll>
 	 */
 	public function getPolls(array $pollIDs) {
 		$pollList = new PollList();
@@ -351,7 +353,7 @@ class PollManager extends SingletonFactory {
 	 * Returns a list of poll options with vote state for current user.
 	 * 
 	 * @param	array<integer>		$pollIDs
-	 * @return	wcf\data\poll\option\PollOptionList
+	 * @return	\wcf\data\poll\option\PollOptionList
 	 */
 	public function getPollOptions(array $pollIDs) {
 		$optionList = new PollOptionList();
@@ -374,8 +376,8 @@ class PollManager extends SingletonFactory {
 	/**
 	 * Returns related object for given poll object.
 	 * 
-	 * @param	wcf\data\poll\Poll	$poll
-	 * @return	wcf\data\IPollObject
+	 * @param	\wcf\data\poll\Poll	$poll
+	 * @return	\wcf\data\IPollObject
 	 */
 	public function getRelatedObject(Poll $poll) {
 		if ($poll->objectID) {

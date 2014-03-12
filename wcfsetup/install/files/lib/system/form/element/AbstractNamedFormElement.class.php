@@ -6,7 +6,7 @@ use wcf\util\StringUtil;
  * Basic implementation for named form elements.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.form.element
@@ -15,7 +15,7 @@ use wcf\util\StringUtil;
 abstract class AbstractNamedFormElement extends AbstractFormElement {
 	/**
 	 * element description
-	 * @var string
+	 * @var	string
 	 */
 	protected $description = '';
 	
@@ -33,7 +33,7 @@ abstract class AbstractNamedFormElement extends AbstractFormElement {
 	
 	/**
 	 * Sets element description.
-	 *
+	 * 
 	 * @param	string		$description
 	 */
 	public function setDescription($description) {
@@ -42,7 +42,7 @@ abstract class AbstractNamedFormElement extends AbstractFormElement {
 	
 	/**
 	 * Returns element description.
-	 *
+	 * 
 	 * @return	string
 	 */
 	public function getDescription() {

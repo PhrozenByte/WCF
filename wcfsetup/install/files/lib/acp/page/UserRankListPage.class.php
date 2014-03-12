@@ -6,7 +6,7 @@ use wcf\page\SortablePage;
  * Lists available user ranks.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -14,32 +14,32 @@ use wcf\page\SortablePage;
  */
 class UserRankListPage extends SortablePage {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.user.rank.list';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.user.rank.canManageRank');
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::$objectListClassName
+	 * @see	\wcf\page\MultipleLinkPage::$objectListClassName
 	 */
 	public $objectListClassName = 'wcf\data\user\rank\UserRankList';
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::$defaultSortField
+	 * @see	\wcf\page\MultipleLinkPage::$defaultSortField
 	 */
 	public $defaultSortField = 'rankTitle';
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::$validSortFields
+	 * @see	\wcf\page\MultipleLinkPage::$validSortFields
 	 */
 	public $validSortFields = array('rankID', 'groupID', 'requiredPoints', 'rankTitle', 'rankImage', 'requiredGender');
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::show()
+	 * @see	\wcf\page\MultipleLinkPage::show()
 	 */
 	protected function initObjectList() {
 		parent::initObjectList();

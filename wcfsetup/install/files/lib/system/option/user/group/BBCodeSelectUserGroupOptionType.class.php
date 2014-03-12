@@ -11,7 +11,7 @@ use wcf\util\StringUtil;
  * User group option type implementation for BBCode select lists.
  * 
  * @author	Matthias Schmidt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.option
@@ -25,7 +25,7 @@ class BBCodeSelectUserGroupOptionType extends AbstractOptionType implements IUse
 	protected $bbCodes = null;
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::getData()
+	 * @see	\wcf\system\option\IOptionType::getData()
 	 */
 	public function getData(Option $option, $newValue) {
 		if (!is_array($newValue)) {
@@ -36,7 +36,7 @@ class BBCodeSelectUserGroupOptionType extends AbstractOptionType implements IUse
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::getFormElement()
+	 * @see	\wcf\system\option\IOptionType::getFormElement()
 	 */
 	public function getFormElement(Option $option, $value) {
 		if ($this->bbCodes === null) {
@@ -71,7 +71,7 @@ class BBCodeSelectUserGroupOptionType extends AbstractOptionType implements IUse
 	}
 	
 	/**
-	 * @see	wcf\system\option\user\group\IUserGroupOptionType::merge()
+	 * @see	\wcf\system\option\user\group\IUserGroupOptionType::merge()
 	 */
 	public function merge($defaultValue, $groupValue) {
 		if ($this->bbCodes === null) {
@@ -104,7 +104,7 @@ class BBCodeSelectUserGroupOptionType extends AbstractOptionType implements IUse
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::validate()
+	 * @see	\wcf\system\option\IOptionType::validate()
 	 */
 	public function validate(Option $option, $newValue) {
 		if (!is_array($newValue)) {

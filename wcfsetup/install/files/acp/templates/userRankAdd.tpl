@@ -4,9 +4,7 @@
 	<h1>{lang}wcf.acp.user.rank.{$action}{/lang}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $success|isset}
 	<p class="success">{lang}wcf.global.success.{$action}{/lang}</p>
@@ -30,7 +28,7 @@
 			<dl{if $errorField == 'rankTitle'} class="formError"{/if}>
 				<dt><label for="rankTitle">{lang}wcf.acp.user.rank.title{/lang}</label></dt>
 				<dd>
-					<input type="text" id="rankTitle" name="rankTitle" value="{$rankTitle}" required="required" autofocus="autofocus" class="long" />
+					<input type="text" id="rankTitle" name="rankTitle" value="{$i18nPlainValues['rankTitle']}" required="required" autofocus="autofocus" class="long" />
 					{if $errorField == 'rankTitle'}
 						<small class="innerError">
 							{if $errorType == 'empty'}
@@ -176,8 +174,8 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
-
 
 {include file='footer'}

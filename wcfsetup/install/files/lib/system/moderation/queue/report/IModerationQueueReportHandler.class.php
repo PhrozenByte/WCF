@@ -7,7 +7,7 @@ use wcf\system\moderation\queue\IModerationQueueHandler;
  * Default interface for moderation queue report handlers.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.moderation.queue.report
@@ -25,7 +25,7 @@ interface IModerationQueueReportHandler extends IModerationQueueHandler {
 	/**
 	 * Returns rendered template for reported content.
 	 * 
-	 * @param	wcf\data\moderation\queue\ViewableModerationQueue	$queue
+	 * @param	\wcf\data\moderation\queue\ViewableModerationQueue	$queue
 	 * @return	string
 	 */
 	public function getReportedContent(ViewableModerationQueue $queue);
@@ -34,7 +34,7 @@ interface IModerationQueueReportHandler extends IModerationQueueHandler {
 	 * Returns reported object.
 	 * 
 	 * @param	integer		$objectID
-	 * @return	wcf\data\IUserContent
+	 * @return	\wcf\data\IUserContent
 	 */
 	public function getReportedObject($objectID);
 }

@@ -5,7 +5,6 @@ use wcf\data\user\group\UserGroupAction;
 use wcf\data\user\group\UserGroupEditor;
 use wcf\system\exception\UserInputException;
 use wcf\system\language\I18nHandler;
-use wcf\system\menu\acp\ACPMenu;
 use wcf\system\WCF;
 use wcf\system\WCFACP;
 use wcf\util\StringUtil;
@@ -14,7 +13,7 @@ use wcf\util\StringUtil;
  * Shows the group add form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -22,15 +21,14 @@ use wcf\util\StringUtil;
  */
 class UserGroupAddForm extends AbstractOptionListForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
-	public $neededPermissions = array('admin.user.canAddGroup');
+	public $activeMenuItem = 'wcf.acp.menu.link.group.add';
 	
 	/**
-	 * name of the active acp menu item
-	 * @var	string
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
-	public $menuItemName = 'wcf.acp.menu.link.group.add';
+	public $neededPermissions = array('admin.user.canAddGroup');
 	
 	/**
 	 * option tree
@@ -39,12 +37,12 @@ class UserGroupAddForm extends AbstractOptionListForm {
 	public $optionTree = array();
 	
 	/**
-	 * @see	wcf\acp\form\AbstractOptionListForm::$optionHandlerClassName
+	 * @see	\wcf\acp\form\AbstractOptionListForm::$optionHandlerClassName
 	 */
 	public $optionHandlerClassName = 'wcf\system\option\user\group\UserGroupOptionHandler';
 	
 	/**
-	 * @see	wcf\acp\form\AbstractOptionListForm::$supportI18n
+	 * @see	\wcf\acp\form\AbstractOptionListForm::$supportI18n
 	 */
 	public $supportI18n = false;
 	
@@ -59,12 +57,6 @@ class UserGroupAddForm extends AbstractOptionListForm {
 	 * @var	string
 	 */
 	protected $groupDescription = '';
-	
-	/**
-	 * additional fields
-	 * @var	array
-	 */
-	public $additionalFields = array();
 	
 	/**
 	 * list of values of group 'Anyone'
@@ -91,7 +83,7 @@ class UserGroupAddForm extends AbstractOptionListForm {
 	protected $showOnTeamPage = 0;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -101,7 +93,7 @@ class UserGroupAddForm extends AbstractOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -117,7 +109,7 @@ class UserGroupAddForm extends AbstractOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		// validate dynamic options
@@ -126,7 +118,15 @@ class UserGroupAddForm extends AbstractOptionListForm {
 		// validate group name
 		try {
 			if (!I18nHandler::getInstance()->validateValue('groupName')) {
-				throw new UserInputException('groupName');
+				if (I18nHandler::getInstance()->isPlainValue('groupName')) {
+					throw new UserInputException('groupName');
+				}
+				else {
+					throw new UserInputException('groupName', 'multilingual');
+				}
+			}
+			if (mb_strpos($this->userOnlineMarking, '%s') === false) {
+				throw new UserInputException('userOnlineMarking', 'notValid');
 			}
 		}
 		catch (UserInputException $e) {
@@ -139,7 +139,7 @@ class UserGroupAddForm extends AbstractOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
@@ -197,7 +197,7 @@ class UserGroupAddForm extends AbstractOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -209,7 +209,7 @@ class UserGroupAddForm extends AbstractOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -228,12 +228,9 @@ class UserGroupAddForm extends AbstractOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::show()
+	 * @see	\wcf\form\IForm::show()
 	 */
 	public function show() {
-		// set active menu item
-		ACPMenu::getInstance()->setActiveMenuItem($this->menuItemName);
-		
 		// check master password
 		WCFACP::checkMasterPassword();
 		

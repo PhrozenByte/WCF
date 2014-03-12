@@ -6,7 +6,7 @@ use wcf\system\exception\SystemException;
  * Wrapper for image adapters.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.image.adapter
@@ -29,14 +29,14 @@ class ImageAdapter implements IImageAdapter {
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::load()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::load()
 	 */
 	public function load($image, $type = 0) {
 		$this->adapter->load($image, $type);
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::loadFile()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::loadFile()
 	 */
 	public function loadFile($file) {
 		if (!file_exists($file) || !is_readable($file)) {
@@ -47,14 +47,14 @@ class ImageAdapter implements IImageAdapter {
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::createEmptyImage()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::createEmptyImage()
 	 */
 	public function createEmptyImage($width, $height) {
 		$this->adapter->createEmptyImage($width, $height);
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::createThumbnail()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::createThumbnail()
 	 */
 	public function createThumbnail($maxWidth, $maxHeight, $obtainDimensions = true) {
 		if ($maxWidth > $this->getWidth() && $maxHeight > $this->getHeight()) {
@@ -68,7 +68,7 @@ class ImageAdapter implements IImageAdapter {
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::clip()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::clip()
 	 */
 	public function clip($originX, $originY, $width, $height) {
 		// validate if coordinates and size are within bounds
@@ -86,20 +86,20 @@ class ImageAdapter implements IImageAdapter {
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::resize()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::resize()
 	 */
-	public function resize($originX, $originY, $originWidth, $originHeight, $targetX, $targetY, $targetWidth, $targetHeight) {
+	public function resize($originX, $originY, $originWidth, $originHeight, $targetWidth, $targetHeight) {
 		// use origin dimensions if target dimensions are both zero
 		if ($targetWidth == 0 && $targetHeight == 0) {
 			$targetWidth = $originWidth;
 			$targetHeight = $originHeight;
 		}
 		
-		$this->adapter->resize($originX, $originY, $originWidth, $originHeight, $targetX, $targetY, $targetWidth, $targetHeight);
+		$this->adapter->resize($originX, $originY, $originWidth, $originHeight, $targetWidth, $targetHeight);
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::drawRectangle()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::drawRectangle()
 	 */
 	public function drawRectangle($startX, $startY, $endX, $endY) {
 		if (!$this->adapter->hasColor()) {
@@ -110,7 +110,7 @@ class ImageAdapter implements IImageAdapter {
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::drawText()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::drawText()
 	 */
 	public function drawText($string, $x, $y) {
 		if (!$this->adapter->hasColor()) {
@@ -121,28 +121,28 @@ class ImageAdapter implements IImageAdapter {
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::setColor()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::setColor()
 	 */
 	public function setColor($red, $green, $blue) {
 		$this->adapter->setColor($red, $green, $blue);
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::hasColor()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::hasColor()
 	 */
 	public function hasColor() {
 		return $this->adapter->hasColor();
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::setTransparentColor()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::setTransparentColor()
 	 */
 	public function setTransparentColor($red, $green, $blue) {
 		$this->adapter->setTransparentColor($red, $green, $blue);
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::writeImage()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::writeImage()
 	 */
 	public function writeImage($image, $filename = null) {
 		if ($filename === null) {
@@ -154,28 +154,46 @@ class ImageAdapter implements IImageAdapter {
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::getImage()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::getImage()
 	 */
 	public function getImage() {
 		return $this->adapter->getImage();
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::getWidth()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::getWidth()
 	 */
 	public function getWidth() {
 		return $this->adapter->getWidth();
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::getHeight()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::getHeight()
 	 */
 	public function getHeight() {
 		return $this->adapter->getHeight();
 	}
 	
 	/**
-	 * @see	wcf\system\image\adapter\IImageAdapter::isSupported()
+	 * @see	\wcf\system\image\adapter\IImageAdapter::getType()
+	 */
+	public function getType() {
+		return $this->adapter->getType();
+	}
+	
+	/**
+	 * @see	\wcf\system\image\adapter\IImageAdapter::rotate()
+	 */
+	public function rotate($degrees) {
+		if ($degrees > 360.0 || $degrees < 0.0) {
+			throw new SystemException("Degress must be a value between 0 and 360.");
+		}
+		
+		return $this->adapter->rotate($degrees);
+	}
+	
+	/**
+	 * @see	\wcf\system\image\adapter\IImageAdapter::isSupported()
 	 */
 	public static function isSupported() {
 		return false;

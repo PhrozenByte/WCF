@@ -6,7 +6,7 @@ use wcf\system\category\CategoryHandler;
  * Represents an uncached tree of category nodes.
  * 
  * @author	Matthias Schmidt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.category
@@ -15,7 +15,7 @@ use wcf\system\category\CategoryHandler;
 class UncachedCategoryNodeTree extends CategoryNodeTree {
 	/**
 	 * locally cached categories
-	 * @var	array<wcf\data\category\Category>
+	 * @var	array<\wcf\data\category\Category>
 	 */
 	protected $categoryCache = array();
 	
@@ -26,7 +26,7 @@ class UncachedCategoryNodeTree extends CategoryNodeTree {
 	protected $categoryStructureCache = array();
 	
 	/**
-	 * @see	wcf\data\category\CategoryNodeTree::buildTree()
+	 * @see	\wcf\data\category\CategoryNodeTree::buildTree()
 	 */
 	protected function buildTree() {
 		$categoryList = new CategoryList();
@@ -45,14 +45,14 @@ class UncachedCategoryNodeTree extends CategoryNodeTree {
 	}
 	
 	/**
-	 * @see	wcf\data\category\CategoryNodeTree::getCategory()
+	 * @see	\wcf\data\category\CategoryNodeTree::getCategory()
 	 */
 	protected function getCategory($categoryID) {
 		return $this->categoryCache[$categoryID];
 	}
 	
 	/**
-	 * @see	wcf\data\category\CategoryNodeTree::getChildCategories()
+	 * @see	\wcf\data\category\CategoryNodeTree::getChildCategories()
 	 */
 	protected function getChildCategories(CategoryNode $parentNode) {
 		$categories = array();

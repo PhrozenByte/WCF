@@ -12,7 +12,7 @@ use wcf\util\StringUtil;
  * 	{"bl''ah"|encodeJSON}
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.template.plugin
@@ -20,7 +20,7 @@ use wcf\util\StringUtil;
  */
 class EncodeJSONModifierTemplatePlugin implements IModifierTemplatePlugin {
 	/**
-	 * @see	wcf\system\template\IModifierTemplatePlugin::execute()
+	 * @see	\wcf\system\template\IModifierTemplatePlugin::execute()
 	 */
 	public function execute($tagArgs, TemplateEngine $tplObj) {
 		return StringUtil::encodeJSON($tagArgs[0]);

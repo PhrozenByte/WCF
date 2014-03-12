@@ -1,13 +1,13 @@
 <?php
 /**
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @category	Community Framework
  */
 // Constant to get relative path to the wcf-root-dir.
-// This constant is already set in each package which got an own config.inc.php 
+// This constant is already set in each package which got an own config.inc.php
 if (!defined('RELATIVE_WCF_DIR')) define('RELATIVE_WCF_DIR', '../');
 
 // define the wcf-root-dir

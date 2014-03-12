@@ -2,6 +2,7 @@
 namespace wcf\system\search;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\system\database\util\PreparedStatementConditionBuilder;
+use wcf\system\database\DatabaseException;
 use wcf\system\exception\SystemException;
 use wcf\system\SingletonFactory;
 use wcf\system\WCF;
@@ -11,7 +12,7 @@ use wcf\util\StringUtil;
  * SearchEngine searches for given query in the selected object types.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.search
@@ -25,7 +26,13 @@ class SearchEngine extends SingletonFactory {
 	protected $availableObjectTypes = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * MySQL's minimum word length for fulltext indices
+	 * @var	integer
+	 */
+	protected static $ftMinWordLen = null;
+	
+	/**
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		// get available object types
@@ -50,7 +57,7 @@ class SearchEngine extends SingletonFactory {
 	 * Returns the object type with the given name.
 	 * 
 	 * @param	string		$objectTypeName
-	 * @return	wcf\data\object\type\ObjectType
+	 * @return	\wcf\data\object\type\ObjectType
 	 */
 	public function getObjectType($objectTypeName) {
 		if (isset($this->availableObjectTypes[$objectTypeName])) {
@@ -66,7 +73,7 @@ class SearchEngine extends SingletonFactory {
 	 * @param	string								$q
 	 * @param	array								$objectTypes
 	 * @param	boolean								$subjectOnly
-	 * @param	wcf\system\database\util\PreparedStatementConditionBuilder	$searchIndexCondition
+	 * @param	\wcf\system\database\util\PreparedStatementConditionBuilder	$searchIndexCondition
 	 * @param	array								$additionalConditions
 	 * @param	string								$orderBy
 	 * @param	integer								$limit
@@ -77,45 +84,7 @@ class SearchEngine extends SingletonFactory {
 		$fulltextCondition = null;
 		$relevanceCalc = '';
 		if (!empty($q)) {
-			// expand search terms with a * unless they're encapsulated with quotes
-			$inQuotes = false;
-			$tmp = '';
-			$controlCharacterOrSpace = false;
-			$chars = array('+', '-', '*');
-			for ($i = 0, $length = mb_strlen($q); $i < $length; $i++) {
-				$char = $q[$i];
-				
-				if ($inQuotes) {
-					if ($char == '"') {
-						$inQuotes = false;
-					}
-				}
-				else {
-					if ($char == '"') {
-						$inQuotes = true;
-					}
-					else {
-						if ($char == ' ' && !$controlCharacterOrSpace) {
-							$controlCharacterOrSpace = true;
-							$tmp .= '*';
-						}
-						else if (in_array($char, $chars)) {
-							$controlCharacterOrSpace = true;
-						}
-						else {
-							$controlCharacterOrSpace = false;
-						}
-					}
-				}
-				
-				$tmp .= $char;
-			}
-			
-			// handle last char
-			if (!$inQuotes && !$controlCharacterOrSpace) {
-				$tmp .= '*';
-			}
-			$q = $tmp;
+			$q = $this->parseSearchQuery($q);
 			
 			$fulltextCondition = new PreparedStatementConditionBuilder(false);
 			switch (WCF::getDB()->getDBType()) {
@@ -166,7 +135,7 @@ class SearchEngine extends SingletonFactory {
 							'".$objectTypeName."' AS objectType
 							".($relevanceCalc ? ',search_index.relevance' : '')."
 					FROM		".$objectType->getTableName()."
-					INNER JOIN 	(
+					INNER JOIN	(
 								SELECT		objectID
 										".($relevanceCalc ? ','.$relevanceCalc : '')."
 								FROM		wcf".WCF_N."_search_index
@@ -176,7 +145,7 @@ class SearchEngine extends SingletonFactory {
 								".(!empty($orderBy) && $fulltextCondition === null ? 'ORDER BY '.$orderBy : '')."
 								LIMIT		1000
 							) search_index
-					ON 		(".$objectType->getIDFieldName()." = search_index.objectID)
+					ON		(".$objectType->getIDFieldName()." = search_index.objectID)
 					".$objectType->getJoins()."
 					".(isset($additionalConditions[$objectTypeName]) ? $additionalConditions[$objectTypeName] : '')."
 				)";
@@ -206,5 +175,120 @@ class SearchEngine extends SingletonFactory {
 		}
 		
 		return $messages;
+	}
+	
+	/**
+	 * Manipulates the search term (< and > used as quotation marks):
+	 * 
+	 * - <test foo> becomes <+test* +foo*>
+	 * - <test -foo bar> becomes <+test* -foo* +bar*>
+	 * - <test "foo bar"> becomes <+test* +"foo bar">
+	 * 
+	 * @see	http://dev.mysql.com/doc/refman/5.5/en/fulltext-boolean.html
+	 * 
+	 * @param	string		$query
+	 */
+	protected function parseSearchQuery($query) {
+		$query = StringUtil::trim($query);
+		
+		// expand search terms with a * unless they're encapsulated with quotes
+		$inQuotes = false;
+		$previousChar = $tmp = '';
+		$controlCharacterOrSpace = false;
+		$chars = array('+', '-', '*');
+		$ftMinWordLen = self::getFulltextMinimumWordLength();
+		for ($i = 0, $length = mb_strlen($query); $i < $length; $i++) {
+			$char = mb_substr($query, $i, 1);
+			
+			if ($inQuotes) {
+				if ($char == '"') {
+					$inQuotes = false;
+				}
+			}
+			else {
+				if ($char == '"') {
+					$inQuotes = true;
+				}
+				else {
+					if ($char == ' ' && !$controlCharacterOrSpace) {
+						$controlCharacterOrSpace = true;
+						$tmp .= '*';
+					}
+					else if (in_array($char, $chars)) {
+						$controlCharacterOrSpace = true;
+					}
+					else {
+						$controlCharacterOrSpace = false;
+					}
+				}
+			}
+			
+			/*
+			 * prepend a plus sign (logical AND) if ALL these conditions are given:
+			 * 
+			 * 1) previous character:
+			 *   - is empty (start of string)
+			 *   - is a space (MySQL uses spaces to separate words)
+			 * 
+			 * 2) not within quotation marks
+			 * 
+			 * 3) current char:
+			 *   - is NOT +, - or *
+			 */
+			if (($previousChar == '' || $previousChar == ' ') && !$inQuotes && !in_array($char, $chars)) {
+				// check if the term is shorter than MySQL's ft_min_word_len
+				
+				if ($i + $ftMinWordLen <= $length) {
+					$term = '';// $char;
+					for ($j = $i, $innerLength = $ftMinWordLen + $i; $j < $innerLength; $j++) {
+						$currentChar = mb_substr($query, $j, 1);
+						if ($currentChar == '"' || $currentChar == ' ' || in_array($currentChar, $chars)) {
+							break;
+						}
+						
+						$term .= $currentChar;
+					}
+					
+					if (mb_strlen($term) == $ftMinWordLen) {
+						$tmp .= '+';
+					}
+				}
+			}
+			
+			$tmp .= $char;
+			$previousChar = $char;
+		}
+		
+		// handle last char
+		if (!$inQuotes && !$controlCharacterOrSpace) {
+			$tmp .= '*';
+		}
+		
+		return $tmp;
+	}
+	
+	/**
+	 * Returns MySQL's minimum word length for fulltext indices.
+	 * 
+	 * @return	integer
+	 */
+	public static function getFulltextMinimumWordLength() {
+		if (self::$ftMinWordLen === null) {
+			$sql = "SHOW VARIABLES LIKE ?";
+			$statement = WCF::getDB()->prepareStatement($sql);
+			
+			try {
+				$statement->execute(array('ft_min_word_len'));
+				$row = $statement->fetchArray();
+			}
+			catch (DatabaseException $e) {
+				// fallback if user is disallowed to issue 'SHOW VARIABLES'
+				$row = array('Value' => 4);
+			}
+			
+			self::$ftMinWordLen = $row['Value'];
+		}
+		
+		return self::$ftMinWordLen;
 	}
 }

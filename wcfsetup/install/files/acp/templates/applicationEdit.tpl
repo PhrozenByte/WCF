@@ -19,9 +19,7 @@
 	<h1>{lang}wcf.acp.application.edit.title{/lang}{if $application->isPrimary} <span class="icon icon16 icon-ok-sign jsTooltip" title="{lang}wcf.acp.application.primaryApplication{/lang}"></span>{/if}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $success|isset}
 	<p class="success">{lang}wcf.global.success.edit{/lang}</p>
@@ -103,22 +101,6 @@
 				</dd>
 			</dl>
 			
-			<dl{if $errorField == 'cookiePath'} class="formError"{/if}>
-				<dt><label for="cookiePath">{lang}wcf.acp.application.cookiePath{/lang}</label></dt>
-				<dd>
-					<input type="text" name="cookiePath" id="cookiePath" value="{$cookiePath}" class="long" />
-					{if $errorField == 'cookiePath'}
-						<small class="innerError">
-							{if $errorType == 'empty'}
-								{lang}wcf.global.form.error.empty{/lang}
-							{else}
-								{lang}wcf.acp.application.cookiePath.error.{$errorType}{/lang}
-							{/if}
-						</small>
-					{/if}
-				</dd>
-			</dl>
-			
 			{event name='cookieFields'}
 		</fieldset>
 		
@@ -127,6 +109,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

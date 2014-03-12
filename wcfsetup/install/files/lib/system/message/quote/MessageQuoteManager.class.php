@@ -7,13 +7,12 @@ use wcf\system\exception\SystemException;
 use wcf\system\SingletonFactory;
 use wcf\system\WCF;
 use wcf\util\ArrayUtil;
-use wcf\util\StringUtil;
 
 /**
  * Manages message quotes.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.message.quote
@@ -34,7 +33,7 @@ class MessageQuoteManager extends SingletonFactory {
 	
 	/**
 	 * list of object types
-	 * @var	array<wcf\data\object\type\ObjectType>
+	 * @var	array<\wcf\data\object\type\ObjectType>
 	 */
 	protected $objectTypes = array();
 	
@@ -69,7 +68,7 @@ class MessageQuoteManager extends SingletonFactory {
 	protected $removeQuoteIDs = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$this->packageID = ApplicationHandler::getInstance()->getPrimaryApplication()->packageID;
@@ -120,7 +119,7 @@ class MessageQuoteManager extends SingletonFactory {
 			$this->quoteData[$quoteID] = $message;
 			
 			// save parent object id
-		
+			
 			if (!isset($this->quoteData['parents'])) {
 				$this->quoteData['parents'] = array();
 			}
@@ -381,7 +380,7 @@ class MessageQuoteManager extends SingletonFactory {
 	/**
 	 * Renders a quote for given message.
 	 * 
-	 * @param	wcf\data\IMessage	$message
+	 * @param	\wcf\data\IMessage	$message
 	 * @param	string			$text
 	 * @return	string
 	 */

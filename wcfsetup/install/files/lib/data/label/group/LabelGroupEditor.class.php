@@ -9,7 +9,7 @@ use wcf\system\cache\builder\LabelCacheBuilder;
  * Provides functions to edit label groups.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.label.group
@@ -17,12 +17,12 @@ use wcf\system\cache\builder\LabelCacheBuilder;
  */
 class LabelGroupEditor extends DatabaseObjectEditor implements IEditableCachedObject {
 	/**
-	 * @see	wcf\data\DatabaseObjectEditor::$baseClass
+	 * @see	\wcf\data\DatabaseObjectEditor::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\label\group\LabelGroup';
 	
 	/**
-	 * @see	wcf\data\IEditableObject::deleteAll()
+	 * @see	\wcf\data\IEditableObject::deleteAll()
 	 */
 	public static function deleteAll(array $objectIDs = array()) {
 		$count = parent::deleteAll($objectIDs);
@@ -35,7 +35,7 @@ class LabelGroupEditor extends DatabaseObjectEditor implements IEditableCachedOb
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableCachedObject::resetCache()
+	 * @see	\wcf\data\IEditableCachedObject::resetCache()
 	 */
 	public static function resetCache() {
 		LabelCacheBuilder::getInstance()->reset();

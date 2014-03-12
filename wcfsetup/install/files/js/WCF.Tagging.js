@@ -2,7 +2,7 @@
  * Tagging System for WCF
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
 
@@ -40,6 +40,7 @@ WCF.Tagging.TagList = WCF.EditableItemList.extend({
 		this._data = [ ];
 		this._search = new WCF.Tagging.TagSearch(this._searchInput, $.proxy(this.addItem, this));
 		this._itemList.addClass('tagList');
+		$(itemListSelector).data('__api', this);
 	},
 	
 	/**
@@ -109,12 +110,32 @@ WCF.Tagging.TagList = WCF.EditableItemList.extend({
 	},
 	
 	/**
+	 * @see	WCF.EditableItemList.clearList()
+	 */
+	clearList: function() {
+		this._super();
+		
+		this._data = [ ];
+	},
+	
+	/**
+	 * Returns the current tags.
+	 * 
+	 * @return	array<string>
+	 */
+	getTags: function() {
+		return this._data;
+	},
+	
+	/**
 	 * @see	WCF.EditableItemList._removeItem()
 	 */
 	_removeItem: function(objectID, label) {
 		for (var $i = 0, $length = this._data.length; $i < $length; $i++) {
 			if (this._data[$i] === label) {
-				delete this._data[$i];
+				// don't use "delete" here since it doesn't reindex
+				// the array
+				this._data.splice($i, 1);
 				return;
 			}
 		}

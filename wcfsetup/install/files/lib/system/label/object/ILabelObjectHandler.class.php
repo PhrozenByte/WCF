@@ -5,7 +5,7 @@ namespace wcf\system\label\object;
  * Every label object handler has to implement this interface.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.label.object
@@ -24,7 +24,7 @@ interface ILabelObjectHandler {
 	 * Returns a list of label groups.
 	 * 
 	 * @param	array		$parameters
-	 * @return	array<wcf\data\label\group\ViewableLabelGroup>
+	 * @return	array<\wcf\data\label\group\ViewableLabelGroup>
 	 */
 	public function getLabelGroups(array $parameters = array());
 	
@@ -43,7 +43,7 @@ interface ILabelObjectHandler {
 	 * @param	array<integer>		$labelIDs
 	 * @param	integer			$objectID
 	 * @param	boolean			$validatePermissions
-	 * @see		wcf\system\label\LabelHandler::setLabels()
+	 * @see		\wcf\system\label\LabelHandler::setLabels()
 	 */
 	public function setLabels(array $labelIDs, $objectID, $validatePermissions = true);
 	
@@ -52,7 +52,7 @@ interface ILabelObjectHandler {
 	 * 
 	 * @param	integer		$objectID
 	 * @param	boolean		$validatePermissions
-	 * @see		wcf\system\label\LabelHandler::removeLabels()
+	 * @see		\wcf\system\label\LabelHandler::removeLabels()
 	 */
 	public function removeLabels($objectID, $validatePermissions = true);
 	

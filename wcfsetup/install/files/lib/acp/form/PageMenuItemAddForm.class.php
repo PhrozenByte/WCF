@@ -13,7 +13,7 @@ use wcf\util\StringUtil;
  * Shows the page menu item add form.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -21,13 +21,13 @@ use wcf\util\StringUtil;
  */
 class PageMenuItemAddForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.pageMenu.add';
 	
 	/**
 	 * list of available parent menu items
-	 * @var	wcf\data\page\menu\item\PageMenuItemList
+	 * @var	\wcf\data\page\menu\item\PageMenuItemList
 	 */
 	public $availableParentMenuItems = null;
 	
@@ -68,7 +68,7 @@ class PageMenuItemAddForm extends AbstractForm {
 	public $menuPosition = 'header';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.display.canManagePageMenu');
 	
@@ -91,7 +91,7 @@ class PageMenuItemAddForm extends AbstractForm {
 	public $showOrder = 0;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -108,6 +108,7 @@ class PageMenuItemAddForm extends AbstractForm {
 	protected function initAvailableParentMenuItems() {
 		$this->availableParentMenuItems = new PageMenuItemList();
 		$this->availableParentMenuItems->getConditionBuilder()->add("page_menu_item.parentMenuItem = ''");
+		$this->availableParentMenuItems->getConditionBuilder()->add('page_menu_item.menuPosition = ?', array('header'));
 		$this->availableParentMenuItems->sqlOrderBy = "page_menu_item.showOrder ASC";
 	}
 	
@@ -121,7 +122,7 @@ class PageMenuItemAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -140,7 +141,7 @@ class PageMenuItemAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -170,7 +171,7 @@ class PageMenuItemAddForm extends AbstractForm {
 		}
 		else {
 			$this->menuItemController = '';
-				
+			
 			// validate menu item link
 			if (!I18nHandler::getInstance()->validateValue('menuItemLink')) {
 				throw new UserInputException('menuItemLink');
@@ -179,7 +180,7 @@ class PageMenuItemAddForm extends AbstractForm {
 		
 		// validate page menu item name
 		if (!I18nHandler::getInstance()->validateValue('pageMenuItem', true)) {
-			throw new UserInputException('pageMenuItem');
+			throw new UserInputException('pageMenuItem', 'multilingual');
 		}
 		
 		// validate parent menu item
@@ -202,12 +203,12 @@ class PageMenuItemAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
 		
-		$this->objectAction = new PageMenuItemAction(array(), 'create', array('data' => array(
+		$this->objectAction = new PageMenuItemAction(array(), 'create', array('data' => array_merge($this->additionalFields, array(
 			'isDisabled' => ($this->isDisabled) ? 1 : 0,
 			'menuItem' => $this->pageMenuItem,
 			'menuItemController' => $this->menuItemController,
@@ -215,7 +216,7 @@ class PageMenuItemAddForm extends AbstractForm {
 			'menuPosition' => $this->menuPosition,
 			'parentMenuItem' => $this->parentMenuItem,
 			'showOrder' => $this->showOrder
-		)));
+		))));
 		$this->objectAction->executeAction();
 		
 		$returnValues = $this->objectAction->getReturnValues();
@@ -255,7 +256,7 @@ class PageMenuItemAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

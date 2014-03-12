@@ -5,7 +5,7 @@ namespace wcf\system\worker;
  * Abstract implementation of a worker.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.worker
@@ -37,14 +37,14 @@ abstract class AbstractWorker implements IWorker {
 	protected $parameters = array();
 	
 	/**
-	 * @see	wcf\system\worker\IWorker::__construct()
+	 * @see	\wcf\system\worker\IWorker::__construct()
 	 */
 	public function __construct(array $parameters) {
 		$this->parameters = $parameters;
 	}
 	
 	/**
-	 * @see	wcf\system\worker\IWorker::getLoopCount()
+	 * @see	\wcf\system\worker\IWorker::getLoopCount()
 	 */
 	public function setLoopCount($loopCount) {
 		$this->loopCount = $loopCount;
@@ -56,7 +56,7 @@ abstract class AbstractWorker implements IWorker {
 	abstract protected function countObjects();
 	
 	/**
-	 * @see	wcf\system\worker\IWorker::getProgress()
+	 * @see	\wcf\system\worker\IWorker::getProgress()
 	 */
 	public function getProgress() {
 		$this->countObjects();
@@ -71,7 +71,7 @@ abstract class AbstractWorker implements IWorker {
 	}
 	
 	/**
-	 * @see	wcf\system\worker\IWorker::getParameters()
+	 * @see	\wcf\system\worker\IWorker::getParameters()
 	 */
 	public function getParameters() {
 		return $this->parameters;

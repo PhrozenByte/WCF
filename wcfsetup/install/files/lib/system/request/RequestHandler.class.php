@@ -1,5 +1,6 @@
 <?php
 namespace wcf\system\request;
+use wcf\system\application\AbstractApplication;
 use wcf\system\application\ApplicationHandler;
 use wcf\system\exception\AJAXException;
 use wcf\system\exception\IllegalLinkException;
@@ -9,13 +10,12 @@ use wcf\system\SingletonFactory;
 use wcf\system\WCF;
 use wcf\util\FileUtil;
 use wcf\util\HeaderUtil;
-use wcf\util\StringUtil;
 
 /**
  * Handles http requests.
- * 
+ *
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.request
@@ -24,7 +24,7 @@ use wcf\util\StringUtil;
 class RequestHandler extends SingletonFactory {
 	/**
 	 * active request object
-	 * @var	wcf\system\request\Request
+	 * @var	\wcf\system\request\Request
 	 */
 	protected $activeRequest = null;
 	
@@ -41,14 +41,27 @@ class RequestHandler extends SingletonFactory {
 	protected $isACPRequest = false;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
-		foreach (ApplicationHandler::getInstance()->getApplications() as $application) {
-			if ($application->domainName == $_SERVER['HTTP_HOST']) {
-				$this->inRescueMode = false;
-				break;
+		if (isset($_SERVER['HTTP_HOST'])) {
+			foreach (ApplicationHandler::getInstance()->getApplications() as $application) {
+				if ($application->domainName == $_SERVER['HTTP_HOST']) {
+					$this->inRescueMode = false;
+					break;
+				}
 			}
+			
+			// check if WCF is running as standalone
+			if ($this->inRescueMode() && PACKAGE_ID == 1) {
+				if (ApplicationHandler::getInstance()->getWCF()->domainName == $_SERVER['HTTP_HOST']) {
+					$this->inRescueMode = false;
+				}
+			}
+		}
+		else {
+			// when using cli, no rescue mode is provided
+			$this->inRescueMode = false;
 		}
 	}
 	
@@ -96,7 +109,7 @@ class RequestHandler extends SingletonFactory {
 	
 	/**
 	 * Builds a new request.
-	 * 
+	 *
 	 * @param	string		$application
 	 */
 	protected function buildRequest($application) {
@@ -122,8 +135,28 @@ class RequestHandler extends SingletonFactory {
 						$routeData['controller'] = $landingPage->getController();
 					}
 					else {
+						// check if request URI resolves to an application different from relative route
+						// important: request URI may not contain anything else expect for the path
+						$currentRequestURI = RouteHandler::getHost() . $requestUri;
+						$redirectToLandingPage = false;
+						if ($currentRequestURI == ApplicationHandler::getInstance()->getPrimaryApplication()->getPageURL()) {
+							HeaderUtil::redirect($landingPage->getLink(), true);
+							exit;
+						}
+						
+						// check if current URL matches an application but controller was omitted
+						foreach (ApplicationHandler::getInstance()->getApplications() as $application) {
+							if ($currentRequestURI == $application->getPageURL()) {
+								if ($controller = WCF::getApplicationObject($application)->getPrimaryController()) {
+									$controller = explode('\\', $controller);
+									HeaderUtil::redirect(LinkHandler::getInstance()->getLink(preg_replace('~(Action|Form|Page)$~', '', array_pop($controller)), array('application' => $controller[0])));
+									exit;
+								}
+							}
+						}
+						
 						// redirect to landing page
-						HeaderUtil::redirect($landingPage->getLink(), true);
+						HeaderUtil::redirect($redirectURL, true);
 						exit;
 					}
 				}
@@ -181,7 +214,7 @@ class RequestHandler extends SingletonFactory {
 	/**
 	 * Returns the class data for the active request or null if for the given
 	 * configuration no proper class exist.
-	 * 
+	 *
 	 * @param	string		$controller
 	 * @param	string		$pageType
 	 * @param	string		$application
@@ -211,8 +244,8 @@ class RequestHandler extends SingletonFactory {
 	
 	/**
 	 * Returns the active request object.
-	 * 
-	 * @return	wcf\system\request\Request
+	 *
+	 * @return	\wcf\system\request\Request
 	 */
 	public function getActiveRequest() {
 		return $this->activeRequest;
@@ -220,7 +253,7 @@ class RequestHandler extends SingletonFactory {
 	
 	/**
 	 * Returns true if the request is an acp request.
-	 * 
+	 *
 	 * @return	boolean
 	 */
 	public function isACPRequest() {
@@ -229,7 +262,7 @@ class RequestHandler extends SingletonFactory {
 	
 	/**
 	 * Returns true, if current host mismatches any known domain.
-	 * 
+	 *
 	 * @return	boolean
 	 */
 	public function inRescueMode() {

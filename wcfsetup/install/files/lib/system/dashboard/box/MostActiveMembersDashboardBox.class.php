@@ -10,7 +10,7 @@ use wcf\system\WCF;
  * Shows a list of the most active members.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.dashboard.box
@@ -19,12 +19,12 @@ use wcf\system\WCF;
 class MostActiveMembersDashboardBox extends AbstractSidebarDashboardBox {
 	/**
 	 * user profile list
-	 * @var wcf\data\user\UserProfileList 
+	 * @var	\wcf\data\user\UserProfileList
 	 */
 	public $userProfileList = null; 
 	
 	/**
-	 * @see	wcf\system\dashboard\box\AbstractDashboardBoxContent::init()
+	 * @see	\wcf\system\dashboard\box\AbstractDashboardBoxContent::init()
 	 */
 	public function init(DashboardBox $box, IPage $page) {
 		parent::init($box, $page); 
@@ -43,7 +43,7 @@ class MostActiveMembersDashboardBox extends AbstractSidebarDashboardBox {
 	}
 
 	/**
-	 * @see	wcf\system\dashboard\box\AbstractContentDashboardBox::render()
+	 * @see	\wcf\system\dashboard\box\AbstractContentDashboardBox::render()
 	 */
 	protected function render() {
 		if ($this->userProfileList == null) return ''; 

@@ -7,7 +7,7 @@ use wcf\system\language\LanguageFactory;
  * This class holds a list of tags that can be used for creating a tag cloud.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.tagging
@@ -28,7 +28,7 @@ class TagCloud {
 	
 	/**
 	 * list of tags
-	 * @var	array<wcf\data\tag\TagCloudTag>
+	 * @var	array<\wcf\data\tag\TagCloudTag>
 	 */
 	protected $tags = array();
 	
@@ -52,7 +52,7 @@ class TagCloud {
 	
 	/**
 	 * Contructs a new TagCloud object.
-	 *
+	 * 
 	 * @param	array<integer>	$languageIDs
 	 */
 	public function __construct(array $languageIDs = array()) {
@@ -76,7 +76,7 @@ class TagCloud {
 	 * Gets a list of weighted tags.
 	 * 
 	 * @param	integer				$slice
-	 * @return	array<wcf\data\tag\TagCloudTag>	the tags to get
+	 * @return	array<\wcf\data\tag\TagCloudTag>	the tags to get
 	 */
 	public function getTags($slice = 50) {
 		// slice list

@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * File handler implementation for the installation of regular files.
  * 
  * @author	Matthias Schmidt, Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package
@@ -17,7 +17,7 @@ use wcf\system\WCF;
  */
 class FilesFileHandler extends PackageInstallationFileHandler {
 	/**
-	 * @see	wcf\system\setup\IFileHandler::checkFiles()
+	 * @see	\wcf\system\setup\IFileHandler::checkFiles()
 	 */
 	public function checkFiles(array $files) {
 		if ($this->packageInstallation->getPackage()->package != 'com.woltlab.wcf') {
@@ -54,7 +54,7 @@ class FilesFileHandler extends PackageInstallationFileHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\setup\IFileHandler::logFiles()
+	 * @see	\wcf\system\setup\IFileHandler::logFiles()
 	 */
 	public function logFiles(array $files) {
 		if (empty($files)) {

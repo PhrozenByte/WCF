@@ -9,7 +9,7 @@ use wcf\util\ClassUtil;
  * Gets the user authentication instance.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.user.authentication
@@ -24,12 +24,12 @@ class UserAuthenticationFactory extends SingletonFactory {
 	
 	/**
 	 * user authentication instance
-	 * @var	wcf\system\user\authentication\IUserAuthentication
+	 * @var	\wcf\system\user\authentication\IUserAuthentication
 	 */
 	protected $userAuthentication = null;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory
+	 * @see	\wcf\system\SingletonFactory
 	 */
 	protected function init() {
 		// call loadInstance event
@@ -45,7 +45,7 @@ class UserAuthenticationFactory extends SingletonFactory {
 	/**
 	 * Returns user authentication instance.
 	 * 
-	 * @return	wcf\system\user\authentication\IUserAuthentication
+	 * @return	\wcf\system\user\authentication\IUserAuthentication
 	 */
 	public function getUserAuthentication() {
 		return $this->userAuthentication;

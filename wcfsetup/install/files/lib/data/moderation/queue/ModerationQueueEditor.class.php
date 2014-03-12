@@ -7,7 +7,7 @@ use wcf\system\moderation\queue\ModerationQueueManager;
  * Extends the moderation queue object with functions to create, update and delete queue entries.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.moderation.queue
@@ -15,7 +15,7 @@ use wcf\system\moderation\queue\ModerationQueueManager;
  */
 class ModerationQueueEditor extends DatabaseObjectEditor {
 	/**
-	 * @see	wcf\data\DatabaseObjectEditor::$baseClass
+	 * @see	\wcf\data\DatabaseObjectEditor::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\moderation\queue\ModerationQueue';
 	

@@ -11,7 +11,7 @@ use wcf\util\StringUtil;
  * Compiles template sources into valid PHP code.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.template
@@ -20,7 +20,7 @@ use wcf\util\StringUtil;
 class TemplateScriptingCompiler {
 	/**
 	 * template engine object
-	 * @var	wcf\system\templateTemplateEngine
+	 * @var	\wcf\system\template\TemplateEngine
 	 */
 	protected $template;
 	
@@ -133,7 +133,7 @@ class TemplateScriptingCompiler {
 	
 	/**
 	 * list of loaded compiler plugin objects
-	 * @var	array<wcf\system\template\ICompilerTemplatePlugin>
+	 * @var	array<\wcf\system\template\ICompilerTemplatePlugin>
 	 */
 	protected $compilerPlugins = array();
 	
@@ -176,7 +176,7 @@ class TemplateScriptingCompiler {
 	/**
 	 * Creates a new TemplateScriptingCompiler object.
 	 * 
-	 * @param	wcf\system\templateTemplateEngine	$template
+	 * @param	\wcf\system\templateTemplateEngine	$template
 	 */
 	public function __construct(TemplateEngine $template) {
 		$this->template = $template;
@@ -204,8 +204,6 @@ class TemplateScriptingCompiler {
 				'autoloadPlugins' => $this->autoloadPlugins,
 				'currentIdentifier' => $this->currentIdentifier,
 				'currentLineNo' => $this->currentLineNo,
-				'literalStack' => $this->literalStack,
-				'stringStack' => $this->stringStack,
 				'tagStack' => $this->tagStack
 			);
 		}
@@ -214,7 +212,7 @@ class TemplateScriptingCompiler {
 		}
 		
 		// reset vars
-		$this->autoloadPlugins = $this->tagStack = $this->stringStack = $this->literalStack = array();
+		$this->autoloadPlugins = $this->tagStack = array();
 		$this->currentIdentifier = $identifier;
 		$this->currentLineNo = 1;
 		
@@ -286,8 +284,6 @@ class TemplateScriptingCompiler {
 			$this->autoloadPlugins = $previousData['autoloadPlugins'];
 			$this->currentIdentifier = $previousData['currentIdentifier'];
 			$this->currentLineNo = $previousData['currentLineNo'];
-			$this->literalStack = $previousData['literalStack'];
-			$this->stringStack = $previousData['stringStack'];
 			$this->tagStack = $previousData['tagStack'];
 		}
 		
@@ -1399,7 +1395,7 @@ class TemplateScriptingCompiler {
 	/**
 	 * Returns the instance of the template engine class.
 	 * 
-	 * @return	wcf\system\templateTemplateEngine
+	 * @return	\wcf\system\templateTemplateEngine
 	 */
 	public function getTemplate() {
 		return $this->template;

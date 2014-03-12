@@ -1,7 +1,7 @@
 <?php
 namespace wcf\form;
 use wcf\data\user\User;
-use wcf\data\user\UserEditor;
+use wcf\data\user\UserAction;
 use wcf\system\exception\NamedUserException;
 use wcf\system\exception\UserInputException;
 use wcf\system\mail\Mail;
@@ -14,7 +14,7 @@ use wcf\util\StringUtil;
  * Shows the lost password form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	form
@@ -24,7 +24,7 @@ class LostPasswordForm extends RecaptchaForm {
 	const AVAILABLE_DURING_OFFLINE_MODE = true;
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$enableTracking
+	 * @see	\wcf\page\AbstractPage::$enableTracking
 	 */
 	public $enableTracking = true;
 	
@@ -42,17 +42,17 @@ class LostPasswordForm extends RecaptchaForm {
 	
 	/**
 	 * user object
-	 * @var	wcf\data\user\User
+	 * @var	\wcf\data\user\User
 	 */
 	public $user;
 	
 	/**
-	 * @see	wcf\form\RecaptchaForm::$useCaptcha
+	 * @see	\wcf\form\RecaptchaForm::$useCaptcha
 	 */
 	public $useCaptcha = LOST_PASSWORD_USE_CAPTCHA;
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -62,7 +62,7 @@ class LostPasswordForm extends RecaptchaForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -96,7 +96,7 @@ class LostPasswordForm extends RecaptchaForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
@@ -105,11 +105,13 @@ class LostPasswordForm extends RecaptchaForm {
 		$lostPasswordKey = StringUtil::getRandomID();
 		
 		// save key and request time in database
-		$userEditor = new UserEditor($this->user);
-		$userEditor->update(array(
-			'lostPasswordKey' => $lostPasswordKey,
-			'lastLostPasswordRequestTime' => TIME_NOW
+		$this->objectAction = new UserAction(array($this->user), 'update', array(
+			'data' => array_merge($this->additionalFields, array(
+				'lostPasswordKey' => $lostPasswordKey,
+				'lastLostPasswordRequestTime' => TIME_NOW
+			))
 		));
+		$this->objectAction->executeAction();
 		
 		// send mail
 		$mail = new Mail(array($this->user->username => $this->user->email), WCF::getLanguage()->getDynamicVariable('wcf.user.lostPassword.mail.subject'), WCF::getLanguage()->getDynamicVariable('wcf.user.lostPassword.mail', array(
@@ -126,7 +128,7 @@ class LostPasswordForm extends RecaptchaForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

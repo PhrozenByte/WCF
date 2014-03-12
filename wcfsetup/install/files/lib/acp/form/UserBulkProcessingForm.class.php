@@ -11,7 +11,6 @@ use wcf\system\exception\PermissionDeniedException;
 use wcf\system\exception\UserInputException;
 use wcf\system\language\LanguageFactory;
 use wcf\system\menu\acp\ACPMenu;
-use wcf\system\request\LinkHandler;
 use wcf\system\user\storage\UserStorageHandler;
 use wcf\system\WCF;
 use wcf\system\WCFACP;
@@ -22,7 +21,7 @@ use wcf\util\StringUtil;
  * Shows the user bulk processing form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -30,7 +29,7 @@ use wcf\util\StringUtil;
  */
 class UserBulkProcessingForm extends UserOptionListForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.user.canEditUser', 'admin.user.canDeleteUser', 'admin.user.canMailUser');
 	
@@ -67,49 +66,49 @@ class UserBulkProcessingForm extends UserOptionListForm {
 	
 	/**
 	 * registration start date
-	 * @var string
+	 * @var	string
 	 */
 	public $registrationDateStart = '';
 	
 	/**
 	 * registration start date
-	 * @var string
+	 * @var	string
 	 */
 	public $registrationDateEnd = '';
 	
 	/**
 	 * banned state
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $banned = 0;
 	
 	/**
 	 * not banned state
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $notBanned = 0;
 	
 	/**
 	 * last activity start time
-	 * @var string
+	 * @var	string
 	 */
 	public $lastActivityTimeStart = '';
 	
 	/**
 	 * last activity end time
-	 * @var string
+	 * @var	string
 	 */
 	public $lastActivityTimeEnd = '';
 	
 	/**
 	 * enabled state
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $enabled = 0;
 	
 	/**
 	 * disabled state
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $disabled = 0;
 	
@@ -135,7 +134,7 @@ class UserBulkProcessingForm extends UserOptionListForm {
 	
 	/**
 	 * conditions builder object
-	 * @var	wcf\system\database\condition\PreparedStatementConditionBuilder
+	 * @var	\wcf\system\database\condition\PreparedStatementConditionBuilder
 	 */
 	public $conditions = null;
 	
@@ -146,7 +145,7 @@ class UserBulkProcessingForm extends UserOptionListForm {
 	public $activeOptions = array();
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -179,7 +178,7 @@ class UserBulkProcessingForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		AbstractForm::validate();
@@ -213,13 +212,18 @@ class UserBulkProcessingForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
 		
 		// build conditions
 		$this->conditions = new PreparedStatementConditionBuilder();
+		
+		// deny self delete
+		if ($this->action == 'delete') {
+			$this->conditions->add("user_table.userID <> ?", array(WCF::getUser()->userID));
+		}
 		
 		// static fields
 		if (!empty($this->username)) {
@@ -366,7 +370,9 @@ class UserBulkProcessingForm extends UserOptionListForm {
 					$user->addToGroups($_this->assignToGroupIDs, false, false);
 				});
 				
-				UserStorageHandler::getInstance()->reset($userIDs, 'groupIDs', 1);
+				if (!empty($userIDs)) {
+					UserStorageHandler::getInstance()->reset($userIDs, 'groupIDs', 1);
+				}
 			break;
 			
 			case 'delete':
@@ -374,8 +380,10 @@ class UserBulkProcessingForm extends UserOptionListForm {
 				
 				$userIDs = $this->fetchUsers();
 				
-				$userAction = new UserAction($userIDs, 'delete');
-				$userAction->executeAction();
+				if (!empty($userIDs)) {
+					$userAction = new UserAction($userIDs, 'delete');
+					$userAction->executeAction();
+				}
 			break;
 		}
 		$this->saved();
@@ -403,6 +411,7 @@ class UserBulkProcessingForm extends UserOptionListForm {
 		while ($row = $statement->fetchArray()) {
 			$users[$row['userID']] = $row;
 		}
+		if (empty($users)) return array();
 		
 		// select group ids
 		$conditions = new PreparedStatementConditionBuilder();
@@ -424,7 +433,7 @@ class UserBulkProcessingForm extends UserOptionListForm {
 		}
 		
 		foreach ($users as $userID => $userData) {
-			if (!UserGroup::isAccessibleGroup($groupIDs[$userID])) {
+			if (!empty($groupIDs[$userID]) && !UserGroup::isAccessibleGroup($groupIDs[$userID])) {
 				throw new PermissionDeniedException();
 			}
 			
@@ -440,7 +449,7 @@ class UserBulkProcessingForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -466,7 +475,7 @@ class UserBulkProcessingForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -505,7 +514,7 @@ class UserBulkProcessingForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::show()
+	 * @see	\wcf\form\IForm::show()
 	 */
 	public function show() {
 		// set active menu item

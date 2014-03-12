@@ -2,7 +2,7 @@
  * Like support for WCF
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
 WCF.Like = Class.extend({
@@ -13,7 +13,7 @@ WCF.Like = Class.extend({
 	_allowForOwnContent: false,
 	
 	/**
-	 * user can like 
+	 * user can like
 	 * @var	boolean
 	 */
 	_canLike: false,
@@ -213,8 +213,8 @@ WCF.Like = Class.extend({
 		if (!this._enableDislikes) $dislikeButton.hide();
 		
 		if (!this._allowForOwnContent && (WCF.User.userID == this._containers[containerID].data('userID'))) {
-			$likeButton.hide();
-			$dislikeButton.hide();
+			$likeButton = $('');
+			$dislikeButton = $('');
 		}
 		
 		var $badge = $('<a class="badge jsTooltip likesBadge" />').data('containerID', containerID).click($.proxy(this._showLikeDetails, this));
@@ -300,6 +300,8 @@ WCF.Like = Class.extend({
 		if (this._isBusy) {
 			return;
 		}
+		
+		this._isBusy = true;
 		
 		this._proxy.setOption('data', {
 			actionName: type,
@@ -415,8 +417,8 @@ WCF.Like = Class.extend({
 	/**
 	 * Sets button active state.
 	 * 
-	 * @param 	jquery		likeButton
-	 * @param 	jquery		dislikeButton
+	 * @param	jquery		likeButton
+	 * @param	jquery		dislikeButton
 	 * @param	integer		likeStatus
 	 */
 	_setActiveState: function(likeButton, dislikeButton, likeStatus) {

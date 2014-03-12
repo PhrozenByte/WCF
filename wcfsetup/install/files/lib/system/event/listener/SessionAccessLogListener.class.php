@@ -11,7 +11,7 @@ use wcf\util\UserUtil;
  * Creates the session access log.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.event.listener
@@ -19,7 +19,7 @@ use wcf\util\UserUtil;
  */
 class SessionAccessLogListener implements IEventListener {
 	/**
-	 * @see	wcf\system\event\IEventListener::execute()
+	 * @see	\wcf\system\event\IEventListener::execute()
 	 */
 	public function execute($eventObj, $className, $eventName) {
 		if (WCF::getUser()->userID && WCF::getSession()->getPermission('admin.general.canUseAcp') && !defined(get_class($eventObj).'::DO_NOT_LOG')) {

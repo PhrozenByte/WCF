@@ -6,7 +6,7 @@ use wcf\system\WCF;
  * Contains user-related functions.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	util
@@ -100,7 +100,14 @@ final class UserUtil {
 	 * @return	string
 	 */
 	public static function getUserAgent() {
-		if (isset($_SERVER['HTTP_USER_AGENT'])) return substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
+		if (isset($_SERVER['HTTP_USER_AGENT'])) {
+			$userAgent = $_SERVER['HTTP_USER_AGENT'];
+			if (!StringUtil::isASCII($userAgent) && !StringUtil::isUTF8($userAgent)) {
+				$userAgent = StringUtil::convertEncoding('ISO-8859-1', 'UTF-8', $userAgent);
+			}
+			
+			return mb_substr($userAgent, 0, 255);
+		}
 		return '';
 	}
 	

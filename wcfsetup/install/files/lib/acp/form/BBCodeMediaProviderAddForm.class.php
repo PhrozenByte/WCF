@@ -11,7 +11,7 @@ use wcf\util\StringUtil;
  * Shows the BBCode media provider add form.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -19,7 +19,7 @@ use wcf\util\StringUtil;
  */
 class BBCodeMediaProviderAddForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.bbcode.mediaProvider.add';
 	
@@ -30,12 +30,12 @@ class BBCodeMediaProviderAddForm extends AbstractForm {
 	public $html = '';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.content.bbcode.canManageBBCode');
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$templateName
+	 * @see	\wcf\page\AbstractPage::$templateName
 	 */
 	public $templateName = 'bbcodeMediaProviderAdd';
 	
@@ -52,7 +52,7 @@ class BBCodeMediaProviderAddForm extends AbstractForm {
 	public $regex = '';
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -63,7 +63,7 @@ class BBCodeMediaProviderAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -87,17 +87,17 @@ class BBCodeMediaProviderAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
 		
 		// save media provider
-		$this->objectAction = new BBCodeMediaProviderAction(array(), 'create', array('data' => array(
+		$this->objectAction = new BBCodeMediaProviderAction(array(), 'create', array('data' => array_merge($this->additionalFields, array(
 			'title' => $this->title,
 			'regex' => $this->regex,
 			'html' => $this->html
-		)));
+		))));
 		$this->objectAction->executeAction();
 		$this->saved();
 		
@@ -111,7 +111,7 @@ class BBCodeMediaProviderAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

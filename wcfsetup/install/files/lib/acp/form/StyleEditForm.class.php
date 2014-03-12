@@ -11,7 +11,7 @@ use wcf\system\WCF;
  * Shows the style edit form.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -19,13 +19,13 @@ use wcf\system\WCF;
  */
 class StyleEditForm extends StyleAddForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.style';
 	
 	/**
 	 * style object
-	 * @var	wcf\data\style\Style
+	 * @var	\wcf\data\style\Style
 	 */
 	public $style = null;
 	
@@ -36,7 +36,7 @@ class StyleEditForm extends StyleAddForm {
 	public $styleID = 0;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		if (isset($_REQUEST['id'])) $this->styleID = intval($_REQUEST['id']);
@@ -49,7 +49,7 @@ class StyleEditForm extends StyleAddForm {
 	}
 	
 	/**
-	 * @see	wcf\acp\form\StyleAddForm::readStyleVariables()
+	 * @see	\wcf\acp\form\StyleAddForm::readStyleVariables()
 	 */
 	protected function readStyleVariables() {
 		$this->variables = $this->style->getVariables();
@@ -64,7 +64,7 @@ class StyleEditForm extends StyleAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -86,13 +86,13 @@ class StyleEditForm extends StyleAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
 		
 		$this->objectAction = new StyleAction(array($this->style), 'update', array(
-			'data' => array(
+			'data' => array_merge($this->additionalFields, array(
 				'styleName' => $this->styleName,
 				'templateGroupID' => $this->templateGroupID,
 				'styleVersion' => $this->styleVersion,
@@ -102,7 +102,7 @@ class StyleEditForm extends StyleAddForm {
 				'license' => $this->license,
 				'authorName' => $this->authorName,
 				'authorURL' => $this->authorURL
-			),
+			)),
 			'tmpHash' => $this->tmpHash,
 			'variables' => $this->variables
 		));
@@ -121,7 +121,7 @@ class StyleEditForm extends StyleAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

@@ -3,14 +3,13 @@ namespace wcf\system\package\plugin;
 use wcf\data\user\group\option\UserGroupOption;
 use wcf\data\user\group\option\UserGroupOptionEditor;
 use wcf\data\user\group\UserGroup;
-use wcf\data\user\group\UserGroupList;
 use wcf\system\WCF;
 
 /**
  * Installs, updates and deletes user group options.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package.plugin
@@ -24,7 +23,7 @@ class UserGroupOptionPackageInstallationPlugin extends AbstractOptionPackageInst
 	protected $groupIDs = null;
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractPackageInstallationPlugin::$tableName
+	 * @see	\wcf\system\package\plugin\AbstractPackageInstallationPlugin::$tableName
 	 */
 	public $tableName = 'user_group_option';
 	
@@ -35,7 +34,7 @@ class UserGroupOptionPackageInstallationPlugin extends AbstractOptionPackageInst
 	public static $reservedTags = array('name', 'optiontype', 'defaultvalue', 'admindefaultvalue', 'userdefaultvalue', 'validationpattern', 'showorder', 'categoryname', 'selectoptions', 'enableoptions', 'permissions', 'options', 'attrs', 'cdata');
 	
 	/**
-	 * @see	wcf\system\package\plugin\AbstractOptionPackageInstallationPlugin::saveOption()
+	 * @see	\wcf\system\package\plugin\AbstractOptionPackageInstallationPlugin::saveOption()
 	 */
 	protected function saveOption($option, $categoryName, $existingOptionID = 0) {
 		// default values

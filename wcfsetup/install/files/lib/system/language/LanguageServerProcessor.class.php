@@ -12,7 +12,7 @@ use wcf\util\XML;
  * Processes language item import from language servers.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.language
@@ -21,15 +21,15 @@ use wcf\util\XML;
 class LanguageServerProcessor extends SingletonFactory {
 	/**
 	 * language object
-	 * @var	wcf\data\language\Language
+	 * @var	\wcf\data\language\Language
 	 */
 	protected $language = null;
 	
 	/**
 	 * Imports language variables for a language from given language servers.
 	 * 
-	 * @param	wcf\data\language\Language			$language
-	 * @param	array<wcf\data\language\server\LanguageServer>	$languageServers
+	 * @param	\wcf\data\language\Language			$language
+	 * @param	array<\wcf\data\language\server\LanguageServer>	$languageServers
 	 */
 	public function import(Language $language, array $languageServers) {
 		if (empty($languageServers)) return;
@@ -103,7 +103,7 @@ class LanguageServerProcessor extends SingletonFactory {
 		// send content type and length
 		$request .= "Content-Type: application/x-www-form-urlencoded\r\n";
 		$request .= "Content-Length: ".strlen($postString)."\r\n";
-		// if it is a POST request, there MUST be a blank line before the POST data, but there MUST NOT be 
+		// if it is a POST request, there MUST be a blank line before the POST data, but there MUST NOT be
 		// another blank line before, and of course there must be another blank line at the end of the request!
 		$request .= "\r\n";
 		if (!empty($postString)) $request .= $postString."\r\n";

@@ -6,7 +6,7 @@ use wcf\system\WCF;
  * Represents a default avatar.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.avatar
@@ -20,7 +20,7 @@ class DefaultAvatar implements IUserAvatar {
 	public $size = 150;
 	
 	/**
-	 * @see	wcf\data\user\avatar\IUserAvatar::getURL()
+	 * @see	\wcf\data\user\avatar\IUserAvatar::getURL()
 	 */
 	public function getURL($size = null) {
 		if ($size === null) $size = $this->size;
@@ -29,7 +29,7 @@ class DefaultAvatar implements IUserAvatar {
 	}
 	
 	/**
-	 * @see	wcf\data\user\avatar\IUserAvatar::getImageTag()
+	 * @see	\wcf\data\user\avatar\IUserAvatar::getImageTag()
 	 */
 	public function getImageTag($size = null) {
 		if ($size === null) $size = $this->size;
@@ -38,21 +38,21 @@ class DefaultAvatar implements IUserAvatar {
 	}
 	
 	/**
-	 * @see	wcf\data\user\avatar\IUserAvatar::getWidth()
+	 * @see	\wcf\data\user\avatar\IUserAvatar::getWidth()
 	 */
 	public function getWidth() {
 		return $this->size;
 	}
 	
 	/**
-	 * @see	wcf\data\user\avatar\IUserAvatar::getHeight()
+	 * @see	\wcf\data\user\avatar\IUserAvatar::getHeight()
 	 */
 	public function getHeight() {
 		return $this->size;
 	}
 	
 	/**
-	 * @see	wcf\data\user\avatar\IUserAvatar::canCrop()
+	 * @see	\wcf\data\user\avatar\IUserAvatar::canCrop()
 	 */
 	public function canCrop() {
 		return false;

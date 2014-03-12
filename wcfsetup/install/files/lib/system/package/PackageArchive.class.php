@@ -13,7 +13,7 @@ use wcf\util\XML;
  * Represents the archive of a package.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package
@@ -28,13 +28,13 @@ class PackageArchive {
 	
 	/**
 	 * package object of an existing package
-	 * @var	wcf\data\package\Package
+	 * @var	\wcf\data\package\Package
 	 */
 	protected $package = null;
 	
 	/**
 	 * tar archive object
-	 * @var	wcf\system\io\Tar
+	 * @var	\wcf\system\io\Tar
 	 */
 	protected $tar = null;
 	
@@ -104,7 +104,7 @@ class PackageArchive {
 	/**
 	 * Sets associated package object.
 	 * 
-	 * @param	wcf\data\package\Package	$package
+	 * @param	\wcf\data\package\Package	$package
 	 */
 	public function setPackage(Package $package) {
 		$this->package = $package;
@@ -122,7 +122,7 @@ class PackageArchive {
 	/**
 	 * Returns the object of the package archive.
 	 * 
-	 * @return	wcf\system\io\Tar
+	 * @return	\wcf\system\io\Tar
 	 */
 	public function getTar() {
 		return $this->tar;
@@ -313,7 +313,7 @@ class PackageArchive {
 		}
 		
 		// get php requirements
-		$requirements = $xpath->query('./ns:phprequirements', $package);
+		/*$requirements = $xpath->query('./ns:phprequirements', $package);
 		foreach ($requirements as $requirement) {
 			$elements = $xpath->query('child::*', $requirement);
 			foreach ($elements as $element) {
@@ -339,7 +339,7 @@ class PackageArchive {
 					break;
 				}
 			}
-		}
+		}*/
 		
 		// add com.woltlab.wcf to package requirements
 		if (!isset($this->requirements['com.woltlab.wcf']) && $this->packageInfo['name'] != 'com.woltlab.wcf') {
@@ -347,24 +347,32 @@ class PackageArchive {
 		}
 		
 		if ($this->package != null) {
-			$validFromVersion = null;
-			foreach ($this->instructions['update'] as $fromVersion => $update) {
-				if (Package::checkFromversion($this->package->packageVersion, $fromVersion)) {
-					$validFromVersion = $fromVersion;
-					break;
-				}
-			}
-			if ($validFromVersion === null) {
-				$this->instructions['update'] = array();
-			}
-			else {
-				$this->instructions['update'] = $this->instructions['update'][$validFromVersion];
-			}
+			$this->filterUpdateInstructions();
 		}
 		
 		// set default values
 		if (!isset($this->packageInfo['isApplication'])) $this->packageInfo['isApplication'] = 0;
 		if (!isset($this->packageInfo['packageURL'])) $this->packageInfo['packageURL'] = '';
+	}
+	
+	/**
+	 * Filters update instructions.
+	 */
+	protected function filterUpdateInstructions() {
+		$validFromVersion = null;
+		foreach ($this->instructions['update'] as $fromVersion => $update) {
+			if (Package::checkFromversion($this->package->packageVersion, $fromVersion)) {
+				$validFromVersion = $fromVersion;
+				break;
+			}
+		}
+		
+		if ($validFromVersion === null) {
+			$this->instructions['update'] = array();
+		}
+		else {
+			$this->instructions['update'] = $this->instructions['update'][$validFromVersion];
+		}
 	}
 	
 	/**
@@ -408,9 +416,17 @@ class PackageArchive {
 	 * Checks if the new package is compatible with
 	 * the package that is about to be updated.
 	 * 
-	 * @return	boolean		isValidUpdate
+	 * @param	\wcf\data\package\Package	$package
+	 * @return	boolean				isValidUpdate
 	 */
-	public function isValidUpdate() {
+	public function isValidUpdate(Package $package = null) {
+		if ($this->package === null && $package !== null) {
+			$this->setPackage($package);
+			
+			// re-evaluate update data
+			$this->filterUpdateInstructions();
+		}
+		
 		// Check name of the installed package against the name of the update. Both must be identical.
 		if ($this->packageInfo['name'] != $this->package->package) {
 			return false;
@@ -421,10 +437,12 @@ class PackageArchive {
 		if (Package::compareVersion($this->packageInfo['version'], $this->package->packageVersion) != 1) {
 			return false;
 		}
+		
 		// Check if the package provides an instructions block for the update from the installed package version
 		if (empty($this->instructions['update'])) {
 			return false;
 		}
+		
 		return true;
 	}
 	
@@ -495,7 +513,7 @@ class PackageArchive {
 	 * Returns a localized information about this package.
 	 * 
 	 * @param	string		$name
-	 * @return	mixed
+	 * @return	string
 	 */
 	public function getLocalizedPackageInfo($name) {
 		if (isset($this->packageInfo[$name][WCF::getLanguage()->getFixedLanguageCode()])) {
@@ -505,7 +523,11 @@ class PackageArchive {
 			return $this->packageInfo[$name]['default'];
 		}
 		
-		return $this->getPackageInfo($name);
+		if (!empty($this->packageInfo[$name])) {
+			return reset($this->packageInfo[$name]);
+		}
+		
+		return '';
 	}
 	
 	/**
@@ -677,7 +699,7 @@ class PackageArchive {
 				if (isset($requirement['minversion'])) {
 					if (Package::compareVersion($existingPackages[$requirement['name']]['packageVersion'], $requirement['minversion']) >= 0) {
 						// package does already exist in needed version
-						// skip installation of requirement 
+						// skip installation of requirement
 						continue;
 					}
 					else {
@@ -751,7 +773,7 @@ class PackageArchive {
 	/**
 	 * Returns a list of packages which exclude this package.
 	 * 
-	 * @return	array<wcf\data\package\Package>
+	 * @return	array<\wcf\data\package\Package>
 	 */
 	public function getConflictedExcludingPackages() {
 		$conflictedPackages = array();
@@ -778,7 +800,7 @@ class PackageArchive {
 	/**
 	 * Returns a list of packages which are excluded by this package.
 	 * 
-	 * @return	array<wcf\data\package\Package>
+	 * @return	array<\wcf\data\package\Package>
 	 */
 	public function getConflictedExcludedPackages() {
 		$conflictedPackages = array();

@@ -7,7 +7,7 @@ WCF.Comment = {};
  * Comment support for WCF
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
 WCF.Comment.Handler = Class.extend({
@@ -121,7 +121,7 @@ WCF.Comment.Handler = Class.extend({
 	_handleLoadNextComments: function() {
 		if (this._displayedComments < this._container.data('comments')) {
 			if (this._loadNextComments === null) {
-				this._loadNextComments = $('<li class="commentLoadNext"><button class="buttonPrimary small">' + WCF.Language.get('wcf.comment.more') + '</button></li>').appendTo(this._container);
+				this._loadNextComments = $('<li class="commentLoadNext"><button class="small">' + WCF.Language.get('wcf.comment.more') + '</button></li>').appendTo(this._container);
 				this._loadNextComments.children('button').click($.proxy(this._loadComments, this));
 			}
 			

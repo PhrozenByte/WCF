@@ -5,7 +5,7 @@ namespace wcf\system\form\element;
  * Provides a checkbox form element.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.form.element
@@ -19,7 +19,7 @@ class MultipleSelectionFormElement extends AbstractNamedFormElement {
 	protected $disabledMessage = '';
 	
 	/**
-	 * @see	wcf\system\form\element\AbstractNamedFormElement::setValue()
+	 * @see	\wcf\system\form\element\AbstractNamedFormElement::setValue()
 	 */
 	public function setValue($value) {
 		if (!is_array($value)) {
@@ -40,7 +40,7 @@ class MultipleSelectionFormElement extends AbstractNamedFormElement {
 	}
 	
 	/**
-	 * @see	wcf\system\form\element\AbstractNamedFormElement::getDescription()
+	 * @see	\wcf\system\form\element\AbstractNamedFormElement::getDescription()
 	 */
 	public function getDescription() {
 		if ($this->disabledMessage) {
@@ -51,7 +51,7 @@ class MultipleSelectionFormElement extends AbstractNamedFormElement {
 	}
 	
 	/**
-	 * @see	wcf\system\form\IFormElement::getHTML()
+	 * @see	\wcf\system\form\IFormElement::getHTML()
 	 */
 	public function getHTML($formName) {
 		$disabled = '';

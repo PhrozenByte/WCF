@@ -8,7 +8,7 @@ use wcf\system\SingletonFactory;
  * Handler for all available image adapters.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.image
@@ -31,7 +31,7 @@ class ImageHandler extends SingletonFactory {
 	protected $adapterClassName = '';
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		if (!isset($this->imageAdapters[IMAGE_ADAPTER_TYPE])) {
@@ -52,7 +52,7 @@ class ImageHandler extends SingletonFactory {
 	/**
 	 * Returns a new ImageAdapter instance.
 	 * 
-	 * @return	wcf\system\image\adapter\ImageAdapter
+	 * @return	\wcf\system\image\adapter\ImageAdapter
 	 */
 	public function getAdapter() {
 		return new ImageAdapter($this->adapterClassName);

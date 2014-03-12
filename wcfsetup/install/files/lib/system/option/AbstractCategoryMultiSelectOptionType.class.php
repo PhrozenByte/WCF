@@ -11,7 +11,7 @@ use wcf\util\ArrayUtil;
  * Option type implementation for multi select lists.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.option
@@ -20,18 +20,18 @@ use wcf\util\ArrayUtil;
 class AbstractCategoryMultiSelectOptionType extends AbstractOptionType {
 	/**
 	 * object type name
-	 * @var string
+	 * @var	string
 	 */
 	public $objectType = '';
 	
 	/**
 	 * node tree class
-	 * @var string
+	 * @var	string
 	 */
 	public $nodeTreeClassname = 'wcf\data\category\CategoryNodeTree';
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::getFormElement()
+	 * @see	\wcf\system\option\IOptionType::getFormElement()
 	 */
 	public function getFormElement(Option $option, $value) {
 		$categoryTree = new $this->nodeTreeClassname($this->objectType);
@@ -47,7 +47,7 @@ class AbstractCategoryMultiSelectOptionType extends AbstractOptionType {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::validate()
+	 * @see	\wcf\system\option\IOptionType::validate()
 	 */
 	public function validate(Option $option, $newValue) {
 		if (!is_array($newValue)) $newValue = array();
@@ -61,7 +61,7 @@ class AbstractCategoryMultiSelectOptionType extends AbstractOptionType {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::getData()
+	 * @see	\wcf\system\option\IOptionType::getData()
 	 */
 	public function getData(Option $option, $newValue) {
 		if (!is_array($newValue)) $newValue = array();

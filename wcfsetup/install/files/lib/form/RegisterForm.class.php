@@ -27,7 +27,7 @@ use wcf\util\UserRegistrationUtil;
  * Shows the user registration form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	form
@@ -41,7 +41,7 @@ class RegisterForm extends UserAddForm {
 	public $challenge = '';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$enableTracking
+	 * @see	\wcf\page\AbstractPage::$enableTracking
 	 */
 	public $enableTracking = true;
 	
@@ -52,7 +52,7 @@ class RegisterForm extends UserAddForm {
 	public $isExternalAuthentication = false;
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array();
 	
@@ -73,11 +73,11 @@ class RegisterForm extends UserAddForm {
 	 * enable recaptcha
 	 * @var	boolean
 	 */
-	public $useCaptcha = true;
+	public $useCaptcha = REGISTER_USE_CAPTCHA;
 	
 	/**
 	 * field names
-	 * @var array
+	 * @var	array
 	 */
 	public $randomFieldNames = array();
 	
@@ -88,7 +88,7 @@ class RegisterForm extends UserAddForm {
 	public static $minRegistrationTime = 10;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -109,7 +109,7 @@ class RegisterForm extends UserAddForm {
 			exit;
 		}
 		
-		if (!REGISTER_USE_CAPTCHA || WCF::getSession()->getVar('recaptchaDone')) {
+		if (!MODULE_SYSTEM_RECAPTCHA || WCF::getSession()->getVar('recaptchaDone')) {
 			$this->useCaptcha = false;
 		}
 		
@@ -119,11 +119,11 @@ class RegisterForm extends UserAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
-	
+		
 		if (!empty($this->username) || !empty($this->email)) {
 			throw new PermissionDeniedException();
 		}
@@ -153,7 +153,7 @@ class RegisterForm extends UserAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		// validate captcha first
@@ -170,7 +170,7 @@ class RegisterForm extends UserAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -210,7 +210,7 @@ class RegisterForm extends UserAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -224,7 +224,7 @@ class RegisterForm extends UserAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::show()
+	 * @see	\wcf\page\IPage::show()
 	 */
 	public function show() {
 		AbstractForm::show();
@@ -246,7 +246,7 @@ class RegisterForm extends UserAddForm {
 	}
 	
 	/**
-	 * @see	wcf\acp\form\UserAddForm::validateUsername()
+	 * @see	\wcf\acp\form\UserAddForm::validateUsername()
 	 */
 	protected function validateUsername($username) {
 		parent::validateUsername($username);
@@ -258,7 +258,7 @@ class RegisterForm extends UserAddForm {
 	}
 	
 	/**
-	 * @see	wcf\acp\form\UserAddForm::validatePassword()
+	 * @see	\wcf\acp\form\UserAddForm::validatePassword()
 	 */
 	protected function validatePassword($password, $confirmPassword) {
 		if (!$this->isExternalAuthentication) {
@@ -272,7 +272,7 @@ class RegisterForm extends UserAddForm {
 	}
 	
 	/**
-	 * @see	wcf\acp\form\UserAddForm::validateEmail()
+	 * @see	\wcf\acp\form\UserAddForm::validateEmail()
 	 */
 	protected function validateEmail($email, $confirmEmail) {
 		parent::validateEmail($email, $confirmEmail);
@@ -283,7 +283,7 @@ class RegisterForm extends UserAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
@@ -346,11 +346,14 @@ class RegisterForm extends UserAddForm {
 						if (isset($facebookData['bio'])) $saveOptions[User::getUserOptionID('aboutMe')] = $facebookData['bio'];
 						if (isset($facebookData['location'])) $saveOptions[User::getUserOptionID('location')] = $facebookData['location']['name'];
 						if (isset($facebookData['website'])) {
-							if (!Regex::compile('^https?://')->match($facebookData['website'])) {
-								$facebookData['website'] = 'http://' . $facebookData['website'];
+							$urls = preg_split('/[\s,;]/', $facebookData['website'], -1, PREG_SPLIT_NO_EMPTY);
+							if (!empty($urls)) {
+								if (!Regex::compile('^https?://')->match($urls[0])) {
+									$urls[0] = 'http://' . $urls[0];
+								}
+								
+								$saveOptions[User::getUserOptionID('homepage')] = $urls[0];
 							}
-							
-							$saveOptions[User::getUserOptionID('homepage')] = $facebookData['website'];
 						}
 						
 						// avatar
@@ -423,15 +426,6 @@ class RegisterForm extends UserAddForm {
 		$result = $this->objectAction->executeAction();
 		$user = $result['returnValues'];
 		$userEditor = new UserEditor($user);
-		
-		// update user rank
-		if (MODULE_USER_RANK && !REGISTER_ACTIVATION_METHOD) {
-			$action = new UserProfileAction(array($userEditor), 'updateUserRank');
-			$action->executeAction();
-		}
-		// update user online marking
-		$action = new UserProfileAction(array($userEditor), 'updateUserOnlineMarking');
-		$action->executeAction();
 		
 		// set avatar if provided
 		if (!empty($avatarURL)) {

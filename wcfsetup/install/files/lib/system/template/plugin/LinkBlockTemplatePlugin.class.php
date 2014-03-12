@@ -11,7 +11,7 @@ use wcf\util\StringUtil;
  * 	{link application='wcf'}index.php{/link}
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.template.plugin
@@ -25,7 +25,7 @@ class LinkBlockTemplatePlugin implements IBlockTemplatePlugin {
 	protected $counter = 0;
 	
 	/**
-	 * @see	wcf\system\template\IBlockTemplatePlugin::execute()
+	 * @see	\wcf\system\template\IBlockTemplatePlugin::execute()
 	 */
 	public function execute($tagArgs, $blockContent, TemplateEngine $tplObj) {
 		if (!array_key_exists('controller', $tagArgs)) {
@@ -34,6 +34,10 @@ class LinkBlockTemplatePlugin implements IBlockTemplatePlugin {
 		
 		if (!isset($tagArgs['application']) || empty($tagArgs['application'])) {
 			$tagArgs['application'] = 'wcf';
+		}
+		
+		if (isset($tagArgs['isEmail']) && $tagArgs['isEmail']) {
+			$tagArgs['encode'] = false;
 		}
 		
 		if (isset($tagArgs['encode']) && !$tagArgs['encode']) {
@@ -45,14 +49,14 @@ class LinkBlockTemplatePlugin implements IBlockTemplatePlugin {
 	}
 	
 	/**
-	 * @see	wcf\system\template\IBlockTemplatePlugin::init()
+	 * @see	\wcf\system\template\IBlockTemplatePlugin::init()
 	 */
 	public function init($tagArgs, TemplateEngine $tplObj) {
 		$this->counter = 0;
 	}
 	
 	/**
-	 * @see	wcf\system\template\IBlockTemplatePlugin::next()
+	 * @see	\wcf\system\template\IBlockTemplatePlugin::next()
 	 */
 	public function next(TemplateEngine $tplObj) {
 		if ($this->counter == 0) {

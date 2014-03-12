@@ -4,9 +4,9 @@ use wcf\system\WCF;
 
 /**
  * Imports ACLs.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.importer
@@ -15,19 +15,19 @@ use wcf\system\WCF;
 class AbstractACLImporter extends AbstractImporter {
 	/**
 	 * object type id for options
-	 * @var integer
+	 * @var	integer
 	 */
 	protected $objectTypeID = 0;
 	
 	/**
 	 * object type name
-	 * @var integer
+	 * @var	integer
 	 */
 	protected $objectTypeName = '';
 	
 	/**
 	 * available options
-	 * @var array
+	 * @var	array
 	 */
 	protected $options = array();
 	
@@ -47,7 +47,7 @@ class AbstractACLImporter extends AbstractImporter {
 	}
 	
 	/**
-	 * @see wcf\system\importer\IImporter::import()
+	 * @see	\wcf\system\importer\IImporter::import()
 	 */
 	public function import($oldID, array $data, array $additionalData = array()) {
 		if (!isset($this->options[$additionalData['optionName']])) return 0;

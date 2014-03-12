@@ -8,7 +8,7 @@ use wcf\system\WCF;
  * Caches options and option categories
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cache.builder
@@ -28,7 +28,7 @@ class OptionCacheBuilder extends AbstractCacheBuilder {
 	protected $tableName = 'option';
 	
 	/**
-	 * @see	wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
+	 * @see	\wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
 	 */
 	public function rebuild(array $parameters) {
 		$data = array(
@@ -40,7 +40,7 @@ class OptionCacheBuilder extends AbstractCacheBuilder {
 		
 		// option categories
 		// get all option categories and sort categories by priority
-		$sql = "SELECT	categoryName, categoryID 
+		$sql = "SELECT	categoryName, categoryID
 			FROM	wcf".WCF_N."_".$this->tableName."_category";
 		$statement = WCF::getDB()->prepareStatement($sql);
 		$statement->execute();
@@ -75,7 +75,7 @@ class OptionCacheBuilder extends AbstractCacheBuilder {
 		// options
 		// get all options and sort options by priority
 		$optionIDs = array();
-		$sql = "SELECT		optionName, optionID 
+		$sql = "SELECT		optionName, optionID
 			FROM		wcf".WCF_N."_".$this->tableName;
 		$statement = WCF::getDB()->prepareStatement($sql);
 		$statement->execute();

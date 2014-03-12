@@ -57,6 +57,9 @@
 					<category name="general.system.jquery">
 						<parent>general.system</parent>
 					</category>
+					<category name="general.system.googleMaps">
+						<parent>general.system</parent>
+					</category>
 				<category name="general.mail">
 					<parent>general</parent>
 				</category>
@@ -81,7 +84,6 @@
 			<category name="user">
 				<showorder>3</showorder>
 			</category>
-			
 				<category name="user.general">
 					<parent>user</parent>
 				</category>
@@ -357,6 +359,10 @@
 				<categoryname>general.page</categoryname>
 				<optiontype>textarea</optiontype>
 			</option>
+			<option name="url_title_component_replacement">
+				<categoryname>general.page</categoryname>
+				<optiontype>textarea</optiontype>
+			</option>
 			<!-- /general.page -->
 			
 			<!-- offline -->
@@ -406,7 +412,7 @@ imagick:wcf.acp.option.image_adapter_type.imagick]]>
 			<option name="http_send_x_frame_options">
 				<categoryname>general.system.http</categoryname>
 				<optiontype>boolean</optiontype>
-				<defaultvalue>0</defaultvalue>
+				<defaultvalue>1</defaultvalue>
 			</option>
 			<option name="http_enable_gzip">
 				<categoryname>general.system.http</categoryname>
@@ -427,6 +433,7 @@ imagick:wcf.acp.option.image_adapter_type.imagick]]>
 			<option name="package_server_auth_code">
 				<categoryname>general.system.packageServer</categoryname>
 				<optiontype>text</optiontype>
+				<hidden>1</hidden>
 			</option>
 			<!-- /general.system.packageServer -->
 			
@@ -442,7 +449,8 @@ imagick:wcf.acp.option.image_adapter_type.imagick]]>
 				<categoryname>security.general.session</categoryname>
 				<optiontype>integer</optiontype>
 				<defaultvalue>1800</defaultvalue>
-				<minvalue>1</minvalue>
+				<minvalue>600</minvalue>
+				<maxvalue>86400</maxvalue>
 			</option>
 			<option name="user_online_timeout">
 				<categoryname>security.general.session</categoryname>
@@ -515,7 +523,61 @@ cloudflare:wcf.acp.option.jquery_source.cloudflare</selectoptions>
 			</option>
 			<!-- /general.system.jquery -->
 			
-			<!-- mail.general -->
+			<!-- general.system.googleMaps -->
+			<option name="google_maps_zoom">
+				<categoryname>general.system.googleMaps</categoryname>
+				<optiontype>select</optiontype>
+				<defaultvalue>13</defaultvalue>
+				<selectoptions><![CDATA[1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17]]></selectoptions>
+			</option>
+			<option name="google_maps_type">
+				<categoryname>general.system.googleMaps</categoryname>
+				<optiontype>select</optiontype>
+				<defaultvalue>hybrid</defaultvalue>
+				<selectoptions><![CDATA[map:wcf.acp.option.google_maps_type.map
+satellite:wcf.acp.option.google_maps_type.satellite
+hybrid:wcf.acp.option.google_maps_type.hybrid
+physical:wcf.acp.option.google_maps_type.physical]]></selectoptions>
+			</option>
+			<option name="google_maps_enable_scale_control">
+				<categoryname>general.system.googleMaps</categoryname>
+				<optiontype>boolean</optiontype>
+				<defaultvalue>0</defaultvalue>
+			</option>
+			<option name="google_maps_enable_dragging">
+				<categoryname>general.system.googleMaps</categoryname>
+				<optiontype>boolean</optiontype>
+				<defaultvalue>1</defaultvalue>
+			</option>
+			<option name="google_maps_enable_scroll_wheel_zoom">
+				<categoryname>general.system.googleMaps</categoryname>
+				<optiontype>boolean</optiontype>
+				<defaultvalue>0</defaultvalue>
+			</option>
+			<option name="google_maps_enable_double_click_zoom">
+				<categoryname>general.system.googleMaps</categoryname>
+				<optiontype>boolean</optiontype>
+				<defaultvalue>1</defaultvalue>
+			</option>
+			<!-- /general.system.googleMaps -->
+			
+			<!-- general.mail.general -->
 			<option name="mail_from_name">
 				<categoryname>general.mail.general</categoryname>
 				<optiontype>text</optiontype>
@@ -537,9 +599,9 @@ cloudflare:wcf.acp.option.jquery_source.cloudflare</selectoptions>
 				<defaultvalue><![CDATA[]]></defaultvalue>
 				<supporti18n>1</supporti18n>
 			</option>
-			<!-- /mail.general -->
+			<!-- /general.mail.general -->
 			
-			<!-- mail.send -->
+			<!-- general.mail.send -->
 			<option name="mail_send_method">
 				<categoryname>general.mail.send</categoryname>
 				<optiontype>radioButton</optiontype>
@@ -580,7 +642,7 @@ debug:mail_debug_logfile_path,!mail_use_f_param,!mail_smtp_host,!mail_smtp_port,
 				<categoryname>general.mail.send</categoryname>
 				<optiontype>boolean</optiontype>
 			</option>
-			<!-- /mail.send -->
+			<!-- /general.mail.send -->
 			
 			<!-- general.cache -->
 			<option name="cache_source_type">
@@ -589,11 +651,9 @@ debug:mail_debug_logfile_path,!mail_use_f_param,!mail_smtp_host,!mail_smtp_port,
 				<defaultvalue><![CDATA[disk]]></defaultvalue>
 				<selectoptions><![CDATA[disk:wcf.acp.option.cache_source_type.disk
 memcached:wcf.acp.option.cache_source_type.memcached
-apc:wcf.acp.option.cache_source_type.apc
 no:wcf.acp.option.cache_source_type.no]]></selectoptions>
 				<enableoptions><![CDATA[disk:!cache_source_memcached_host
 memcached:cache_source_memcached_host
-apc:!cache_source_memcached_host
 no:!cache_source_memcached_host]]></enableoptions>
 			</option>
 			
@@ -611,7 +671,12 @@ no:!cache_source_memcached_host]]></enableoptions>
 				<categoryname>message.attachment</categoryname>
 				<optiontype>boolean</optiontype>
 				<defaultvalue><![CDATA[1]]></defaultvalue>
-				<enableoptions>attachment_thumbnail_height,attachment_thumbnail_width</enableoptions>
+				<enableoptions>attachment_retain_dimensions,attachment_thumbnail_height,attachment_thumbnail_width</enableoptions>
+			</option>
+			<option name="attachment_retain_dimensions">
+				<categoryname>message.attachment</categoryname>
+				<optiontype>boolean</optiontype>
+				<defaultvalue><![CDATA[0]]></defaultvalue>
 			</option>
 			<option name="attachment_thumbnail_height">
 				<categoryname>message.attachment</categoryname>
@@ -942,6 +1007,28 @@ DESC:wcf.global.sortOrder.descending]]></selectoptions>
 				<defaultvalue>0</defaultvalue>
 				<minvalue>0</minvalue>
 			</option>
+			<option name="users_online_record_no_guests">
+				<categoryname>user.list.online</categoryname>
+				<optiontype>boolean</optiontype>
+				<defaultvalue>1</defaultvalue>
+				<options>module_users_online</options>
+			</option>
+			<option name="users_online_enable_legend">
+				<categoryname>user.list.online</categoryname>
+				<optiontype>boolean</optiontype>
+				<defaultvalue>1</defaultvalue>
+				<options>module_users_online</options>
+			</option>
+			<option name="users_online_record">
+				<categoryname>user.list.online</categoryname>
+				<optiontype>integer</optiontype>
+				<hidden>1</hidden>
+			</option>
+			<option name="users_online_record_time">
+				<categoryname>user.list.online</categoryname>
+				<optiontype>integer</optiontype>
+				<hidden>1</hidden>
+			</option>
 			<!-- /user.list.online -->
 			
 			<!-- user.cleanup -->
@@ -1045,6 +1132,7 @@ DESC:wcf.global.sortOrder.descending]]></selectoptions>
 				<defaultvalue>30</defaultvalue>
 				<minvalue>1</minvalue>
 				<maxvalue>255</maxvalue>
+				<options>module_tagging</options>
 			</option>
 			<!-- /message.general -->
 			

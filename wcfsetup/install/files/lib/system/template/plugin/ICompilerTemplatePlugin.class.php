@@ -6,7 +6,7 @@ use wcf\system\template\TemplateScriptingCompiler;
  * Compiler functions are called during the compilation of a template.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.template.plugin
@@ -17,7 +17,7 @@ interface ICompilerTemplatePlugin {
 	 * Executes the start tag of this compiler function.
 	 * 
 	 * @param	array						$tagArgs
-	 * @param	wcf\system\template\TemplateScriptingCompiler	$compiler
+	 * @param	\wcf\system\template\TemplateScriptingCompiler	$compiler
 	 * @return	string
 	 */
 	public function executeStart($tagArgs, TemplateScriptingCompiler $compiler);
@@ -25,7 +25,7 @@ interface ICompilerTemplatePlugin {
 	/**
 	 * Executes the end tag of this compiler function.
 	 * 
-	 * @param	wcf\system\template\TemplateScriptingCompiler	$compiler
+	 * @param	\wcf\system\template\TemplateScriptingCompiler	$compiler
 	 * @return	string
 	 */
 	public function executeEnd(TemplateScriptingCompiler $compiler);

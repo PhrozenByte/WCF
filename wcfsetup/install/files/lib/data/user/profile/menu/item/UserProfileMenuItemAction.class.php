@@ -9,7 +9,7 @@ use wcf\system\menu\user\profile\UserProfileMenu;
  * Executes user profile menu item-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.profile.menu.item
@@ -17,13 +17,13 @@ use wcf\system\menu\user\profile\UserProfileMenu;
  */
 class UserProfileMenuItemAction extends AbstractDatabaseObjectAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
 	 */
 	protected $allowGuestAccess = array('getContent');
 	
 	/**
 	 * menu item
-	 * @var	wcf\data\user\profile\menu\item\UserProfileMenuItem
+	 * @var	\wcf\data\user\profile\menu\item\UserProfileMenuItem
 	 */
 	protected $menuItem = null;
 	

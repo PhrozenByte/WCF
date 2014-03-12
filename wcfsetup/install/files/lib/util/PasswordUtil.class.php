@@ -7,7 +7,7 @@ use wcf\system\Regex;
  * Provides functions to compute password hashes.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	util
@@ -37,7 +37,8 @@ final class PasswordUtil {
 		'wbb2',		// WoltLab Burning Board 2.x
 		'wcf1',		// WoltLab Community Framework 1.x
 		'wcf2',		// WoltLab Community Framework 2.x
-		'xf1',		// XenForo 1.x
+		'xf1',		// XenForo 1.0 / 1.1
+		'xf12',		// XenForo 1.2+
 		'joomla1',	// Joomla 1.x
 		'joomla2',	// Joomla 2.x
 		'joomla3',	// Joomla 3.x
@@ -62,7 +63,15 @@ final class PasswordUtil {
 	 * @return	boolean
 	 */
 	public static function isSupported($type) {
-		return in_array($type, self::$supportedEncryptionTypes);
+		if (in_array($type, self::$supportedEncryptionTypes)) {
+			return true;
+		}
+		
+		if (preg_match('~^wcf1e[cms][01][ab][01]$~', $type)) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -110,14 +119,23 @@ final class PasswordUtil {
 		$dbHash = substr($dbHash, strlen($type) + 1);
 		
 		// check for salt
-		$salt = '';
-		if (($pos = strrpos($dbHash, ':')) !== false) {
-			$salt = substr(substr($dbHash, $pos), 1);
-			$dbHash = substr($dbHash, 0, $pos);
+		$parts = explode(':', $dbHash, 2);
+		if (count($parts) == 2) {
+			list($dbHash, $salt) = $parts;
+		}
+		else {
+			$dbHash = $parts[0];
+			$salt = '';
 		}
 		
 		// compare hash
-		return call_user_func('\wcf\util\PasswordUtil::'.$type, $username, $password, $salt, $dbHash);
+		if (in_array($type, self::$supportedEncryptionTypes)) {
+			return call_user_func('\wcf\util\PasswordUtil::'.$type, $username, $password, $salt, $dbHash);
+		}
+		else {
+			// WCF 1.x with different encryption
+			return self::wcf1e($type, $password, $salt, $dbHash);
+		}
 	}
 	
 	/**
@@ -129,7 +147,7 @@ final class PasswordUtil {
 	public static function detectEncryption($hash) {
 		if (($pos = strpos($hash, ':')) !== false) {
 			$type = substr($hash, 0, $pos);
-			if (in_array($type, self::$supportedEncryptionTypes)) {
+			if (self::isSupported($type)) {
 				return $type;
 			}
 		}
@@ -216,15 +234,18 @@ final class PasswordUtil {
 	 * @return	boolean
 	 */
 	public static function secureCompare($hash1, $hash2) {
+		$hash1 = (string)$hash1;
+		$hash2 = (string)$hash2;
+		
 		if (strlen($hash1) !== strlen($hash2)) {
 			return false;
 		}
-	
+		
 		$result = 0;
 		for ($i = 0, $length = strlen($hash1); $i < $length; $i++) {
 			$result |= ord($hash1[$i]) ^ ord($hash2[$i]);
 		}
-	
+		
 		return ($result === 0);
 	}
 	
@@ -304,7 +325,7 @@ final class PasswordUtil {
 	
 	/**
 	 * Validates the password hash for MyBB 1.x (mybb1).
-	 *
+	 * 
 	 * @param	string		$username
 	 * @param	string		$password
 	 * @param	string		$salt
@@ -501,6 +522,62 @@ final class PasswordUtil {
 	}
 	
 	/**
+	 * Validates the password hash for WoltLab Community Framework 1.x with different encryption (wcf1e).
+	 * 
+	 * @param	string		$type
+	 * @param	string		$password
+	 * @param	string		$salt
+	 * @param	string		$dbHash
+	 */
+	protected static function wcf1e($type, $password, $salt, $dbHash) {
+		preg_match('~^wcf1e([cms])([01])([ab])([01])$~', $type, $matches);
+		$enableSalting = $matches[2];
+		$saltPosition = $matches[3];
+		$encryptBeforeSalting = $matches[4];
+		
+		$encryptionMethod = '';
+		switch ($matches[1]) {
+			case 'c':
+				$encryptionMethod = 'crc32';
+			break;
+			
+			case 'm':
+				$encryptionMethod = 'md5';
+			break;
+			
+			case 's':
+				$encryptionMethod = 'sha1';
+			break;
+		}
+		
+		$hash = '';
+		if ($enableSalting) {
+			if ($saltPosition == 'b') {
+				$hash .= $salt;
+			}
+			
+			if ($encryptBeforeSalting) {
+				$hash .= $encryptionMethod($password);
+			}
+			else {
+				$hash .= $password;
+			}
+			
+			if ($saltPosition == 'a') {
+				$hash .= $salt;
+			}
+			
+			$hash = $encryptionMethod($hash);
+		}
+		else {
+			$hash = $encryptionMethod($password);
+		}
+		$hash = $encryptionMethod($salt . $hash);
+		
+		return self::secureCompare($dbHash, $hash);
+	}
+	
+	/**
 	 * Validates the password hash for WoltLab Community Framework 2.x (wcf2).
 	 * 
 	 * @param	string		$username
@@ -514,7 +591,7 @@ final class PasswordUtil {
 	}
 	
 	/**
-	 * Validates the password hash for XenForo 1.x with (xf1).
+	 * Validates the password hash for XenForo 1.0 / 1.1 (xf1).
 	 * 
 	 * @param	string		$username
 	 * @param	string		$password
@@ -528,6 +605,23 @@ final class PasswordUtil {
 		}
 		else if (extension_loaded('hash')) {
 			return self::secureCompare($dbHash, hash('sha256', hash('sha256', $password) . $salt));
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Validates the password hash for XenForo 1.2+ (xf12).
+	 * 
+	 * @param	string		$username
+	 * @param	string		$password
+	 * @param	string		$salt
+	 * @param	string		$dbHash
+	 * @return	boolean
+	 */
+	protected static function xf12($username, $password, $salt, $dbHash) {
+		if (self::secureCompare($dbHash, self::getSaltedHash($password, $dbHash))) {
+			return true;
 		}
 		
 		return false;

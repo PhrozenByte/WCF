@@ -1,6 +1,7 @@
 <?php
 namespace wcf\system\package\plugin;
 use wcf\system\cache\CacheHandler;
+use wcf\system\exception\SystemException;
 use wcf\system\WCF;
 use wcf\util\FileUtil;
 
@@ -8,7 +9,7 @@ use wcf\util\FileUtil;
  * Executes individual PHP scripts during installation.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package.plugin
@@ -16,22 +17,28 @@ use wcf\util\FileUtil;
  */
 class ScriptPackageInstallationPlugin extends AbstractPackageInstallationPlugin {
 	/**
-	 * @see	wcf\system\package\plugin\IPackageInstallationPlugin::install()
+	 * @see	\wcf\system\package\plugin\IPackageInstallationPlugin::install()
 	 */
 	public function install() {
 		parent::install();
 		
-		// get installation path of package
-		$sql = "SELECT	packageDir
-			FROM	wcf".WCF_N."_package
-			WHERE	packageID = ?";
-		$statement = WCF::getDB()->prepareStatement($sql);
-		$statement->execute(array($this->installation->getPackageID()));
-		$packageDir = $statement->fetchArray();
-		$packageDir = $packageDir['packageDir'];
+		$abbreviation = 'wcf';
+		$path = '';
+		if (isset($this->instruction['attributes']['application'])) {
+			$abbreviation = $this->instruction['attributes']['application'];
+		}
+		else if ($this->installation->getPackage()->isApplication) {
+			$path = FileUtil::getRealPath(WCF_DIR.$this->installation->getPackage()->packageDir);
+		}
 		
-		// get relative path of script
-		$path = FileUtil::getRealPath(WCF_DIR.$packageDir);
+		if (empty($path)) {
+			$dirConstant = strtoupper($abbreviation) . '_DIR';
+			if (!defined($dirConstant)) {
+				throw new SystemException("Can not execute script-PIP, abbreviation '".$abbreviation."' is unknown");
+			}
+			
+			$path = constant($dirConstant);
+		}
 		
 		// reset WCF cache
 		CacheHandler::getInstance()->flushAll();
@@ -63,7 +70,7 @@ class ScriptPackageInstallationPlugin extends AbstractPackageInstallationPlugin 
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\IPackageInstallationPlugin::install()
+	 * @see	\wcf\system\package\plugin\IPackageInstallationPlugin::install()
 	 */
 	public function hasUninstall() {
 		// scripts can't be uninstalled
@@ -71,7 +78,7 @@ class ScriptPackageInstallationPlugin extends AbstractPackageInstallationPlugin 
 	}
 	
 	/**
-	 * @see	wcf\system\package\plugin\IPackageInstallationPlugin::install()
+	 * @see	\wcf\system\package\plugin\IPackageInstallationPlugin::install()
 	 */
 	public function uninstall() {
 		// does nothing

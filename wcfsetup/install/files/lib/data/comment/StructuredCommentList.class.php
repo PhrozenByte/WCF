@@ -10,7 +10,7 @@ use wcf\system\like\LikeHandler;
  * Provides a structured comment list fetching last responses for every comment.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.comment
@@ -19,7 +19,7 @@ use wcf\system\like\LikeHandler;
 class StructuredCommentList extends CommentList {
 	/**
 	 * comment manager object
-	 * @var	wcf\system\comment\manager\ICommentManager
+	 * @var	\wcf\system\comment\manager\ICommentManager
 	 */
 	public $commentManager = null;
 	
@@ -48,19 +48,19 @@ class StructuredCommentList extends CommentList {
 	public $responseIDs = array();
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$sqlLimit
+	 * @see	\wcf\data\DatabaseObjectList::$sqlLimit
 	 */
 	public $sqlLimit = 10;
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$sqlOrderBy
+	 * @see	\wcf\data\DatabaseObjectList::$sqlOrderBy
 	 */
 	public $sqlOrderBy = 'comment.time DESC';
 	
 	/**
 	 * Creates a new structured comment list.
 	 * 
-	 * @param	wcf\system\comment\manager\ICommentManager	$commentManager
+	 * @param	\wcf\system\comment\manager\ICommentManager	$commentManager
 	 * @param	integer						$objectTypeID
 	 * @param	integer						$objectID
 	 */
@@ -77,7 +77,7 @@ class StructuredCommentList extends CommentList {
 	}
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::readObjects()
+	 * @see	\wcf\data\DatabaseObjectList::readObjects()
 	 */
 	public function readObjects() {
 		parent::readObjects();

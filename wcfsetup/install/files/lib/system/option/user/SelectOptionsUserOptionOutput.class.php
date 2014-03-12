@@ -4,13 +4,12 @@ use wcf\data\user\option\UserOption;
 use wcf\data\user\User;
 use wcf\system\WCF;
 use wcf\util\OptionUtil;
-use wcf\util\StringUtil;
 
 /**
  * User option output implementation for the output of select options.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.option.user
@@ -18,7 +17,7 @@ use wcf\util\StringUtil;
  */
 class SelectOptionsUserOptionOutput implements IUserOptionOutput {
 	/**
-	 * @see	wcf\system\option\user\IUserOptionOutput::getOutput()
+	 * @see	\wcf\system\option\user\IUserOptionOutput::getOutput()
 	 */
 	public function getOutput(User $user, UserOption $option, $value) {
 		$result = self::getResult($option, $value);
@@ -42,7 +41,7 @@ class SelectOptionsUserOptionOutput implements IUserOptionOutput {
 	/**
 	 * Returns the selected option value(s) for output.
 	 * 
-	 * @param	wcf\data\user\option\UserOption		$option
+	 * @param	\wcf\data\user\option\UserOption		$option
 	 * @param	string					$value
 	 * @return	mixed
 	 */

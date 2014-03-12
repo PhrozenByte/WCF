@@ -6,7 +6,7 @@ use wcf\system\exception\SystemException;
  * Basis class for singleton classes.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system
@@ -47,7 +47,7 @@ abstract class SingletonFactory {
 	/**
 	 * Returns an unique instance of current child class.
 	 * 
-	 * @return	wcf\system\SingletonFactory
+	 * @return	\wcf\system\SingletonFactory
 	 */
 	public static final function getInstance() {
 		$className = get_called_class();
@@ -55,7 +55,7 @@ abstract class SingletonFactory {
 			self::$__singletonObjects[$className] = null;
 			self::$__singletonObjects[$className] = new $className();
 		}
-		else if (array_key_exists($className, self::$__singletonObjects) && self::$__singletonObjects[$className] === null) {
+		else if (self::$__singletonObjects[$className] === null) {
 			throw new SystemException("Infinite loop detected while trying to retrieve object for '".$className."'");
 		}
 		

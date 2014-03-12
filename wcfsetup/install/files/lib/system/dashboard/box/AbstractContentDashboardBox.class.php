@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Default implementation for dashboard boxes displayed within content container.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.dashboard.box
@@ -18,13 +18,13 @@ use wcf\system\WCF;
 abstract class AbstractContentDashboardBox implements IDashboardBox {
 	/**
 	 * dashboard box object
-	 * @var	wcf\data\dashboard\box\DashboardBox
+	 * @var	\wcf\data\dashboard\box\DashboardBox
 	 */
 	public $box = null;
 	
 	/**
 	 * IPage object
-	 * @var	wcf\page\IPage
+	 * @var	\wcf\page\IPage
 	 */
 	public $page = null;
 	
@@ -35,7 +35,7 @@ abstract class AbstractContentDashboardBox implements IDashboardBox {
 	public $templateName = 'dashboardBoxContent';
 	
 	/**
-	 * @see	wcf\system\dashboard\box\IDashboardBox::init()
+	 * @see	\wcf\system\dashboard\box\IDashboardBox::init()
 	 */
 	public function init(DashboardBox $box, IPage $page) {
 		$this->box = $box;
@@ -46,7 +46,7 @@ abstract class AbstractContentDashboardBox implements IDashboardBox {
 	}
 	
 	/**
-	 * @see	wcf\system\dashboard\box\IDashboardBox::getTemplate()
+	 * @see	\wcf\system\dashboard\box\IDashboardBox::getTemplate()
 	 */
 	public function getTemplate() {
 		$template = $this->render();

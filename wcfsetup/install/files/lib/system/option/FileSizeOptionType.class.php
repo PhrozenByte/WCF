@@ -3,7 +3,6 @@ namespace wcf\system\option;
 use wcf\data\option\Option;
 use wcf\system\WCF;
 use wcf\util\FileUtil;
-use wcf\util\StringUtil;
 
 /**
  * Option type implementation for file sizes.
@@ -17,12 +16,12 @@ use wcf\util\StringUtil;
  */
 class FileSizeOptionType extends TextOptionType {
 	/**
-	 * @see	wcf\system\option\TextOptionType::$inputClass
+	 * @see	\wcf\system\option\TextOptionType::$inputClass
 	 */
 	protected $inputClass = 'medium';
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::getData()
+	 * @see	\wcf\system\option\IOptionType::getData()
 	 */
 	public function getData(Option $option, $newValue) {
 		$number = str_replace(WCF::getLanguage()->get('wcf.global.thousandsSeparator'), '', $newValue);
@@ -58,7 +57,7 @@ class FileSizeOptionType extends TextOptionType {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::getFormElement()
+	 * @see	\wcf\system\option\IOptionType::getFormElement()
 	 */
 	public function getFormElement(Option $option, $value) {
 		$value = FileUtil::formatFileSize($value);

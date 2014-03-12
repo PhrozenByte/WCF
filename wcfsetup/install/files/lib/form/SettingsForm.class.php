@@ -16,7 +16,7 @@ use wcf\util\ArrayUtil;
  * Shows the dynamic options edit form.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	form
@@ -24,23 +24,23 @@ use wcf\util\ArrayUtil;
  */
 class SettingsForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$enableTracking
+	 * @see	\wcf\page\AbstractPage::$enableTracking
 	 */
 	public $enableTracking = true;
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$loginRequired
+	 * @see	\wcf\page\AbstractPage::$loginRequired
 	 */
 	public $loginRequired = true;
 	
 	/**
 	 * user option handler
-	 * @var	wcf\system\option\user\UserOptionHandler
+	 * @var	\wcf\system\option\user\UserOptionHandler
 	 */
 	public $optionHandler = null;
 	
 	/**
-	 * @see	wcf\form\AbstractForm::$errorType
+	 * @see	\wcf\form\AbstractForm::$errorType
 	 */
 	public $errorType = array();
 	
@@ -52,19 +52,19 @@ class SettingsForm extends AbstractForm {
 	
 	/**
 	 * list of available content languages
-	 * @var	array<wcf\data\language\Language>
+	 * @var	array<\wcf\data\language\Language>
 	 */
 	public $availableContentLanguages = array();
 	
 	/**
 	 * list of available languages
-	 * @var	array<wcf\data\language\Language>
+	 * @var	array<\wcf\data\language\Language>
 	 */
 	public $availableLanguages = array();
 	
 	/**
 	 * list of available styles
-	 * @var	array<wcf\data\style\Style>
+	 * @var	array<\wcf\data\style\Style>
 	 */
 	public $availableStyles = array();
 	
@@ -87,7 +87,7 @@ class SettingsForm extends AbstractForm {
 	public $styleID = 0;
 	
 	/**
-	 * @see	wcf\page\AbstractPage::readParameters()
+	 * @see	\wcf\page\AbstractPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -112,7 +112,7 @@ class SettingsForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\AbstractForm::readFormParameters()
+	 * @see	\wcf\form\AbstractForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -128,7 +128,7 @@ class SettingsForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\AbstractForm::validate()
+	 * @see	\wcf\form\AbstractForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -166,7 +166,7 @@ class SettingsForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -183,7 +183,7 @@ class SettingsForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\AbstractForm::save()
+	 * @see	\wcf\form\AbstractForm::save()
 	 */
 	public function save() {
 		parent::save();
@@ -192,10 +192,10 @@ class SettingsForm extends AbstractForm {
 		$parameters = array('options' => $saveOptions);
 		// static options
 		if ($this->category == 'general') {
-			$parameters['data'] = array(
+			$parameters['data'] = array_merge($this->additionalFields, array(
 				'languageID' => $this->languageID,
 				'styleID' => $this->styleID
-			);
+			));
 			$parameters['languageIDs'] = $this->contentLanguageIDs;
 		}
 		
@@ -213,7 +213,7 @@ class SettingsForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\Page::assignVariables()
+	 * @see	\wcf\page\Page::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -236,7 +236,7 @@ class SettingsForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\Page::show()
+	 * @see	\wcf\page\Page::show()
 	 */
 	public function show() {
 		// set active tab

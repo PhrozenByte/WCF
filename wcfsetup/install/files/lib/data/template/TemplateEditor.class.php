@@ -11,7 +11,7 @@ use wcf\util\FileUtil;
  * Provides functions to edit templates.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.template
@@ -19,12 +19,12 @@ use wcf\util\FileUtil;
  */
 class TemplateEditor extends DatabaseObjectEditor {
 	/**
-	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	\wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\template\Template';
 	
 	/**
-	 * @see	wcf\data\IEditableObject::create()
+	 * @see	\wcf\data\IEditableObject::create()
 	 */
 	public static function create(array $parameters = array()) {
 		// obtain default values
@@ -37,7 +37,7 @@ class TemplateEditor extends DatabaseObjectEditor {
 	/**
 	 * Saves the source of this template.
 	 * 
-	 * @param	string		$source 
+	 * @param	string		$source
 	 */
 	public function setSource($source) {
 		$path = $this->getPath();
@@ -47,7 +47,7 @@ class TemplateEditor extends DatabaseObjectEditor {
 			mkdir($folder, 0777);
 		}
 		
-		// set source		
+		// set source
 		$file = new File($path);
 		$file->write($source);
 		$file->close();
@@ -64,7 +64,7 @@ class TemplateEditor extends DatabaseObjectEditor {
 		// get current path
 		$currentPath = $this->getPath();
 		
-		// get new path		
+		// get new path
 		if ($templateGroupID != $this->templateGroupID) {
 			// get folder name
 			$sql = "SELECT	templateGroupFolderName
@@ -111,7 +111,7 @@ class TemplateEditor extends DatabaseObjectEditor {
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableObject::deleteAll()
+	 * @see	\wcf\data\IEditableObject::deleteAll()
 	 */
 	public static function deleteAll(array $objectIDs = array()) {
 		$list = new TemplateList();
@@ -129,6 +129,6 @@ class TemplateEditor extends DatabaseObjectEditor {
 	 * Deletes the compiled files of this template.
 	 */
 	public function deleteCompiledFiles() {
-		DirectoryUtil::getInstance(WCF_DIR . 'templates/compiled/')->removePattern(new Regex(intval($this->packageID) . '_.*_' . preg_quote($this->templateName) . '.php$'));
+		DirectoryUtil::getInstance(WCF_DIR . 'templates/compiled/')->removePattern(new Regex($this->templateGroupID . '_' . $this->application . '_.*_' . preg_quote($this->templateName) . '.php$'));
 	}
 }

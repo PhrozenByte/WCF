@@ -8,7 +8,7 @@ use wcf\util\ClassUtil;
  * Represents an user profile menu item.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.profile.menu.item
@@ -17,17 +17,17 @@ use wcf\util\ClassUtil;
 class UserProfileMenuItem extends DatabaseObject {
 	/**
 	 * content manager
-	 * @var	wcf\system\menu\user\profile\content\IUserProfileContent
+	 * @var	\wcf\system\menu\user\profile\content\IUserProfileContent
 	 */
 	protected $contentManager = null;
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'user_profile_menu_item';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'menuItemID';
 	
@@ -43,7 +43,7 @@ class UserProfileMenuItem extends DatabaseObject {
 	/**
 	 * Returns the content manager for this menu item.
 	 * 
-	 * @return	wcf\system\menu\user\profile\content\IUserProfileMenuContent
+	 * @return	\wcf\system\menu\user\profile\content\IUserProfileMenuContent
 	 */
 	public function getContentManager() {
 		if ($this->contentManager === null) {

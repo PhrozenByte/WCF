@@ -24,9 +24,7 @@
 
 {include file='userNotice'}
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 <div class="contentNavigation">
 	{hascontent}
@@ -40,7 +38,7 @@
 	{/hascontent}
 </div>
 
-<form method="post" action="{link controller='Login'}{/link}" id="loginForm">
+<form method="post" action="{@$loginController}" id="loginForm">
 	<div class="container containerPadding marginTop">
 		<fieldset>
 			<legend>{lang}wcf.user.login.data{/lang}</legend>
@@ -140,6 +138,8 @@
 										<a href="{link controller='GoogleAuth'}{/link}" class="button small"><span class="icon icon16 icon-google-plus"></span> <span>{lang}wcf.user.3rdparty.google.login{/lang}</span></a>
 									</li>
 								{/if}
+								
+								{event name='3rdpartyButtons'}
 							{/content}
 						</ul>
 					</dd>
@@ -152,7 +152,8 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
-		<input type="hidden" name="url" value="{@$url}" />
+		<input type="hidden" name="url" value="{$url}" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

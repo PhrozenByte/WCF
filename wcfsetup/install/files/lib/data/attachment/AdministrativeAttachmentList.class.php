@@ -7,7 +7,7 @@ use wcf\system\WCF;
  * Represents a list of attachments.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.attachment
@@ -15,7 +15,7 @@ use wcf\system\WCF;
  */
 class AdministrativeAttachmentList extends AttachmentList {
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$decoratorClassName
+	 * @see	\wcf\data\DatabaseObjectList::$decoratorClassName
 	 */
 	public $decoratorClassName = 'wcf\data\attachment\AdministrativeAttachment';
 	
@@ -30,7 +30,7 @@ class AdministrativeAttachmentList extends AttachmentList {
 	}
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::readObjects()
+	 * @see	\wcf\data\DatabaseObjectList::readObjects()
 	 */
 	public function readObjects() {
 		parent::readObjects();

@@ -9,9 +9,9 @@ use wcf\util\StringUtil;
 
 /**
  * Shows a list of templates.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.page
@@ -19,78 +19,78 @@ use wcf\util\StringUtil;
  */
 class TemplateListPage extends SortablePage {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.template.list';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.template.canManageTemplate');
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::$objectListClassName
+	 * @see	\wcf\page\MultipleLinkPage::$objectListClassName
 	 */
 	public $objectListClassName = 'wcf\data\template\TemplateList';
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::$itemsPerPage
+	 * @see	\wcf\page\MultipleLinkPage::$itemsPerPage
 	 */
 	public $itemsPerPage = 100;
 	
 	/**
-	 * @see	wcf\page\SortablePage::$itemsPerPage
+	 * @see	\wcf\page\SortablePage::$itemsPerPage
 	 */
 	public $defaultSortField = 'templateName';
 	
 	/**
-	 * @see	wcf\page\SortablePage::$validSortFields
+	 * @see	\wcf\page\SortablePage::$validSortFields
 	 */
 	public $validSortFields = array('templateID', 'templateName', 'lastModificationTime');
 	
 	/**
 	 * template group id
-	 * @var integer
+	 * @var	integer
 	 */
 	public $templateGroupID = 0;
 	
 	/**
 	 * template name
-	 * @var string
+	 * @var	string
 	 */
 	public $searchTemplateName = '';
 	
 	/**
 	 * application
-	 * @var string
+	 * @var	string
 	 */
 	public $application = '';
 	
 	/**
 	 * available template groups
-	 * @var array
+	 * @var	array
 	 */
 	public $availableTemplateGroups = array();
 	
 	/**
 	 * available applications
-	 * @var array
+	 * @var	array
 	 */
 	public $availableApplications = array();
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
-	
+		
 		if (isset($_REQUEST['templateGroupID'])) $this->templateGroupID = intval($_REQUEST['templateGroupID']);
 		if (isset($_REQUEST['searchTemplateName'])) $this->searchTemplateName = StringUtil::trim($_REQUEST['searchTemplateName']);
 		if (isset($_REQUEST['application'])) $this->application = StringUtil::trim($_REQUEST['application']);
 	}
 	
 	/**
-	 * @see	wcf\page\MultipleLinkPage::initObjectList()
+	 * @see	\wcf\page\MultipleLinkPage::initObjectList()
 	 */
 	protected function initObjectList() {
 		parent::initObjectList();
@@ -103,13 +103,14 @@ class TemplateListPage extends SortablePage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
 		
 		// get template groups
 		$templateGroupList = new TemplateGroupList();
+		$templateGroupList->sqlOrderBy = "templateGroupName";
 		$templateGroupList->readObjects();
 		$this->availableTemplateGroups = $templateGroupList->getObjects();
 		
@@ -131,11 +132,11 @@ class TemplateListPage extends SortablePage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
-	
+		
 		WCF::getTPL()->assign(array(
 			'templateGroupID' => $this->templateGroupID,
 			'searchTemplateName' => $this->searchTemplateName,

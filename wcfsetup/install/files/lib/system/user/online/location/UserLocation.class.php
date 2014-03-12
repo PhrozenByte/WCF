@@ -8,7 +8,7 @@ use wcf\system\WCF;
  * Implementation of IUserOnlineLocation for the user profile location.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.user.online.location
@@ -23,19 +23,19 @@ class UserLocation implements IUserOnlineLocation {
 	
 	/**
 	 * list of users
-	 * @var	array<wcf\data\user\User>
+	 * @var	array<\wcf\data\user\User>
 	 */
 	protected $users = null;
 	
 	/**
-	 * @see	wcf\system\user\online\location\IUserOnlineLocation::cache()
+	 * @see	\wcf\system\user\online\location\IUserOnlineLocation::cache()
 	 */
 	public function cache(UserOnline $user) {
 		if ($user->objectID) $this->userIDs[] = $user->objectID;
 	}
 	
 	/**
-	 * @see	wcf\system\user\online\location\IUserOnlineLocation::get()
+	 * @see	\wcf\system\user\online\location\IUserOnlineLocation::get()
 	 */
 	public function get(UserOnline $user, $languageVariable = '') {
 		if ($this->users === null) {

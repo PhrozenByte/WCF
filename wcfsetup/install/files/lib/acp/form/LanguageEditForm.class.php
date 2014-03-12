@@ -6,13 +6,12 @@ use wcf\form\AbstractForm;
 use wcf\system\exception\IllegalLinkException;
 use wcf\system\language\LanguageFactory;
 use wcf\system\WCF;
-use wcf\util\StringUtil;
 
 /**
  * Shows the language edit form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -26,7 +25,7 @@ class LanguageEditForm extends LanguageAddForm {
 	public $languageID = 0;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -39,7 +38,7 @@ class LanguageEditForm extends LanguageAddForm {
 	}
 	
 	/**
-	 * @see	wcf\acp\form\LanguageAddForm::validateLanguageCode()
+	 * @see	\wcf\acp\form\LanguageAddForm::validateLanguageCode()
 	 */
 	protected function validateLanguageCode() {
 		if ($this->language->languageCode != mb_strtolower($this->languageCode)) {
@@ -48,18 +47,19 @@ class LanguageEditForm extends LanguageAddForm {
 	}
 	
 	/**
-	 * @see	wcf\acp\form\LanguageAddForm::validateSource()
+	 * @see	\wcf\acp\form\LanguageAddForm::validateSource()
 	 */
 	protected function validateSource() {}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
 		
 		$editor = new LanguageEditor($this->language);
 		$editor->update(array(
+			'countryCode' => mb_strtolower($this->countryCode),
 			'languageName' => $this->languageName,
 			'languageCode' => mb_strtolower($this->languageCode)		
 		));
@@ -71,19 +71,20 @@ class LanguageEditForm extends LanguageAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
-	
+		
 		if (!count($_POST)) {
+			$this->countryCode = $this->language->countryCode;
 			$this->languageName = $this->language->languageName;
 			$this->languageCode = $this->language->languageCode;
 		}
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

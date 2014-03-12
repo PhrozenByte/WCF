@@ -6,7 +6,7 @@ use wcf\system\WCF;
  * Parses the [spoiler] bbcode tag.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode
@@ -14,7 +14,7 @@ use wcf\system\WCF;
  */
 class SpoilerBBCode extends AbstractBBCode {
 	/**
-	 * @see	wcf\system\bbcode\IBBCode::getParsedTag()
+	 * @see	\wcf\system\bbcode\IBBCode::getParsedTag()
 	 */
 	public function getParsedTag(array $openingTag, $content, array $closingTag, BBCodeParser $parser) {
 		if ($parser->getOutputType() == 'text/html') {

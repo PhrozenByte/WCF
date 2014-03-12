@@ -4,9 +4,7 @@
 	<h1>{lang}wcf.acp.tag.{$action}{/lang}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $success|isset}
 	<p class="success">{lang}wcf.global.success.{$action}{/lang}</p>
@@ -69,13 +67,6 @@
 					<dd>
 						<div id="synonymList" class="editableItemList"></div>
 						<input id="synonyms" type="text" value="" class="long" />
-						{if $errorField == 'synonyms'}
-							<small class="innerError">
-								{if $errorType == 'duplicate'}
-									{lang}wcf.acp.tag.error.synonym.duplicate{/lang}
-								{/if}
-							</small>
-						{/if}
 					</dd>
 				</dl>
 				
@@ -108,6 +99,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

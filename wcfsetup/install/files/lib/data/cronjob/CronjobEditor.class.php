@@ -11,7 +11,7 @@ use wcf\system\WCF;
  * Provides functions to edit cronjobs.
  * 
  * @author	Alexander Ebert, Matthias Schmidt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.cronjob
@@ -19,12 +19,12 @@ use wcf\system\WCF;
  */
 class CronjobEditor extends DatabaseObjectEditor implements IEditableCachedObject {
 	/**
-	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	\wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\cronjob\Cronjob';
 	
 	/**
-	 * @see	wcf\data\IEditableObject::create()
+	 * @see	\wcf\data\IEditableObject::create()
 	 */
 	public static function create(array $parameters = array()) {
 		$descriptions = array();
@@ -107,7 +107,7 @@ class CronjobEditor extends DatabaseObjectEditor implements IEditableCachedObjec
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableCachedObject::resetCache()
+	 * @see	\wcf\data\IEditableCachedObject::resetCache()
 	 */
 	public static function resetCache() {
 		CronjobCacheBuilder::getInstance()->reset();

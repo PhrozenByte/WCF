@@ -12,7 +12,7 @@ use wcf\system\WCF;
  * Shows the global recent activity list page.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	page
@@ -20,18 +20,18 @@ use wcf\system\WCF;
  */
 class RecentActivityListPage extends AbstractPage {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.user.recentActivity';
 	
 	/**
 	 * viewable user activity event list
-	 * @var	wcf\data\user\activity\event\ViewableUserActivityEventList
+	 * @var	\wcf\data\user\activity\event\ViewableUserActivityEventList
 	 */
 	public $eventList = null;
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -44,7 +44,7 @@ class RecentActivityListPage extends AbstractPage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

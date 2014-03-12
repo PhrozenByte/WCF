@@ -1,6 +1,5 @@
 <?php
 namespace wcf\acp\form;
-use wcf\data\package\PackageCache;
 use wcf\data\user\rank\UserRank;
 use wcf\data\user\rank\UserRankAction;
 use wcf\form\AbstractForm;
@@ -12,7 +11,7 @@ use wcf\system\WCF;
  * Shows the user rank edit form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -20,7 +19,7 @@ use wcf\system\WCF;
  */
 class UserRankEditForm extends UserRankAddForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.user.rank.list';
 	
@@ -32,12 +31,12 @@ class UserRankEditForm extends UserRankAddForm {
 	
 	/**
 	 * rank object
-	 * @var	wcf\data\user\rank\UserRank
+	 * @var	\wcf\data\user\rank\UserRank
 	 */
 	public $rank = null;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -50,7 +49,7 @@ class UserRankEditForm extends UserRankAddForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
@@ -65,7 +64,7 @@ class UserRankEditForm extends UserRankAddForm {
 		}
 		
 		// update label
-		$this->objectAction = new UserRankAction(array($this->rank), 'update', array('data' => array(
+		$this->objectAction = new UserRankAction(array($this->rank), 'update', array('data' => array_merge($this->additionalFields, array(
 			'rankTitle' => $this->rankTitle,
 			'cssClassName' => ($this->cssClassName == 'custom' ? $this->customCssClassName : $this->cssClassName),
 			'groupID' => $this->groupID,
@@ -73,7 +72,7 @@ class UserRankEditForm extends UserRankAddForm {
 			'rankImage' => $this->rankImage,
 			'repeatImage' => $this->repeatImage,
 			'requiredGender' => $this->requiredGender
-		)));
+		))));
 		$this->objectAction->executeAction();
 		$this->saved();
 		
@@ -87,7 +86,7 @@ class UserRankEditForm extends UserRankAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -109,7 +108,7 @@ class UserRankEditForm extends UserRankAddForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

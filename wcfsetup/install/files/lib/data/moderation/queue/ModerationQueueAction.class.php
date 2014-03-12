@@ -10,7 +10,7 @@ use wcf\system\WCF;
  * Executes moderation queue-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.moderation.queue
@@ -18,23 +18,23 @@ use wcf\system\WCF;
  */
 class ModerationQueueAction extends AbstractDatabaseObjectAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\moderation\queue\ModerationQueueEditor';
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::create()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::create()
 	 */
 	public function create() {
 		if (!isset($this->parameters['data']['lastChangeTime'])) {
 			$this->parameters['data']['lastChangeTime'] = TIME_NOW;
 		}
-	
+		
 		return parent::create();
 	}
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::update()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::update()
 	 */
 	public function update() {
 		if (!isset($this->parameters['data']['lastChangeTime'])) {
@@ -97,9 +97,17 @@ class ModerationQueueAction extends AbstractDatabaseObjectAction {
 			'queues' => $queueList
 		));
 		
+		// check if user storage is outdated
 		$totalCount = ModerationQueueManager::getInstance()->getOutstandingModerationCount();
-		if (count($queueList) < $totalCount) {
+		$count = count($queueList);
+		if ($count < 5 && $count < $totalCount) {
 			UserStorageHandler::getInstance()->reset(array(WCF::getUser()->userID), 'outstandingModerationCount');
+			
+			// check for orphaned queues
+			$queueCount = ModerationQueueManager::getInstance()->getOutstandingModerationCount();
+			if (count($queueList) < $queueCount) {
+				ModerationQueueManager::getInstance()->identifyOrphans();
+			}
 		}
 		
 		return array(

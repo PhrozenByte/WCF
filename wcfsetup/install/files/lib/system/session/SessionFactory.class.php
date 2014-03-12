@@ -6,7 +6,7 @@ use wcf\util\HeaderUtil;
  * Handles the session of the active user.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.session
@@ -14,12 +14,12 @@ use wcf\util\HeaderUtil;
  */
 class SessionFactory extends ACPSessionFactory {
 	/**
-	 * @see	wcf\system\session\ACPSessionFactory::$sessionEditor
+	 * @see	\wcf\system\session\ACPSessionFactory::$sessionEditor
 	 */
 	protected $sessionEditor = 'wcf\data\session\SessionEditor';
 	
 	/**
-	 * @see	wcf\system\session\ACPSessionFactory::readSessionID()
+	 * @see	\wcf\system\session\ACPSessionFactory::readSessionID()
 	 */
 	protected function readSessionID() {
 		$sessionID = parent::readSessionID();
@@ -33,7 +33,7 @@ class SessionFactory extends ACPSessionFactory {
 	}
 	
 	/**
-	 * @see	wcf\system\session\ACPSessionFactory::init()
+	 * @see	\wcf\system\session\ACPSessionFactory::init()
 	 */
 	protected function init() {
 		$usesCookies = true;

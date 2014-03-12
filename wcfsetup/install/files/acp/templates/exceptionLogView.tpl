@@ -24,6 +24,8 @@
 	<h1>{lang}wcf.acp.exceptionLog{/lang}</h1>
 </header>
 
+{include file='formError'}
+
 {if !$logFiles|empty}
 	<form method="get" action="{link controller='ExceptionLogView'}{/link}">
 		<div class="container containerPadding marginTop">
@@ -48,6 +50,7 @@
 		<div class="formSubmit">
 			<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
 			{@SID_INPUT_TAG}
+			{@SECURITY_TOKEN_INPUT_TAG}
 		</div>
 	</form>
 {/if}
@@ -94,6 +97,12 @@
 						<dt>{lang}wcf.acp.exceptionLog.exception.userAgent{/lang}</dt>
 						<dd>{$exception[userAgent]}</dd>
 					</dl>
+					{if $exception[information]}
+						<dl>
+							<dt>{lang}wcf.acp.exceptionLog.exception.information{/lang}</dt>
+							<dd>{@$exception[information]}</dd>
+						</dl>
+					{/if}
 					<dl>
 						<dt>{lang}wcf.acp.exceptionLog.exception.stacktrace{/lang}</dt>
 						<dd style="font-family: monospace; word-wrap: wrap-all; word-break: break-all;">

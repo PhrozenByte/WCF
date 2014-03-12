@@ -7,7 +7,7 @@ use wcf\system\WCF;
  * Provides functions to edit tags.
  * 
  * @author	Tim Duesterhus, Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.tag
@@ -15,14 +15,14 @@ use wcf\system\WCF;
  */
 class TagEditor extends DatabaseObjectEditor {
 	/**
-	 * @see	wcf\data\DatabaseObjectEditor::$baseClass
+	 * @see	\wcf\data\DatabaseObjectEditor::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\tag\Tag';
 	
 	/**
 	 * Adds the given tag, and all of it's synonyms as a synonym.
 	 * 
-	 * @param	wcf\data\tag\Tag	$synonym
+	 * @param	\wcf\data\tag\Tag	$synonym
 	 */
 	public function addSynonym(Tag $synonym) {
 		// assign all associations for the synonym with this tag

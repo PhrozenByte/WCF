@@ -1,5 +1,6 @@
 <?php
 namespace wcf\system\style;
+use wcf\data\application\Application;
 use wcf\data\option\Option;
 use wcf\data\style\Style;
 use wcf\system\database\util\PreparedStatementConditionBuilder;
@@ -15,7 +16,7 @@ use wcf\util\StyleUtil;
  * Provides access to the LESS PHP compiler.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.style
@@ -35,7 +36,7 @@ class StyleCompiler extends SingletonFactory {
 	public static $supportedOptionType = array('boolean', 'integer');
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		require_once(WCF_DIR.'lib/system/style/lessc.inc.php');
@@ -46,23 +47,21 @@ class StyleCompiler extends SingletonFactory {
 	/**
 	 * Compiles LESS stylesheets.
 	 * 
-	 * @param	wcf\data\style\Style	$style
+	 * @param	\wcf\data\style\Style	$style
 	 */
 	public function compile(Style $style) {
 		// read stylesheets by dependency order
 		$conditions = new PreparedStatementConditionBuilder();
-		$conditions->add("file_log.filename REGEXP ?", array('style/([a-zA-Z0-9\_\-\.]+)\.less'));
+		$conditions->add("filename REGEXP ?", array('style/([a-zA-Z0-9\_\-\.]+)\.less'));
 		
-		$sql = "SELECT		file_log.filename, package.packageDir
-			FROM		wcf".WCF_N."_package_installation_file_log file_log
-			LEFT JOIN	wcf".WCF_N."_package package
-			ON		(file_log.packageID = package.packageID)
+		$sql = "SELECT	filename, application
+			FROM	wcf".WCF_N."_package_installation_file_log
 			".$conditions;
 		$statement = WCF::getDB()->prepareStatement($sql);
 		$statement->execute($conditions->getParameters());
 		$files = array();
 		while ($row = $statement->fetchArray()) {
-			$files[] = WCF_DIR.$row['packageDir'].$row['filename'];
+			$files[] = Application::getDirectory($row['application']).$row['filename'];
 		}
 		
 		// get style variables
@@ -72,6 +71,14 @@ class StyleCompiler extends SingletonFactory {
 			$individualLess = $variables['individualLess'];
 			unset($variables['individualLess']);
 		}
+		
+		// add style image path
+		$imagePath = '../images/';
+		if ($style->imagePath) {
+			$imagePath = FileUtil::getRelativePath(WCF_DIR . 'style/', WCF_DIR . $style->imagePath);
+			$imagePath = FileUtil::addTrailingSlash(FileUtil::unifyDirSeparator($imagePath));
+		}
+		$variables['style_image_path'] = "'{$imagePath}'";
 		
 		// apply overrides
 		if (isset($variables['overrideLess'])) {
@@ -119,6 +126,8 @@ class StyleCompiler extends SingletonFactory {
 		
 		// insert blue temptation files
 		array_unshift($files, WCF_DIR.'acp/style/blueTemptation/variables.less', WCF_DIR.'acp/style/blueTemptation/override.less');
+		
+		$variables['style_image_path'] = "'../images/blueTemptation/'";
 		
 		$this->compileStylesheet(
 			WCF_DIR.'acp/style/style',
@@ -179,7 +188,7 @@ class StyleCompiler extends SingletonFactory {
 	 * @param	array<string>		$files
 	 * @param	array<string>		$variables
 	 * @param	string			$individualLess
-	 * @param	wcf\system\Callback	$callback
+	 * @param	\wcf\system\Callback	$callback
 	 */
 	protected function compileStylesheet($filename, array $files, array $variables, $individualLess, Callback $callback) {
 		// add options as LESS variables

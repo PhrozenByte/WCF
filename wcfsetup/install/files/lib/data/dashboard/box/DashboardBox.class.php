@@ -7,7 +7,7 @@ use wcf\data\DatabaseObject;
  * Represents a dashboard box.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.dashboard.box
@@ -15,19 +15,19 @@ use wcf\data\DatabaseObject;
  */
 class DashboardBox extends DatabaseObject {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'dashboard_box';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'boxID';
 	
 	/**
 	 * Returns the owner of this dashboard box.
 	 * 
-	 * @return wcf\data\package\Package
+	 * @return	\wcf\data\package\Package
 	 */
 	public function getPackage() {
 		return PackageCache::getInstance()->getPackage($this->packageID);

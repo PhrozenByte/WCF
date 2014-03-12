@@ -4,9 +4,7 @@
 	<h1>{lang}wcf.acp.smiley.{$action}{/lang}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $success|isset}
 	<p class="success">{lang}wcf.global.success.{$action}{/lang}</p>
@@ -33,7 +31,7 @@
 			<dl{if $errorField == 'smileyTitle'} class="formError"{/if}>
 				<dt><label for="smileyTitle">{lang}wcf.acp.smiley.title{/lang}</label></dt>
 				<dd>
-					<input type="text" id="smileyTitle" name="smileyTitle" value="{$smileyTitle}" autofocus="autofocus" class="long" />
+					<input type="text" id="smileyTitle" name="smileyTitle" value="{$i18nPlainValues['smileyTitle']}" autofocus="autofocus" class="long" />
 					
 					{if $errorField == 'smileyTitle'}
 						<small class="innerError">
@@ -46,7 +44,6 @@
 					{/if}
 				</dd>
 			</dl>
-			
 			{include file='multipleLanguageInputJavascript' elementIdentifier='smileyTitle' forceSelection=false}
 			
 			<dl{if $errorField == 'categoryID'} class="formError"{/if}>
@@ -54,7 +51,7 @@
 				<dd>
 					<select id="categoryID" name="categoryID">
 						<option value="0"{if $categoryID === null} selected="selected"{/if}>{lang}wcf.acp.smiley.categoryID.default{/lang}</option>
-						{include file='categoryOptionList' maximumNestingLevel=0}
+						{include file='categoryOptionList'}
 					</select>
 					
 					{if $errorField == 'categoryID'}
@@ -134,6 +131,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

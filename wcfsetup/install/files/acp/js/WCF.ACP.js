@@ -2,7 +2,7 @@
  * Class and function collection for WCF ACP
  * 
  * @author	Alexander Ebert, Matthias Schmidt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
 
@@ -786,57 +786,26 @@ WCF.ACP.Package.Uninstallation = WCF.ACP.Package.Installation.extend({
 	 * @see	WCF.ACP.Package.Installation.init()
 	 */
 	_init: function() {
-		this._elements.click($.proxy(this._prepareQueue, this));
-	},
-	
-	/**
-	 * Prepares a new package uninstallation queue.
-	 * 
-	 * @param	object		event
-	 */
-	_prepareQueue: function(event) {
-		var $element = $(event.currentTarget);
-		
-		if ($element.data('isRequired')) {
-			new WCF.Action.Proxy({
-				autoSend: true,
-				data: {
-					actionName: 'getConfirmMessage',
-					className: 'wcf\\data\\package\\PackageAction',
-					objectIDs: [ $element.data('objectID') ]
-				},
-				success: $.proxy(function(data, textStatus, jqXHR) {
-					// remove isRequired flag to prevent loading the same content again
-					$element.data('isRequired', false);
-					
-					// update confirmation message
-					$element.data('confirmMessage', data.returnValues.confirmMessage);
-					
-					// display confirmation dialog
-					this._showConfirmationDialog($element);
-				}, this)
-			});
-		}
-		else {
-			this._showConfirmationDialog($element);
-		}
+		this._elements.click($.proxy(this._showConfirmationDialog, this));
 	},
 	
 	/**
 	 * Displays a confirmation dialog prior to package uninstallation.
 	 * 
-	 * @param	jQuery		element
+	 * @param	object		event
 	 */
-	_showConfirmationDialog: function(element) {
-		if (element.data('isApplication') && this._wcfPackageListURL) {
-			window.location = WCF.String.unescapeHTML(this._wcfPackageListURL.replace(/{packageID}/, element.data('objectID')));
+	_showConfirmationDialog: function(event) {
+		var $element = $(event.currentTarget);
+		
+		if ($element.data('isApplication') && this._wcfPackageListURL) {
+			window.location = WCF.String.unescapeHTML(this._wcfPackageListURL.replace(/{packageID}/, $element.data('objectID')));
 			return;
 		}
 		
 		var self = this;
-		WCF.System.Confirmation.show(element.data('confirmMessage'), function(action) {
+		WCF.System.Confirmation.show($element.data('confirmMessage'), function(action) {
 			if (action === 'confirm') {
-				self._packageID = element.data('objectID');
+				self._packageID = $element.data('objectID');
 				self.prepareInstallation();
 			}
 		});
@@ -1198,15 +1167,16 @@ WCF.ACP.Package.Search = Class.extend({
 		this._packageSearchResultContainer.find('.pageNavigation').wcfPages('destroy').remove();
 		
 		if (this._pageCount > 1) {
-			$('<div class="contentNavigation" />').insertBefore(this._packageSearchResultList).wcfPages({
+			// TODO: Fix ui.wcfPages to properly synchronize multiple instances without triggering events
+			/*$('<div class="contentNavigation" />').insertBefore(this._packageSearchResultList).wcfPages({
 				activePage: this._pageNo,
 				maxPage: this._pageCount
-			}).bind('wcfpagesswitched', $.proxy(this._showPage, this));
+			}).on('wcfpagesswitched', $.proxy(this._showPage, this));*/
 			
 			$('<div class="contentNavigation" />').insertAfter(this._packageSearchResultList).wcfPages({
 				activePage: this._pageNo,
 				maxPage: this._pageCount
-			}).bind('wcfpagesswitched', $.proxy(this._showPage, this));
+			}).on('wcfpagesswitched', $.proxy(this._showPage, this));
 		}
 	},
 	
@@ -1444,7 +1414,10 @@ WCF.ACP.Package.Update.Search = Class.extend({
 				autoSend: true,
 				data: {
 					actionName: 'searchForUpdates',
-					className: 'wcf\\data\\package\\update\\PackageUpdateAction'
+					className: 'wcf\\data\\package\\update\\PackageUpdateAction',
+					parameters: {
+						ignoreCache: 1
+					}
 				},
 				success: $.proxy(this._success, this)
 			});
@@ -1593,7 +1566,7 @@ WCF.ACP.Options = Class.extend({
 	
 	/**
 	 * Enables an option.
-	 *
+	 * 
 	 * @param	string		target
 	 * @param	boolean		enable
 	 */
@@ -1629,6 +1602,12 @@ WCF.ACP.Options = Class.extend({
  * @param	object		callback
  */
 WCF.ACP.Worker = Class.extend({
+	/**
+	 * worker aborted
+	 * @var	boolean
+	 */
+	_aborted: false,
+	
 	/**
 	 * callback invoked after worker completed
 	 * @var	object
@@ -1667,8 +1646,10 @@ WCF.ACP.Worker = Class.extend({
 	 * @param	string		title
 	 * @param	object		parameters
 	 * @param	object		callback
+	 * @param	object		confirmMessage
 	 */
 	init: function(dialogID, className, title, parameters, callback) {
+		this._aborted = false;
 		this._callback = callback || null;
 		this._dialogID = dialogID + 'Worker';
 		this._dialog = null;
@@ -1695,11 +1676,20 @@ WCF.ACP.Worker = Class.extend({
 		if (this._dialog === null) {
 			this._dialog = $('<div id="' + this._dialogID + '" />').hide().appendTo(document.body);
 			this._dialog.wcfDialog({
-				onClose:  $.proxy(function() {
+				closeConfirmMessage: WCF.Language.get('wcf.acp.worker.abort.confirmMessage'),
+				closeViaModal: false,
+				onClose: $.proxy(function() {
+					this._aborted = true;
 					this._proxy.abortPrevious();
+					
+					window.location.reload();
 				}, this),
 				title: this._title
 			});
+		}
+		
+		if (this._aborted) {
+			return;
 		}
 		
 		if (data.template) {
@@ -2107,9 +2097,7 @@ WCF.ACP.User.EnableHandler = {
 		});
 		
 		var $notification = new WCF.System.Notification();
-		$notification.show();
-		
-		WCF.Clipboard.reload();
+		$notification.show(function() { window.location.reload(); });
 	}
 };
 
@@ -2191,7 +2179,17 @@ WCF.ACP.Import.Manager = Class.extend({
 			
 			var $form = $('<div class="formSubmit" />').appendTo(this._dialog.find('#workerContainer'));
 			$('<button>' + WCF.Language.get('wcf.global.button.next') + '</button>').click($.proxy(function() {
-				window.location = this._redirectURL;
+				new WCF.Action.Proxy({
+					autoSend: true,
+					data: {
+						noRedirect: 1
+					},
+					dataType: 'html',
+					success: $.proxy(function() {
+						window.location = this._redirectURL;
+					}, this),
+					url: 'index.php/CacheClear/?t=' + SECURITY_TOKEN + SID_ARG_2ND
+				});
 			}, this)).appendTo($form);
 			
 			this._dialog.wcfDialog('render');

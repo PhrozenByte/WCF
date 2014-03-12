@@ -7,13 +7,12 @@ use wcf\system\request\LinkHandler;
 use wcf\system\Callback;
 use wcf\system\Regex;
 use wcf\util\StringStack;
-use wcf\util\StringUtil;
 
 /**
  * Parses @user mentions.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.event.listener
@@ -21,7 +20,7 @@ use wcf\util\StringUtil;
  */
 class PreParserAtUserListener implements IEventListener {
 	/**
-	 * @see wcf\system\event\IEventListener::execute()
+	 * @see	\wcf\system\event\IEventListener::execute()
 	 */
 	public function execute($eventObj, $className, $eventName) {
 		if (!$eventObj->text) return;
@@ -37,7 +36,7 @@ class PreParserAtUserListener implements IEventListener {
 		}
 		
 		// cache quotes
-		// @see	wcf\system\bbcode\BBCodeParser::buildTagArray()
+		// @see	\wcf\system\bbcode\BBCodeParser::buildTagArray()
 		$pattern = '~\[(?:/(?:quote)|(?:quote)
 			(?:=
 				(?:\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\'|[^,\]]*)
@@ -68,6 +67,10 @@ class PreParserAtUserListener implements IEventListener {
 			}
 		}
 		
+		if ($quote) {
+			$text .= $quote;
+		}
+		
 		$userRegex->match($text, true);
 		$matches = $userRegex->getMatches();
 		
@@ -93,6 +96,7 @@ class PreParserAtUserListener implements IEventListener {
 					
 					if (isset($users[$username])) {
 						$link = LinkHandler::getInstance()->getLink('User', array(
+							'appendSession' => false,
 							'object' => $users[$username]
 						));
 						return "[url='".$link."']@".$users[$username]->username.'[/url]';

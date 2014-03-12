@@ -6,7 +6,7 @@ use wcf\data\object\type\AbstractObjectTypeProcessor;
  * Provides a default implementation of IUserNotificationObjectType.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.user.notification.object.type
@@ -32,7 +32,7 @@ class AbstractUserNotificationObjectType extends AbstractObjectTypeProcessor imp
 	protected static $objectListClassName = '';
 	
 	/**
-	 * @see	wcf\system\user\notification\object\type\IUserNotificationObjectType::getObjectsByIDs()
+	 * @see	\wcf\system\user\notification\object\type\IUserNotificationObjectType::getObjectsByIDs()
 	 */
 	public function getObjectsByIDs(array $objectIDs) {
 		$indexName = call_user_func(array(static::$objectClassName, 'getDatabaseTableIndexName'));
@@ -50,7 +50,7 @@ class AbstractUserNotificationObjectType extends AbstractObjectTypeProcessor imp
 				$objects[$objectID] = new static::$decoratorClassName(new static::$objectClassName(null, array($indexName => $objectID)));
 			}
 		}
-	
+		
 		return $objects;
 	}
 }

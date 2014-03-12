@@ -4,7 +4,6 @@ use wcf\data\bbcode\attribute\BBCodeAttributeAction;
 use wcf\data\bbcode\BBCode;
 use wcf\data\bbcode\BBCodeAction;
 use wcf\data\bbcode\BBCodeEditor;
-use wcf\data\package\PackageCache;
 use wcf\form\AbstractForm;
 use wcf\system\exception\UserInputException;
 use wcf\system\language\I18nHandler;
@@ -16,7 +15,7 @@ use wcf\util\StringUtil;
  * Shows the bbcode add form.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -24,7 +23,7 @@ use wcf\util\StringUtil;
  */
 class BBCodeAddForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.bbcode.add';
 	
@@ -77,12 +76,12 @@ class BBCodeAddForm extends AbstractForm {
 	public $isSourceCode = false;
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.content.bbcode.canManageBBCode');
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$templateName
+	 * @see	\wcf\page\AbstractPage::$templateName
 	 */
 	public $templateName = 'bbcodeAdd';
 	
@@ -99,7 +98,7 @@ class BBCodeAddForm extends AbstractForm {
 	public $wysiwygIcon = '';
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -108,7 +107,7 @@ class BBCodeAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -144,7 +143,7 @@ class BBCodeAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -197,7 +196,12 @@ class BBCodeAddForm extends AbstractForm {
 		if ($this->showButton) {
 			// validate label
 			if (!I18nHandler::getInstance()->validateValue('buttonLabel')) {
-				throw new UserInputException('buttonLabel');
+				if (I18nHandler::getInstance()->isPlainValue('buttonLabel')) {
+					throw new UserInputException('buttonLabel');
+				}
+				else {
+					throw new UserInputException('buttonLabel', 'multilingual');
+				}
 			}
 			
 			// validate image path
@@ -211,13 +215,13 @@ class BBCodeAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
 		
 		// save bbcode
-		$this->objectAction = new BBCodeAction(array(), 'create', array('data' => array(
+		$this->objectAction = new BBCodeAction(array(), 'create', array('data' => array_merge($this->additionalFields, array(
 			'allowedChildren' => $this->allowedChildren,
 			'bbcodeTag' => $this->bbcodeTag,
 			'buttonLabel' => $this->buttonLabel,
@@ -228,7 +232,7 @@ class BBCodeAddForm extends AbstractForm {
 			'packageID' => 1,
 			'showButton' => ($this->showButton ? 1 : 0),
 			'wysiwygIcon' => $this->wysiwygIcon
-		)));
+		))));
 		$returnValues = $this->objectAction->executeAction();
 		foreach ($this->attributes as $attribute) {
 			$attributeAction = new BBCodeAttributeAction(array(), 'create', array('data' => array(
@@ -270,7 +274,7 @@ class BBCodeAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

@@ -1,6 +1,7 @@
 <?php
 namespace wcf\system\session;
 use wcf\data\user\User;
+use wcf\data\user\UserEditor;
 use wcf\page\ITrackablePage;
 use wcf\system\cache\builder\SpiderCacheBuilder;
 use wcf\system\cache\builder\UserGroupPermissionCacheBuilder;
@@ -18,7 +19,7 @@ use wcf\util\UserUtil;
  * Handles sessions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.session
@@ -57,7 +58,7 @@ class SessionHandler extends SingletonFactory {
 	
 	/**
 	 * session object
-	 * @var	wcf\data\acp\session\ACPSession
+	 * @var	\wcf\data\acp\session\ACPSession
 	 */
 	protected $session = null;
 	
@@ -87,7 +88,7 @@ class SessionHandler extends SingletonFactory {
 	
 	/**
 	 * user object
-	 * @var	wcf\data\user\User
+	 * @var	\wcf\data\user\User
 	 */
 	protected $user = null;
 	
@@ -172,7 +173,7 @@ class SessionHandler extends SingletonFactory {
 			'ipAddress' => UserUtil::getIpAddress(),
 			'userAgent' => UserUtil::getUserAgent(),
 			'requestURI' => UserUtil::getRequestURI(),
-			'requestMethod' => (!empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '')
+			'requestMethod' => (!empty($_SERVER['REQUEST_METHOD']) ? substr($_SERVER['REQUEST_METHOD'], 0, 7) : '')
 		);
 	}
 	
@@ -283,7 +284,7 @@ class SessionHandler extends SingletonFactory {
 	/**
 	 * Returns the user object of this session.
 	 * 
-	 * @return	wcf\data\user\User	$user
+	 * @return	\wcf\data\user\User	$user
 	 */
 	public function getUser() {
 		return $this->user;
@@ -370,7 +371,7 @@ class SessionHandler extends SingletonFactory {
 			'userAgent' => UserUtil::getUserAgent(),
 			'lastActivityTime' => TIME_NOW,
 			'requestURI' => UserUtil::getRequestURI(),
-			'requestMethod' => (!empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '')
+			'requestMethod' => (!empty($_SERVER['REQUEST_METHOD']) ? substr($_SERVER['REQUEST_METHOD'], 0, 7) : '')
 		);
 		if ($spiderID !== null) $sessionData['spiderID'] = $spiderID;
 		$this->session = call_user_func(array($this->sessionEditorClassName, 'create'), $sessionData);
@@ -390,7 +391,7 @@ class SessionHandler extends SingletonFactory {
 	}
 	
 	/**
-	 * Checks if the active user has the given permissions and throws a 
+	 * Checks if the active user has the given permissions and throws a
 	 * PermissionDeniedException if that isn't the case.
 	 */
 	public function checkPermissions(array $permissions) {
@@ -432,7 +433,7 @@ class SessionHandler extends SingletonFactory {
 	
 	/**
 	 * Returns language ids for active user.
-	 *
+	 * 
 	 * @return	array<integer>
 	 */
 	public function getLanguageIDs() {
@@ -473,7 +474,7 @@ class SessionHandler extends SingletonFactory {
 	 * Stores a new user object in this session, e.g. a user was guest because not
 	 * logged in, after the login his old session is used to store his full data.
 	 * 
-	 * @param	wcf\data\userUser		$user
+	 * @param	\wcf\data\userUser		$user
 	 * @param	boolean				$hideSession	if true, database won't be updated
 	 */
 	public function changeUser(User $user, $hideSession = false) {
@@ -526,7 +527,7 @@ class SessionHandler extends SingletonFactory {
 			'requestMethod' => $this->requestMethod,
 			'lastActivityTime' => TIME_NOW
 		);
-		if (PACKAGE_ID && RequestHandler::getInstance()->getActiveRequest() && RequestHandler::getInstance()->getActiveRequest()->getRequestObject() instanceof ITrackablePage && RequestHandler::getInstance()->getActiveRequest()->getRequestObject()->isTracked()) {
+		if (!class_exists('wcf\system\CLIWCF', false) && PACKAGE_ID && RequestHandler::getInstance()->getActiveRequest() && RequestHandler::getInstance()->getActiveRequest()->getRequestObject() instanceof ITrackablePage && RequestHandler::getInstance()->getActiveRequest()->getRequestObject()->isTracked()) {
 			$data['controller'] = RequestHandler::getInstance()->getActiveRequest()->getRequestObject()->getController();
 			$data['parentObjectType'] = RequestHandler::getInstance()->getActiveRequest()->getRequestObject()->getParentObjectType();
 			$data['parentObjectID'] = RequestHandler::getInstance()->getActiveRequest()->getRequestObject()->getParentObjectID();
@@ -559,17 +560,23 @@ class SessionHandler extends SingletonFactory {
 	 * Deletes this session and it's related data.
 	 */
 	public function delete() {
+		// clear storage
+		if ($this->user->userID) {
+			self::resetSessions(array($this->user->userID));
+				
+			// update last activity time
+			if (!class_exists('\wcf\system\WCFACP', false)) {
+				$editor = new UserEditor($this->user);
+				$editor->update(array('lastActivityTime' => TIME_NOW));
+			}
+		}
+		
 		// set user to guest
 		$this->changeUser(new User(null), true);
 		
 		// remove session
 		$sessionEditor = new $this->sessionEditorClassName($this->session);
 		$sessionEditor->delete();
-		
-		// clear storage
-		if ($this->user->userID) {
-			self::resetSessions(array($this->user->userID));
-		}
 		
 		// disable update
 		$this->disableUpdate();
@@ -631,8 +638,8 @@ class SessionHandler extends SingletonFactory {
 	
 	/**
 	 * Returns the spider id for given user agent.
-	 *
-	 * @param 	string		$userAgent
+	 * 
+	 * @param	string		$userAgent
 	 * @return	mixed
 	 */
 	protected function getSpiderID($userAgent) {
@@ -650,14 +657,14 @@ class SessionHandler extends SingletonFactory {
 	
 	/**
 	 * Searches for existing session of a search spider.
-	 *
-	 * @param 	integer		$spiderID
-	 * @return	wcf\data\session\Session
+	 * 
+	 * @param	integer		$spiderID
+	 * @return	\wcf\data\session\Session
 	 */
 	protected function getExistingSpiderSession($spiderID) {
-		$sql = "SELECT 	*
-			FROM 	wcf".WCF_N."_session
-			WHERE 	spiderID = ?
+		$sql = "SELECT	*
+			FROM	wcf".WCF_N."_session
+			WHERE	spiderID = ?
 				AND userID IS NULL";
 		$statement = WCF::getDB()->prepareStatement($sql);
 		$statement->execute(array($spiderID));
@@ -666,7 +673,7 @@ class SessionHandler extends SingletonFactory {
 			// fix session validation
 			$row['ipAddress'] = UserUtil::getIpAddress();
 			$row['userAgent'] = UserUtil::getUserAgent();
-				
+			
 			// return session object
 			return new $this->sessionClassName(null, $row);
 		}

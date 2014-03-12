@@ -1,13 +1,12 @@
 <?php
 namespace wcf\system\bbcode;
 use wcf\system\Regex;
-use wcf\util\StringUtil;
 
 /**
  * Parses the [table] bbcode tag.
  * 
  * @author	Tim Duesterhus, Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode
@@ -15,7 +14,7 @@ use wcf\util\StringUtil;
  */
 class TableBBCode extends AbstractBBCode {
 	/**
-	 * @see	wcf\system\bbcode\IBBCode::getParsedTag()
+	 * @see	\wcf\system\bbcode\IBBCode::getParsedTag()
 	 */
 	public function getParsedTag(array $openingTag, $content, array $closingTag, BBCodeParser $parser) {
 		if ($parser->getOutputType() == 'text/html') {

@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Represents a list of viewable user activity events.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.activity.event
@@ -17,17 +17,17 @@ use wcf\system\WCF;
  */
 class ViewableUserActivityEventList extends UserActivityEventList {
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$className
+	 * @see	\wcf\data\DatabaseObjectList::$className
 	 */
 	public $className = 'wcf\data\user\activity\event\UserActivityEvent';
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$sqlLimit
+	 * @see	\wcf\data\DatabaseObjectList::$sqlLimit
 	 */
 	public $sqlLimit = 20;
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$sqlOrderBy
+	 * @see	\wcf\data\DatabaseObjectList::$sqlOrderBy
 	 */
 	public $sqlOrderBy = 'user_activity_event.time DESC';
 	
@@ -43,7 +43,7 @@ class ViewableUserActivityEventList extends UserActivityEventList {
 	}
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::readObjects()
+	 * @see	\wcf\data\DatabaseObjectList::readObjects()
 	 */
 	public function readObjects() {
 		parent::readObjects();

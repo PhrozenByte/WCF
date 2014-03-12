@@ -14,7 +14,7 @@ use wcf\util\StringUtil;
  * Provides functions to edit users.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user
@@ -22,7 +22,7 @@ use wcf\util\StringUtil;
  */
 class UserEditor extends DatabaseObjectEditor implements IEditableCachedObject {
 	/**
-	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	\wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\user\User';
 	
@@ -33,7 +33,7 @@ class UserEditor extends DatabaseObjectEditor implements IEditableCachedObject {
 	protected static $userOptionDefaultValues = null;
 	
 	/**
-	 * @see	wcf\data\IEditableObject::create()
+	 * @see	\wcf\data\IEditableObject::create()
 	 */
 	public static function create(array $parameters = array()) {
 		// create salt and password hash
@@ -56,7 +56,7 @@ class UserEditor extends DatabaseObjectEditor implements IEditableCachedObject {
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableObject::deleteAll()
+	 * @see	\wcf\data\IEditableObject::deleteAll()
 	 */
 	public static function deleteAll(array $objectIDs = array()) {
 		// unmark users
@@ -66,7 +66,7 @@ class UserEditor extends DatabaseObjectEditor implements IEditableCachedObject {
 	}
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectEditor::update()
+	 * @see	\wcf\data\DatabaseObjectEditor::update()
 	 */
 	public function update(array $parameters = array()) {
 		// update salt and create new password hash
@@ -265,7 +265,7 @@ class UserEditor extends DatabaseObjectEditor implements IEditableCachedObject {
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableCachedObject::resetCache()
+	 * @see	\wcf\data\IEditableCachedObject::resetCache()
 	 */
 	public static function resetCache() {
 		SessionHandler::resetSessions();

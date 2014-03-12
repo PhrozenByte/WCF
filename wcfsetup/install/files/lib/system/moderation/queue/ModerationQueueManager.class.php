@@ -1,7 +1,6 @@
 <?php
 namespace wcf\system\moderation\queue;
 use wcf\data\moderation\queue\ModerationQueue;
-use wcf\data\moderation\queue\ModerationQueueAction;
 use wcf\data\moderation\queue\ModerationQueueList;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\system\database\util\PreparedStatementConditionBuilder;
@@ -14,7 +13,7 @@ use wcf\system\WCF;
  * Provides methods to manage moderated content and reports.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.moderation.queue
@@ -29,7 +28,7 @@ class ModerationQueueManager extends SingletonFactory {
 	
 	/**
 	 * list of moderation types
-	 * @var	array<wcf\data\object\type\ObjectType>
+	 * @var	array<\wcf\data\object\type\ObjectType>
 	 */
 	protected $moderationTypes = array();
 	
@@ -41,12 +40,12 @@ class ModerationQueueManager extends SingletonFactory {
 	
 	/**
 	 * list of object types
-	 * @var	array<wcf\data\object\type\ObjectType>
+	 * @var	array<\wcf\data\object\type\ObjectType>
 	 */
 	protected $objectTypes = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$moderationTypes = ObjectTypeCache::getInstance()->getObjectTypes('com.woltlab.wcf.moderation.type');
@@ -184,7 +183,7 @@ class ModerationQueueManager extends SingletonFactory {
 	 * Populates object properties for viewing.
 	 * 
 	 * @param	integer								$objectTypeID
-	 * @param	array<wcf\data\moderation\queue\ViewableModerationQueue>	$objects
+	 * @param	array<\wcf\data\moderation\queue\ViewableModerationQueue>	$objects
 	 */
 	public function populate($objectTypeID, array $objects) {
 		$moderationType = '';
@@ -290,6 +289,44 @@ class ModerationQueueManager extends SingletonFactory {
 	}
 	
 	/**
+	 * Identifies and removes orphaned queues.
+	 */
+	public function identifyOrphans() {
+		$sql = "SELECT		moderation_queue.queueID, moderation_queue.objectTypeID, moderation_queue.objectID
+			FROM		wcf".WCF_N."_moderation_queue_to_user moderation_queue_to_user
+			LEFT JOIN	wcf".WCF_N."_moderation_queue moderation_queue
+			ON		(moderation_queue.queueID = moderation_queue_to_user.queueID)
+			WHERE		moderation_queue_to_user.userID = ?
+					AND moderation_queue_to_user.isAffected = ?
+					AND moderation_queue.status <> ?";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		$statement->execute(array(
+			WCF::getUser()->userID,
+			1,
+			ModerationQueue::STATUS_DONE
+		));
+		
+		$queues = array();
+		while ($row = $statement->fetchArray()) {
+			$objectTypeID = $row['objectTypeID'];
+			if (!isset($queues[$objectTypeID])) {
+				$queues[$objectTypeID] = array();
+			}
+			
+			$queues[$objectTypeID][$row['queueID']] = $row['objectID'];
+		}
+		
+		if (!empty($queues)) {
+			$queueIDs = array();
+			foreach ($queues as $objectTypeID => $objectQueues) {
+				$queueIDs = array_merge($queueIDs, $this->getProcessor($this->definitions[$this->objectTypes[$objectTypeID]->definitionID], null, $objectTypeID)->identifyOrphans($objectQueues));
+			}
+			
+			$this->removeOrphans($queueIDs);
+		}
+	}
+	
+	/**
 	 * Removes a list of orphaned queue ids.
 	 * 
 	 * @param	array<integer>		$queueIDs
@@ -301,6 +338,7 @@ class ModerationQueueManager extends SingletonFactory {
 			$sql = "DELETE FROM	wcf".WCF_N."_moderation_queue
 				".$conditions;
 			$statement = WCF::getDB()->prepareStatement($sql);
+			$statement->execute($conditions->getParameters());
 			
 			$this->resetModerationCount();
 		}
@@ -332,7 +370,7 @@ class ModerationQueueManager extends SingletonFactory {
 				$definitionNames[$objectTypeID] = $definitionName;
 			}
 		}
-	
+		
 		return $definitionNames;
 	}
 	

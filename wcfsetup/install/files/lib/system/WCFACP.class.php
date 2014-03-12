@@ -3,7 +3,7 @@ namespace wcf\system;
 use wcf\acp\form\MasterPasswordForm;
 use wcf\acp\form\MasterPasswordInitForm;
 use wcf\system\application\ApplicationHandler;
-use wcf\system\cache\builder\PackageCacheBuilder;
+use wcf\system\event\EventHandler;
 use wcf\system\exception\AJAXException;
 use wcf\system\exception\PermissionDeniedException;
 use wcf\system\exception\SystemException;
@@ -18,7 +18,7 @@ use wcf\util\HeaderUtil;
  * Extends WCF class with functions for the ACP.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system
@@ -53,6 +53,8 @@ class WCFACP extends WCF {
 		
 		$this->initBlacklist();
 		$this->initAuth();
+		
+		EventHandler::getInstance()->fireAction($this, 'initialized');
 	}
 	
 	/**
@@ -83,7 +85,7 @@ class WCFACP extends WCF {
 					$pageURL = $application->getPageURL();
 				}
 				
-				$path = $pageURL . 'acp/index.php/Login/' . SID_ARG_1ST . '&url=' . rawurlencode(WCF::getSession()->requestURI);
+				$path = $pageURL . 'acp/index.php/Login/' . SID_ARG_1ST . '&url=' . rawurlencode(RouteHandler::getProtocol() . $_SERVER['HTTP_HOST'] . WCF::getSession()->requestURI);
 				
 				HeaderUtil::redirect($path);
 				exit;
@@ -109,7 +111,7 @@ class WCFACP extends WCF {
 	}
 	
 	/**
-	 * @see	wcf\system\WCF::initSession()
+	 * @see	\wcf\system\WCF::initSession()
 	 */
 	protected function initSession() {
 		$factory = new ACPSessionFactory();
@@ -119,7 +121,7 @@ class WCFACP extends WCF {
 	}
 	
 	/**
-	 * @see	wcf\system\WCF::initTPL()
+	 * @see	\wcf\system\WCF::initTPL()
 	 */
 	protected function initTPL() {
 		self::$tplObj = ACPTemplateEngine::getInstance();
@@ -128,7 +130,7 @@ class WCFACP extends WCF {
 	}
 	
 	/**
-	 * @see	wcf\system\WCF::assignDefaultTemplateVariables()
+	 * @see	\wcf\system\WCF::assignDefaultTemplateVariables()
 	 */
 	protected function assignDefaultTemplateVariables() {
 		parent::assignDefaultTemplateVariables();

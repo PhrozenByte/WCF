@@ -3,23 +3,23 @@ namespace wcf\data\user;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\avatar\UserAvatarAction;
 use wcf\data\user\group\UserGroup;
+use wcf\data\user\UserEditor;
 use wcf\data\AbstractDatabaseObjectAction;
 use wcf\data\IClipboardAction;
 use wcf\data\ISearchAction;
-use wcf\system\cache\builder\UserNotificationEventCacheBuilder;
 use wcf\system\clipboard\ClipboardHandler;
 use wcf\system\database\util\PreparedStatementConditionBuilder;
 use wcf\system\exception\PermissionDeniedException;
 use wcf\system\exception\UserInputException;
+use wcf\system\request\RequestHandler;
 use wcf\system\WCF;
-use wcf\util\StringUtil;
 use wcf\util\UserRegistrationUtil;
 
 /**
  * Executes user-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user
@@ -27,29 +27,34 @@ use wcf\util\UserRegistrationUtil;
  */
 class UserAction extends AbstractDatabaseObjectAction implements IClipboardAction, ISearchAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	public $className = 'wcf\data\user\UserEditor';
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
 	 */
 	protected $allowGuestAccess = array('getSearchResultList');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$permissionsCreate
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$permissionsCreate
 	 */
 	protected $permissionsCreate = array('admin.user.canAddUser');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$permissionsDelete
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$permissionsDelete
 	 */
 	protected $permissionsDelete = array('admin.user.canDeleteUser');
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$permissionsUpdate
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$permissionsUpdate
 	 */
 	protected $permissionsUpdate = array('admin.user.canEditUser');
+	
+	/**
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$requireACP
+	 */
+	protected $requireACP = array('create', 'ban', 'delete', 'disable', 'enable', 'unban');
 	
 	/**
 	 * Validates permissions and parameters.
@@ -109,7 +114,7 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 	}
 	
 	/**
-	 * @see	wcf\data\IDeleteAction::delete()
+	 * @see	\wcf\data\IDeleteAction::delete()
 	 */
 	public function delete() {
 		if (empty($this->objects)) {
@@ -155,6 +160,11 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 			if (empty($this->objects)) {
 				throw new UserInputException('objectIDs');
 			}
+		}
+		
+		// disallow updating of anything except for options outside of ACP
+		if (RequestHandler::getInstance()->isACPRequest() && (count($this->parameters) != 1 || !isset($this->parameters['options']))) {
+			throw new PermissionDeniedException();
 		}
 		
 		try {
@@ -252,13 +262,22 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 				WHERE		preset = ?";
 			$statement = WCF::getDB()->prepareStatement($sql);
 			$statement->execute(array($user->userID, 1));
+			
+			// update user rank
+			if (MODULE_USER_RANK) {
+				$action = new UserProfileAction(array($userEditor), 'updateUserRank');
+				$action->executeAction();
+			}
+			// update user online marking
+			$action = new UserProfileAction(array($userEditor), 'updateUserOnlineMarking');
+			$action->executeAction();
 		}
 		
 		return $user;
 	}
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::update()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::update()
 	 */
 	public function update() {
 		if (isset($this->parameters['data'])) {
@@ -327,6 +346,11 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 			$userEditor->addToGroups($groupIDs, $deleteOldGroups, $addDefaultGroups);
 		}
 		
+		//reread objects
+		$this->objects = array();
+		UserEditor::resetCache();
+		$this->readObjects();
+		
 		if (MODULE_USER_RANK) {
 			$action = new UserProfileAction($this->objects, 'updateUserRank');
 			$action->executeAction();
@@ -338,7 +362,7 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 	}
 	
 	/**
-	 * @see	wcf\data\ISearchAction::validateGetSearchResultList()
+	 * @see	\wcf\data\ISearchAction::validateGetSearchResultList()
 	 */
 	public function validateGetSearchResultList() {
 		$this->readBoolean('includeUserGroups', false, 'data');
@@ -350,7 +374,7 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 	}
 	
 	/**
-	 * @see	wcf\data\ISearchAction::getSearchResultList()
+	 * @see	\wcf\data\ISearchAction::getSearchResultList()
 	 */
 	public function getSearchResultList() {
 		$searchString = $this->parameters['data']['searchString'];
@@ -399,14 +423,14 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 	}
 	
 	/**
-	 * @see	wcf\data\IClipboardAction::validateUnmarkAll()
+	 * @see	\wcf\data\IClipboardAction::validateUnmarkAll()
 	 */
 	public function validateUnmarkAll() {
 		// does nothing
 	}
 	
 	/**
-	 * @see	wcf\data\IClipboardAction::unmarkAll()
+	 * @see	\wcf\data\IClipboardAction::unmarkAll()
 	 */
 	public function unmarkAll() {
 		ClipboardHandler::getInstance()->removeItems(ClipboardHandler::getInstance()->getObjectTypeID('com.woltlab.wcf.user'));
@@ -414,14 +438,14 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 	
 	/**
 	 * Unmarks users.
-	 *
+	 * 
 	 * @param	array<integer>		$userIDs
 	 */
 	protected function unmarkItems(array $userIDs = array()) {
 		if (empty($userIDs)) {
 			$userIDs = $this->objectIDs;
 		}
-	
+		
 		if (!empty($userIDs)) {
 			ClipboardHandler::getInstance()->unmark($userIDs, ClipboardHandler::getInstance()->getObjectTypeID('com.woltlab.wcf.user'));
 		}
@@ -432,6 +456,8 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 	 */
 	public function validateEnable() {
 		WCF::getSession()->checkPermissions(array('admin.user.canEnableUser'));
+		
+		$this->__validateAccessibleGroups();
 	}
 	
 	/**
@@ -446,7 +472,7 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 	 */
 	public function enable() {
 		if (empty($this->objects)) $this->readObjects();
-	
+		
 		$action = new UserAction($this->objects, 'update', array(
 			'data' => array(
 				'activationCode' => 0
@@ -457,9 +483,11 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 		$action = new UserAction($this->objects, 'addToGroups', array(
 			'groups' => UserGroup::getGroupIDsByType(array(UserGroup::USERS)),
 			'deleteOldGroups' => false,
-			'addDefaultGroups' => false	
+			'addDefaultGroups' => false
 		));
 		$action->executeAction();
+		
+		$this->unmarkItems();
 	}
 	
 	/**
@@ -467,7 +495,7 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 	 */
 	public function disable() {
 		if (empty($this->objects)) $this->readObjects();
-	
+		
 		$action = new UserAction($this->objects, 'update', array(
 			'data' => array(
 				'activationCode' => UserRegistrationUtil::getActivationCode()
@@ -481,5 +509,31 @@ class UserAction extends AbstractDatabaseObjectAction implements IClipboardActio
 			'addDefaultGroups' => false
 		));
 		$action->executeAction();
+		
+		$this->unmarkItems();
+	}
+	
+	/**
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::readObjects()
+	 */
+	protected function readObjects() {
+		if (empty($this->objectIDs)) {
+			return;
+		}
+	
+		// get base class
+		$baseClass = call_user_func(array($this->className, 'getBaseClass'));
+	
+		// get objects
+		$sql = "SELECT		user_option_value.*, user_table.*
+			FROM		wcf".WCF_N."_user user_table
+			LEFT JOIN	wcf".WCF_N."_user_option_value user_option_value
+			ON		(user_option_value.userID = user_table.userID)
+			WHERE		user_table.userID IN (".str_repeat('?,', count($this->objectIDs) - 1)."?)";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		$statement->execute($this->objectIDs);
+		while ($object = $statement->fetchObject($baseClass)) {
+			$this->objects[] = new $this->className($object);
+		}
 	}
 }

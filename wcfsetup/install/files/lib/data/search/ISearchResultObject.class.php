@@ -5,7 +5,7 @@ namespace wcf\data\search;
  * All search result objects should implement this interface. 
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.search
@@ -15,7 +15,7 @@ interface ISearchResultObject {
 	/**
 	 * Returns author's user profile.
 	 * 
-	 * @return	wcf\data\user\UserProfile
+	 * @return	\wcf\data\user\UserProfile
 	 */
 	public function getUserProfile();
 	

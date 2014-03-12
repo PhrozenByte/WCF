@@ -8,7 +8,7 @@ use wcf\util\ClassUtil;
  * Represents a sitemap entry.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.sitemap
@@ -17,7 +17,7 @@ use wcf\util\ClassUtil;
 class Sitemap extends DatabaseObject {
 	/**
 	 * ISitemapProvider object
-	 * @var	wcf\system\sitemap\ISitemapProvider
+	 * @var	\wcf\system\sitemap\ISitemapProvider
 	 */
 	protected $sitemapObj = null;
 	
@@ -28,7 +28,7 @@ class Sitemap extends DatabaseObject {
 	protected static $databaseTableName = 'sitemap';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'sitemapID';
 	

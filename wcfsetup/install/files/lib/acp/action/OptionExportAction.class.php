@@ -8,7 +8,7 @@ use wcf\util\StringUtil;
  * Exports the options to an XML.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.action
@@ -16,12 +16,12 @@ use wcf\util\StringUtil;
  */
 class OptionExportAction extends AbstractAction {
 	/**
-	 * @see	wcf\action\AbstractAction::$neededPermissions
+	 * @see	\wcf\action\AbstractAction::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.system.canEditOption');
 	
 	/**
-	 * @see	wcf\action\IAction::execute();
+	 * @see	\wcf\action\IAction::execute();
 	 */
 	public function execute() {
 		parent::execute();

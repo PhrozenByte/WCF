@@ -7,7 +7,7 @@ use wcf\system\WCF;
  * File handler implementation for the installation of template files.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package
@@ -15,22 +15,22 @@ use wcf\system\WCF;
  */
 class TemplatesFileHandler extends ACPTemplatesFileHandler {
 	/**
-	 * @see	wcf\system\package\ACPTemplatesFileHandler::$tableName
+	 * @see	\wcf\system\package\ACPTemplatesFileHandler::$tableName
 	 */
 	protected $tableName = 'template';
 	
 	/**
-	 * @see	wcf\system\setup\IFileHandler::logFiles()
+	 * @see	\wcf\system\setup\IFileHandler::logFiles()
 	 */
 	public function logFiles(array $files) {
 		$packageID = $this->packageInstallation->getPackageID();
-	
+		
 		// remove file extension
 		foreach ($files as &$file) {
 			$file = substr($file, 0, -4);
 		}
 		unset($file);
-	
+		
 		// get existing templates
 		$existingTemplates = $updateTemplateIDs = array();
 		$sql = "SELECT	templateName, templateID
@@ -43,7 +43,7 @@ class TemplatesFileHandler extends ACPTemplatesFileHandler {
 		while ($row = $statement->fetchArray()) {
 			$existingTemplates[$row['templateName']] = $row['templateID'];
 		}
-	
+		
 		// save new templates
 		$sql = "INSERT INTO	wcf".WCF_N."_template
 					(packageID, templateName, lastModificationTime, application)

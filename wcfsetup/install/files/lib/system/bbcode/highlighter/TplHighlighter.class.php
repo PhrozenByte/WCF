@@ -6,7 +6,7 @@ use wcf\system\Regex;
  * Highlights syntax of template documents with smarty-syntax.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode.highlighter
@@ -14,7 +14,7 @@ use wcf\system\Regex;
  */
 class TplHighlighter extends HtmlHighlighter {
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::highlightComments()
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::highlightComments()
 	 */
 	protected function highlightComments($string) {
 		$string = parent::highlightComments($string);

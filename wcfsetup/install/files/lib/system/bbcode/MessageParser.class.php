@@ -9,7 +9,7 @@ use wcf\util\StringUtil;
  * Parses bbcode tags, smilies etc. in messages.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode
@@ -18,7 +18,7 @@ use wcf\util\StringUtil;
 class MessageParser extends BBCodeParser {
 	/**
 	 * list of smilies
-	 * @var	array<wcf\data\smiley\Smiley>
+	 * @var	array<\wcf\data\smiley\Smiley>
 	 */
 	protected $smilies = array();
 	
@@ -41,7 +41,7 @@ class MessageParser extends BBCodeParser {
 	public $message = '';
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		parent::init();
@@ -215,7 +215,7 @@ class MessageParser extends BBCodeParser {
 	}
 	
 	/**
-	 * @see	wcf\system\bbcode\BBCodeParser::isValidTagAttribute()
+	 * @see	\wcf\system\bbcode\BBCodeParser::isValidTagAttribute()
 	 */
 	protected function isValidTagAttribute(array $tagAttributes, BBCodeAttribute $definedTagAttribute) {
 		if (!parent::isValidTagAttribute($tagAttributes, $definedTagAttribute)) {

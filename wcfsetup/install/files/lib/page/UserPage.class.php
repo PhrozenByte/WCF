@@ -20,7 +20,7 @@ use wcf\system\WCF;
  * Shows the user profile page.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	page
@@ -28,19 +28,14 @@ use wcf\system\WCF;
  */
 class UserPage extends AbstractPage {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.user.members';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$enableTracking
+	 * @see	\wcf\page\AbstractPage::$enableTracking
 	 */
 	public $enableTracking = true;
-	
-	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
-	 */
-	public $neededPermissions = array('user.profile.canViewUserProfile');
 	
 	/**
 	 * edit profile on page load
@@ -50,7 +45,7 @@ class UserPage extends AbstractPage {
 	
 	/**
 	 * overview editable content object type
-	 * @var	wcf\data\object\type\ObjectType
+	 * @var	\wcf\data\object\type\ObjectType
 	 */
 	public $objectType = null;
 	
@@ -68,30 +63,30 @@ class UserPage extends AbstractPage {
 	
 	/**
 	 * user object
-	 * @var	wcf\data\user\UserProfile
+	 * @var	\wcf\data\user\UserProfile
 	 */
 	public $user = null;
 	
 	/**
 	 * follower list
-	 * @var	wcf\data\user\follow\UserFollowerList
+	 * @var	\wcf\data\user\follow\UserFollowerList
 	 */
 	public $followerList = null;
 	
 	/**
 	 * following list
-	 * @var	wcf\data\user\follow\UserFollowingList
+	 * @var	\wcf\data\user\follow\UserFollowingList
 	 */
 	public $followingList = null;
 	
 	/**
 	 * visitor list
-	 * @var	wcf\data\user\profile\visitor\UserProfileVisitorList
+	 * @var	\wcf\data\user\profile\visitor\UserProfileVisitorList
 	 */
 	public $visitorList = null;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -100,6 +95,10 @@ class UserPage extends AbstractPage {
 		$this->user = UserProfile::getUserProfile($this->userID);
 		if ($this->user === null) {
 			throw new IllegalLinkException();
+		}
+		
+		if ($this->user->userID != WCF::getUser()->userID && !WCF::getSession()->getPermission('user.profile.canViewUserProfile')) {
+			throw new PermissionDeniedException();
 		}
 		
 		// check is Accessible
@@ -111,7 +110,7 @@ class UserPage extends AbstractPage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -158,7 +157,7 @@ class UserPage extends AbstractPage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -180,7 +179,7 @@ class UserPage extends AbstractPage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::show()
+	 * @see	\wcf\page\IPage::show()
 	 */
 	public function show() {
 		// update profile hits
@@ -210,14 +209,14 @@ class UserPage extends AbstractPage {
 	}
 	
 	/**
-	 * @see	wcf\page\ITrackablePage::getObjectType()
+	 * @see	\wcf\page\ITrackablePage::getObjectType()
 	 */
 	public function getObjectType() {
 		return 'com.woltlab.wcf.user';
 	}
 	
 	/**
-	 * @see	wcf\page\ITrackablePage::getObjectID()
+	 * @see	\wcf\page\ITrackablePage::getObjectID()
 	 */
 	public function getObjectID() {
 		return $this->userID;

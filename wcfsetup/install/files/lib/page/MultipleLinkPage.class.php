@@ -10,7 +10,7 @@ use wcf\util\ClassUtil;
  * Handles the page number parameter automatically.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	page
@@ -55,7 +55,7 @@ abstract class MultipleLinkPage extends AbstractPage {
 	
 	/**
 	 * DatabaseObjectList object
-	 * @var	wcf\data\DatabaseObjectList
+	 * @var	\wcf\data\DatabaseObjectList
 	 */
 	public $objectList = null;
 	
@@ -78,22 +78,22 @@ abstract class MultipleLinkPage extends AbstractPage {
 	public $sortOrder = '';
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$sqlLimit
+	 * @see	\wcf\data\DatabaseObjectList::$sqlLimit
 	 */
 	public $sqlLimit = 0;
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$sqlOffset
+	 * @see	\wcf\data\DatabaseObjectList::$sqlOffset
 	 */
 	public $sqlOffset = '';
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$sqlOrderBy
+	 * @see	\wcf\data\DatabaseObjectList::$sqlOrderBy
 	 */
 	public $sqlOrderBy = '';
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -103,7 +103,7 @@ abstract class MultipleLinkPage extends AbstractPage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -205,7 +205,7 @@ abstract class MultipleLinkPage extends AbstractPage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

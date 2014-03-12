@@ -59,9 +59,28 @@
 			
 			<div class="formSubmit">
 				<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+				{@SECURITY_TOKEN_INPUT_TAG}
 			</div>
 		</form>
 	</div>
+	
+	<fieldset>
+		<legend>{lang}wcf.user.usersOnline{/lang}</legend>
+		
+		<p><small>{lang usersOnlineList=$objects}wcf.user.usersOnline.detail{/lang}</small></p>
+		{if USERS_ONLINE_RECORD}<p><small>{lang}wcf.user.usersOnline.record{/lang}</small></p>{/if}
+		
+		{if USERS_ONLINE_ENABLE_LEGEND && $objects->getUsersOnlineMarkings()|count}
+			<div class="marginTopSmall">
+				<p><small>{lang}wcf.user.usersOnline.marking.legend{/lang}:</small></p>
+				<ul class="dataList">
+					{foreach from=$objects->getUsersOnlineMarkings() item=usersOnlineMarking}
+						<li><small>{@$usersOnlineMarking}</small></li>
+					{/foreach}
+				</ul>
+			</div>
+		{/if}
+	</fieldset>
 	
 	{@$__boxSidebar}
 {/capture}
@@ -88,8 +107,11 @@
 			<dl class="plain inlineDataList">
 				<dt>{lang}wcf.user.usersOnline.ipAddress{/lang}</dt>
 				<dd title="{$user->getFormattedIPAddress()}">{$user->getFormattedIPAddress()|truncate:30}</dd>
-				<dt>{lang}wcf.user.usersOnline.userAgent{/lang}</dt>
-				<dd title="{$user->userAgent}">{$user->getBrowser()|truncate:30}</dd>
+				
+				{if !$user->spiderID}
+					<dt>{lang}wcf.user.usersOnline.userAgent{/lang}</dt>
+					<dd title="{$user->userAgent}">{$user->getBrowser()|truncate:30}</dd>
+				{/if}
 			</dl>
 		{/if}
 	{/capture}
@@ -121,7 +143,7 @@
 		{capture append=robotsOnlineList}
 			<li>
 				<div class="box48">
-					<p class="framed"><img src="{$__wcf->getPath()}images/avatars/avatar-default.svg" alt="" class="icon48" /></p>
+					<p class="framed"><img src="{$__wcf->getPath()}images/avatars/avatar-spider-default.svg" alt="" class="icon48" /></p>
 					
 					<div class="details userInformation">
 						<div class="containerHeadline">

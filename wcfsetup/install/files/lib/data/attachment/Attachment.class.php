@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Represents an attachment.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.attachment
@@ -17,12 +17,12 @@ use wcf\system\WCF;
  */
 class Attachment extends DatabaseObject implements IRouteController {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'attachment';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'attachmentID';
 	
@@ -33,7 +33,7 @@ class Attachment extends DatabaseObject implements IRouteController {
 	protected $embedded = false;
 	
 	/**
-	 * user permissions for attachment access 
+	 * user permissions for attachment access
 	 * @var	array<boolean>
 	 */
 	protected $permissions = array();
@@ -131,7 +131,7 @@ class Attachment extends DatabaseObject implements IRouteController {
 	}
 	
 	/**
-	 * @see	wcf\system\request\IRouteController::getTitle()
+	 * @see	\wcf\system\request\IRouteController::getTitle()
 	 */
 	public function getTitle() {
 		return $this->filename;

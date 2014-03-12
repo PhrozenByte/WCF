@@ -7,13 +7,12 @@ use wcf\system\Regex;
 use wcf\system\WCF;
 use wcf\util\DirectoryUtil;
 use wcf\util\FileUtil;
-use wcf\util\StringUtil;
 
 /**
  * Shows a list of all cache resources.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.page
@@ -21,12 +20,12 @@ use wcf\util\StringUtil;
  */
 class CacheListPage extends AbstractPage {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.maintenance.cache';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.system.canManageApplication');
 	
@@ -49,7 +48,7 @@ class CacheListPage extends AbstractPage {
 	public $cacheData = array();
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -58,7 +57,7 @@ class CacheListPage extends AbstractPage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -84,32 +83,6 @@ class CacheListPage extends AbstractPage {
 				$this->cacheData['version'] = WCF_VERSION;
 			break;
 			
-			case 'wcf\system\cache\source\ApcCacheSource':
-				// set version
-				$this->cacheData['version'] = phpversion('apc');
-				
-				$apcinfo = apc_cache_info('user');
-				$cacheList = $apcinfo['cache_list'];
-				usort($cacheList, function ($a, $b) {
-					return $a['info'] > $b['info'];
-				});
-				
-				$prefix = new Regex('^WCF_'.substr(sha1(WCF_DIR), 0, 10) . '_');
-				foreach ($cacheList as $cache) {
-					if (!$prefix->match($cache['info'])) continue;
-					
-					// get additional cache information
-					$this->caches['data']['apc'][] = array(
-						'filename' => $prefix->replace($cache['info'], ''),
-						'filesize' => $cache['mem_size'],
-						'mtime' => $cache['mtime']
-					);
-					
-					$this->cacheData['files']++;
-					$this->cacheData['size'] += $cache['mem_size'];
-				}
-			break;
-			
 			case 'wcf\system\cache\source\NoCacheSource':
 				$this->cacheData['version'] = WCF_VERSION;
 			break;
@@ -127,7 +100,7 @@ class CacheListPage extends AbstractPage {
 	 * 
 	 * @param	string			$cacheType
 	 * @param	strign			$cacheDir
-	 * @param	wcf\system\Regex	$ignore
+	 * @param	\wcf\system\Regex	$ignore
 	 */
 	protected function readCacheFiles($cacheType, $cacheDir, Regex $ignore = null, $extension = 'php') {
 		if (!isset($this->cacheData[$cacheType])) {
@@ -169,7 +142,7 @@ class CacheListPage extends AbstractPage {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();

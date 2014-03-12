@@ -6,7 +6,7 @@ use wcf\system\WCF;
  * Abstract class for all versionable editor classes.
  * 
  * @author	Jeffrey Reichardt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data
@@ -14,7 +14,7 @@ use wcf\system\WCF;
  */
 abstract class VersionableDatabaseObjectEditor extends DatabaseObjectEditor {
 	/**
-	 * @see	wcf\data\IEditableObject::create()
+	 * @see	\wcf\data\IEditableObject::create()
 	 */
 	public static function createRevision(array $parameters = array()) {
 		$keys = $values = '';
@@ -43,14 +43,14 @@ abstract class VersionableDatabaseObjectEditor extends DatabaseObjectEditor {
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableObject::delete()
+	 * @see	\wcf\data\IEditableObject::delete()
 	 */
 	public function deleteRevision(array $objectIDs = array()) {
 		static::deleteAll(array($this->__get(static::getDatabaseVersionTableIndexName())));
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableObject::deleteAll()
+	 * @see	\wcf\data\IEditableObject::deleteAll()
 	 */
 	public static function deleteAll(array $objectIDs = array()) {
 		$affectedCount = static::deleteAll($objectIDs);
@@ -70,14 +70,14 @@ abstract class VersionableDatabaseObjectEditor extends DatabaseObjectEditor {
 	}
 	
 	/**
-	 * @see	wcf\data\VersionableDatabaseObject::getDatabaseVersionTableName()
+	 * @see	\wcf\data\VersionableDatabaseObject::getDatabaseVersionTableName()
 	 */
 	public static function getDatabaseVersionTableName() {
 		return call_user_func(array(static::$baseClass, 'getDatabaseVersionTableName'));
 	}
 	
 	/**
-	 * @see	wcf\data\VersionableDatabaseObject::getDatabaseVersionTableIndexName()
+	 * @see	\wcf\data\VersionableDatabaseObject::getDatabaseVersionTableIndexName()
 	 */
 	public static function getDatabaseVersionTableIndexName() {
 		return call_user_func(array(static::$baseClass, 'getDatabaseVersionTableIndexName'));

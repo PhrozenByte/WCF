@@ -5,7 +5,7 @@ namespace wcf\system\application;
  * Default interface for all applications for the community framework.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.application
@@ -19,10 +19,17 @@ interface IApplication {
 	
 	/**
 	 * Returns true if current application is treated as active and was invoked directly.
-	 *
+	 * 
 	 * @return	boolean
 	 */
 	public function isActiveApplication();
+	
+	/**
+	 * Returns the qualified name of this application's primary controller.
+	 * 
+	 * @return	string
+	 */
+	public function getPrimaryController();
 	
 	/**
 	 * Forwards unknown method calls to WCF.

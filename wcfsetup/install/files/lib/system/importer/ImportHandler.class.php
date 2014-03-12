@@ -10,9 +10,9 @@ use wcf\system\WCF;
 
 /**
  * Handles data import.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.importer
@@ -21,31 +21,31 @@ use wcf\system\WCF;
 class ImportHandler extends SingletonFactory implements IAJAXInvokeAction {
 	/**
 	 * id map cache
-	 * @var	array 
+	 * @var	array
 	 */
 	protected $idMappingCache = array();
 	
 	/**
 	 * list of available importers
-	 * @var array
+	 * @var	array
 	 */
 	protected $objectTypes = array();
 	
 	/**
 	 * list of available importer processors
-	 * @var array
+	 * @var	array
 	 */
 	protected $importers = array();
 	
 	/**
 	 * user merge mode
-	 * @var integer
+	 * @var	integer
 	 */
 	protected $userMergeMode = 2;
 	
 	/**
 	 * import hash
-	 * @var string
+	 * @var	string
 	 */
 	protected $importHash = '';
 	
@@ -56,7 +56,7 @@ class ImportHandler extends SingletonFactory implements IAJAXInvokeAction {
 	public static $allowInvoke = array('resetMapping');
 	
 	/**
-	 * @see wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$this->objectTypes = ObjectTypeCache::getInstance()->getObjectTypes('com.woltlab.wcf.importer');
@@ -66,7 +66,7 @@ class ImportHandler extends SingletonFactory implements IAJAXInvokeAction {
 	 * Gets a data importer.
 	 * 
 	 * @param	string		$type
-	 * @return	wcf\system\importer\IImporter
+	 * @return	\wcf\system\importer\IImporter
 	 */
 	public function getImporter($type) {
 		if (!isset($this->importers[$type])) {
@@ -81,8 +81,8 @@ class ImportHandler extends SingletonFactory implements IAJAXInvokeAction {
 	}
 	
 	/**
-	 * Gets a new id from id mapping.
-	 *
+	 * Returns a new id from id mapping.
+	 * 
 	 * @param	string		$type
 	 * @param	mixed		$oldID
 	 * @return	integer		$newID
@@ -118,7 +118,7 @@ class ImportHandler extends SingletonFactory implements IAJAXInvokeAction {
 	
 	/**
 	 * Saves an id mapping.
-	 *
+	 * 
 	 * @param	string		$type
 	 * @param	integer		$oldID
 	 * @param	integer		$newID
@@ -167,9 +167,9 @@ class ImportHandler extends SingletonFactory implements IAJAXInvokeAction {
 	}
 	
 	/**
-	 * Gets the user merge mode.
+	 * Returns the user merge mode.
 	 * 
-	 * @return integer
+	 * @return	integer
 	 */
 	public function getUserMergeMode() {
 		return $this->userMergeMode;
@@ -177,7 +177,7 @@ class ImportHandler extends SingletonFactory implements IAJAXInvokeAction {
 	
 	/**
 	 * Sets the import hash.
-	 *
+	 * 
 	 * @param	string		$hash
 	 */
 	public function setImportHash($hash) {

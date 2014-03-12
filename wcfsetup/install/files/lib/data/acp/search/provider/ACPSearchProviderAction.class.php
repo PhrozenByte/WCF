@@ -2,15 +2,13 @@
 namespace wcf\data\acp\search\provider;
 use wcf\data\AbstractDatabaseObjectAction;
 use wcf\data\ISearchAction;
-use wcf\system\exception\UserInputException;
 use wcf\system\search\acp\ACPSearchHandler;
-use wcf\util\StringUtil;
 
 /**
  * Executes ACP search provider-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.acp.search.provider
@@ -18,14 +16,19 @@ use wcf\util\StringUtil;
  */
 class ACPSearchProviderAction extends AbstractDatabaseObjectAction implements ISearchAction {
 	/**
-	 * @see	wcf\data\ISearchAction::validateGetSearchResultList()
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$requireACP
+	 */
+	protected $requireACP = array('getSearchResultList');
+	
+	/**
+	 * @see	\wcf\data\ISearchAction::validateGetSearchResultList()
 	 */
 	public function validateGetSearchResultList() {
 		$this->readString('searchString', false, 'data');
 	}
 	
 	/**
-	 * @see	wcf\data\ISearchAction::getSearchResultList()
+	 * @see	\wcf\data\ISearchAction::getSearchResultList()
 	 */
 	public function getSearchResultList() {
 		$data = array();

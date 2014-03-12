@@ -20,10 +20,14 @@ WCF.Label.ACPList = Class.extend({
 	_labelList: [ ],
 	
 	/**
-	 * Intitializes the ACP label list.
+	 * Initializes the ACP label list.
 	 */
 	init: function() {
 		this._labelInput = $('#label').keydown($.proxy(this._keyPressed, this)).keyup($.proxy(this._keyPressed, this)).blur($.proxy(this._keyPressed, this));
+		
+		if ($.browser.mozilla && $.browser.touch) {
+			this._labelInput.on('input', $.proxy(this._keyPressed, this));
+		}
 		
 		$('#labelList').find('input[type="radio"]').each($.proxy(function(index, input) {
 			var $input = $(input);
@@ -139,13 +143,16 @@ WCF.Label.Chooser = Class.extend({
 		// pre-select labels
 		if ($.getLength(selectedLabelIDs)) {
 			for (var $groupID in selectedLabelIDs) {
-				WCF.Dropdown.getDropdownMenu(this._groups[$groupID].wcfIdentify()).children('li').each($.proxy(function(index, label) {
-					var $label = $(label);
-					var $labelID = $label.data('labelID') || 0;
-					if ($labelID && selectedLabelIDs[$groupID] == $labelID) {
-						this._selectLabel($label, true);
-					}
-				}, this));
+				var $group = this._groups[$groupID];
+				if ($group) {
+					WCF.Dropdown.getDropdownMenu($group.wcfIdentify()).find('> ul > li:not(.dropdownDivider)').each($.proxy(function(index, label) {
+						var $label = $(label);
+						var $labelID = $label.data('labelID') || 0;
+						if ($labelID && selectedLabelIDs[$groupID] == $labelID) {
+							this._selectLabel($label, true);
+						}
+					}, this));
+				}
 			}
 		}
 		
@@ -184,20 +191,26 @@ WCF.Label.Chooser = Class.extend({
 					$dropdownMenu = WCF.Dropdown.getDropdownMenu($containerID);
 				}
 				
+				var $additionalList = $dropdownMenu;
+				if ($dropdownMenu.getTagName() == 'div' && $dropdownMenu.children('.scrollableDropdownMenu').length) {
+					$additionalList = $('<ul />').appendTo($dropdownMenu);
+					$dropdownMenu = $dropdownMenu.children('.scrollableDropdownMenu');
+				}
+				
 				this._groups[$groupID] = $group;
 				
 				$dropdownMenu.children('li').data('groupID', $groupID).click($.proxy(this._click, this));
 				
 				if (!$group.data('forceSelection') || this._showWithoutSelection) {
-					$('<li class="dropdownDivider" />').appendTo($dropdownMenu);
+					$('<li class="dropdownDivider" />').appendTo($additionalList);
 				}
 				
 				if (this._showWithoutSelection) {
-					$('<li data-label-id="-1"><span><span class="badge label">' + WCF.Language.get('wcf.label.withoutSelection') + '</span></span></li>').data('groupID', $groupID).appendTo($dropdownMenu).click($.proxy(this._click, this));
+					$('<li data-label-id="-1"><span><span class="badge label">' + WCF.Language.get('wcf.label.withoutSelection') + '</span></span></li>').data('groupID', $groupID).appendTo($additionalList).click($.proxy(this._click, this));
 				}
 				
 				if (!$group.data('forceSelection')) {
-					var $buttonEmpty = $('<li data-label-id="0"><span><span class="badge label">' + WCF.Language.get('wcf.label.none') + '</span></span></li>').data('groupID', $groupID).appendTo($dropdownMenu);
+					var $buttonEmpty = $('<li data-label-id="0"><span><span class="badge label">' + WCF.Language.get('wcf.label.none') + '</span></span></li>').data('groupID', $groupID).appendTo($additionalList);
 					$buttonEmpty.click($.proxy(this._click, this));
 				}
 			}

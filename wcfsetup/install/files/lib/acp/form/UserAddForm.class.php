@@ -8,7 +8,6 @@ use wcf\form\AbstractForm;
 use wcf\system\database\util\PreparedStatementConditionBuilder;
 use wcf\system\exception\UserInputException;
 use wcf\system\language\LanguageFactory;
-use wcf\system\menu\acp\ACPMenu;
 use wcf\system\WCF;
 use wcf\util\ArrayUtil;
 use wcf\util\StringUtil;
@@ -18,7 +17,7 @@ use wcf\util\UserUtil;
  * Shows the user add form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -26,15 +25,14 @@ use wcf\util\UserUtil;
  */
 class UserAddForm extends UserOptionListForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
-	public $neededPermissions = array('admin.user.canAddUser');
+	public $activeMenuItem = 'wcf.acp.menu.link.user.add';
 	
 	/**
-	 * name of the active menu item
-	 * @var	string
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
-	public $menuItemName = 'wcf.acp.menu.link.user.add';
+	public $neededPermissions = array('admin.user.canAddUser');
 	
 	/**
 	 * username
@@ -85,12 +83,6 @@ class UserAddForm extends UserOptionListForm {
 	public $visibleLanguages = array();
 	
 	/**
-	 * additional fields
-	 * @var	array<mixed>
-	 */
-	public $additionalFields = array();
-	
-	/**
 	 * title of the user
 	 * @var	string
 	 */
@@ -98,42 +90,42 @@ class UserAddForm extends UserOptionListForm {
 	
 	/**
 	 * signature text
-	 * @var string
+	 * @var	string
 	 */
 	public $signature = '';
 	
 	/**
 	 * enables smilies
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $signatureEnableSmilies = 1;
 	
 	/**
 	 * enables bbcodes
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $signatureEnableBBCodes = 1;
 	
 	/**
 	 * enables html
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $signatureEnableHtml = 0;
 	
 	/**
 	 * true to disable this signature
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $disableSignature = 0;
 	
 	/**
 	 * reason
-	 * @var string
+	 * @var	string
 	 */
 	public $disableSignatureReason = '';
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -159,10 +151,10 @@ class UserAddForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
-		// validate static user options 
+		// validate static user options
 		try {
 			$this->validateUsername($this->username);
 		}
@@ -239,7 +231,7 @@ class UserAddForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		AbstractForm::save();
@@ -266,18 +258,6 @@ class UserAddForm extends UserOptionListForm {
 		);
 		$this->objectAction = new UserAction(array(), 'create', $data);
 		$this->objectAction->executeAction();
-		$returnValues = $this->objectAction->getReturnValues();
-		
-		// set user rank
-		$editor = new UserEditor($returnValues['returnValues']);
-		if (MODULE_USER_RANK) {
-			$action = new UserProfileAction(array($editor), 'updateUserRank');
-			$action->executeAction();
-		}
-		if (MODULE_USERS_ONLINE) {
-			$action = new UserProfileAction(array($editor), 'updateUserOnlineMarking');
-			$action->executeAction();
-		}
 		$this->saved();
 		
 		// show empty add form
@@ -358,7 +338,7 @@ class UserAddForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -374,7 +354,7 @@ class UserAddForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -404,12 +384,9 @@ class UserAddForm extends UserOptionListForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::show()
+	 * @see	\wcf\page\IPage::show()
 	 */
 	public function show() {
-		// set active menu item
-		ACPMenu::getInstance()->setActiveMenuItem($this->menuItemName);
-		
 		// get the default language id
 		$this->languageID = $this->getDefaultFormLanguageID();
 		

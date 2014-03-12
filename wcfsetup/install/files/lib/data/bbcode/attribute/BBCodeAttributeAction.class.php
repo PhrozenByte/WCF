@@ -6,7 +6,7 @@ use wcf\data\AbstractDatabaseObjectAction;
  * Executes bbcode attribute-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.bbcode.attribute
@@ -14,7 +14,7 @@ use wcf\data\AbstractDatabaseObjectAction;
  */
 class BBCodeAttributeAction extends AbstractDatabaseObjectAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\bbcode\attribute\BBCodeAttributeEditor';
 }

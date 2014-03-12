@@ -1,7 +1,6 @@
 <?php
 namespace wcf\system\template\plugin;
 use wcf\system\template\TemplateEngine;
-use wcf\util\StringUtil;
 
 /**
  * Template modifier plugin which wordwraps a string.
@@ -10,7 +9,7 @@ use wcf\util\StringUtil;
  * 	{$foo|tableWordwrap}
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.template.plugin
@@ -18,7 +17,7 @@ use wcf\util\StringUtil;
  */
 class TableWordwrapModifierTemplatePlugin implements IModifierTemplatePlugin {
 	/**
-	 * @see	wcf\system\template\IModifierTemplatePlugin::execute()
+	 * @see	\wcf\system\template\IModifierTemplatePlugin::execute()
 	 */
 	public function execute($tagArgs, TemplateEngine $tplObj) {
 		// values
@@ -35,7 +34,7 @@ class TableWordwrapModifierTemplatePlugin implements IModifierTemplatePlugin {
 			$length = mb_strlen($substring);
 			if ($length > $width) {
 				$j = ceil($length / $width);
-		
+				
 				for ($i = 0; $i < $j; $i++) {
 					if ($i) $result .= $break;
 					if ($width * ($i + 1) > $length) $result .= mb_substr($substring, $width * $i);

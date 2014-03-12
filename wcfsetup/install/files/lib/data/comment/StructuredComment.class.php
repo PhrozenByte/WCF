@@ -9,7 +9,7 @@ use wcf\data\DatabaseObjectDecorator;
  * Provides methods to handle responses for this comment.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.comment
@@ -17,13 +17,13 @@ use wcf\data\DatabaseObjectDecorator;
  */
 class StructuredComment extends DatabaseObjectDecorator implements \Countable, \Iterator {
 	/**
-	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	\wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	public static $baseClass = 'wcf\data\comment\Comment';
 	
 	/**
 	 * list of ordered responses
-	 * @var	array<wcf\data\comment\response\StructuredCommentResponse>
+	 * @var	array<\wcf\data\comment\response\StructuredCommentResponse>
 	 */
 	protected $responses = array();
 	
@@ -47,14 +47,14 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	
 	/**
 	 * user profile object
-	 * @var	wcf\data\user\UserProfile
+	 * @var	\wcf\data\user\UserProfile
 	 */
 	public $userProfile = null;
 	
 	/**
 	 * Adds an response
 	 * 
-	 * @param	wcf\data\comment\response\StructuredCommentResponse	$response
+	 * @param	\wcf\data\comment\response\StructuredCommentResponse	$response
 	 */
 	public function addResponse(StructuredCommentResponse $response) {
 		$this->responses[] = $response;
@@ -63,7 +63,7 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	/**
 	 * Returns the last responses for this comment.
 	 * 
-	 * @return	array<wcf\data\comment\response\StructuredCommentReponse>
+	 * @return	array<\wcf\data\comment\response\StructuredCommentReponse>
 	 */
 	public function getResponses() {
 		return $this->responses;
@@ -90,7 +90,7 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	/**
 	 * Sets the user's profile.
 	 * 
-	 * @param	wcf\data\user\UserProfile	$userProfile
+	 * @param	\wcf\data\user\UserProfile	$userProfile
 	 */
 	public function setUserProfile(UserProfile $userProfile) {
 		$this->userProfile = $userProfile;
@@ -99,7 +99,7 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	/**
 	 * Returns the user's profile.
 	 * 
-	 * @return	wcf\data\user\UserProfile
+	 * @return	\wcf\data\user\UserProfile
 	 */
 	public function getUserProfile() {
 		if ($this->userProfile === null) {

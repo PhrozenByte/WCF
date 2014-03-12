@@ -6,7 +6,7 @@ use wcf\data\object\type\ObjectTypeCache;
  * Label object type container.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.label.object.type
@@ -21,7 +21,7 @@ class LabelObjectTypeContainer implements \Countable, \Iterator {
 	
 	/**
 	 * list of object types
-	 * @var	array<wcf\system\label\object\type>
+	 * @var	array<\wcf\system\label\object\type>
 	 */
 	public $objectTypes = array();
 	
@@ -59,7 +59,7 @@ class LabelObjectTypeContainer implements \Countable, \Iterator {
 	/**
 	 * Adds a label object type.
 	 * 
-	 * @param	wcf\system\label\object\type\LabelObjectType	$objectType
+	 * @param	\wcf\system\label\object\type\LabelObjectType	$objectType
 	 */
 	public function add(LabelObjectType $objectType) {
 		$this->objectTypes[] = $objectType;
@@ -76,7 +76,7 @@ class LabelObjectTypeContainer implements \Countable, \Iterator {
 	
 	/**
 	 * Returns the object type name.
-	 *
+	 * 
 	 * @return	string
 	 */
 	public function getObjectTypeName() {

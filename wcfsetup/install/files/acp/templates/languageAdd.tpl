@@ -4,9 +4,7 @@
 	<h1>{lang}wcf.acp.language.{@$action}{/lang}</h1>
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $success|isset}
 	<p class="success">{lang}wcf.global.success.{@$action}{/lang}</p>
@@ -61,6 +59,23 @@
 				</dd>
 			</dl>
 			
+			<dl{if $errorField == 'countryCode'} class="formError"{/if}>
+				<dt><label for="countryCode">{lang}wcf.acp.language.countryCode{/lang}</label></dt>
+				<dd>
+					<input type="text" id="countryCode" name="countryCode" value="{$countryCode}" class="medium" required="required" />
+					{if $errorField == 'countryCode'}
+						<small class="innerError">
+							{if $errorType == 'empty'}
+								{lang}wcf.global.form.error.empty{/lang}
+							{else}
+								{lang}wcf.acp.language.add.countryCode.error.{@$errorType}{/lang}
+							{/if}
+						</small>
+					{/if}
+					<small>{lang}wcf.acp.language.countryCode.description{/lang}</small>
+				</dd>
+			</dl>
+			
 			{if $action == 'add'}
 				<dl{if $errorField == 'sourceLanguageID'} class="formError"{/if}>
 					<dt><label for="sourceLanguageID">{lang}wcf.acp.language.add.source{/lang}</label></dt>
@@ -92,6 +107,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+		{@SECURITY_TOKEN_INPUT_TAG}
  	</div>
 </form>
 

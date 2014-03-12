@@ -8,7 +8,7 @@ use wcf\system\io\GZipFile;
  * Contains file-related functions.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	util
@@ -103,7 +103,7 @@ final class FileUtil {
 	
 	/**
 	 * Removes a leading slash from the given path.
-	 *
+	 * 
 	 * @param	string		$path
 	 * @return	string
 	 */
@@ -398,7 +398,7 @@ final class FileUtil {
 	 * @param	array		$postParameters
 	 * @param	array		$headers		empty array or a not initialized variable
 	 * @return	string
-	 * @deprecated	This method currently only is a wrapper around \wcf\util\HTTPRequest. Please use 
+	 * @deprecated	This method currently only is a wrapper around \wcf\util\HTTPRequest. Please use
 	 * 		HTTPRequest from now on, as this method may be removed in the future.
 	 */
 	public static function downloadFileFromHttp($httpUrl, $prefix = 'package', array $options = array(), array $postParameters = array(), &$headers = array()) {
@@ -445,7 +445,7 @@ final class FileUtil {
 	 * 
 	 * @param	string		$gzipped
 	 * @param	string		$destination
-	 * @return	boolean	
+	 * @return	boolean
 	 */
 	public static function uncompressFile($gzipped, $destination) {
 		if (!@is_file($gzipped)) {
@@ -505,10 +505,13 @@ final class FileUtil {
 			// WCFSetup
 			if (defined('INSTALL_SCRIPT')) {
 				// do not use PHP_OS here, as this represents the system it was built on != running on
-				if (strpos(php_uname(), 'Windows') !== false) {
+				// php_uname() is forbidden on some strange hosts; PHP_EOL is reliable 
+				if (PHP_EOL == "\r\n") {
+					// Windows
 					self::$mode = '0777';
 				}
 				else {
+					// anything but Windows
 					clearstatcache();
 					
 					self::$mode = '0666';

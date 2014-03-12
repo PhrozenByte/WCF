@@ -22,7 +22,7 @@ use wcf\util\XML;
  * Provides functions to manage package updates.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package
@@ -33,25 +33,45 @@ class PackageUpdateDispatcher extends SingletonFactory {
 	 * Refreshes the package database.
 	 * 
 	 * @param	array<integer>		$packageUpdateServerIDs
+	 * @param	boolean			$ignoreCache
 	 */
-	public function refreshPackageDatabase(array $packageUpdateServerIDs = array()) {
+	public function refreshPackageDatabase(array $packageUpdateServerIDs = array(), $ignoreCache = false) {
 		// get update server data
 		$updateServers = PackageUpdateServer::getActiveUpdateServers($packageUpdateServerIDs);
 		
 		// loop servers
 		$refreshedPackageLists = false;
 		foreach ($updateServers as $updateServer) {
-			if ($updateServer->lastUpdateTime < TIME_NOW - 600) {
+			if ($ignoreCache || $updateServer->lastUpdateTime < TIME_NOW - 600) {
+				$errorMessage = '';
+				
 				try {
 					$this->getPackageUpdateXML($updateServer);
 					$refreshedPackageLists = true;
 				}
 				catch (SystemException $e) {
+					$errorMessage = $e->getMessage();
+				}
+				catch (PackageUpdateUnauthorizedException $e) {
+					$reply = $e->getRequest()->getReply();
+					foreach ($reply['headers'] as $header) {
+						if (preg_match('~^HTTP~', $header)) {
+							$errorMessage = $header;
+							break;
+						}
+					}
+					
+					if (!$errorMessage) {
+						$errorMessage = 'Unknown (HTTP status ' . (is_array($reply['statusCode']) ? reset($reply['statusCode']) : $reply['statusCode']) . ')';
+					}
+				}
+				
+				if ($errorMessage) {
 					// save error status
 					$updateServerEditor = new PackageUpdateServerEditor($updateServer);
 					$updateServerEditor->update(array(
 						'status' => 'offline',
-						'errorMessage' => $e->getMessage()
+						'errorMessage' => $errorMessage
 					));
 				}
 			}
@@ -65,7 +85,7 @@ class PackageUpdateDispatcher extends SingletonFactory {
 	/**
 	 * Gets the package_update.xml from an update server.
 	 * 
-	 * @param	wcf\data\package\update\server\PackageUpdateServer	$updateServer
+	 * @param	\wcf\data\package\update\server\PackageUpdateServer	$updateServer
 	 */
 	protected function getPackageUpdateXML(PackageUpdateServer $updateServer) {
 		$authData = $updateServer->getAuthData();
@@ -676,7 +696,7 @@ class PackageUpdateDispatcher extends SingletonFactory {
 	 * Creates a new package installation scheduler.
 	 * 
 	 * @param	array			$selectedPackages
-	 * @return	wcf\system\package\PackageInstallationScheduler
+	 * @return	\wcf\system\package\PackageInstallationScheduler
 	 */
 	public function prepareInstallation(array $selectedPackages) {
 		return new PackageInstallationScheduler($selectedPackages);
@@ -697,7 +717,7 @@ class PackageUpdateDispatcher extends SingletonFactory {
 		
 		// get versions
 		$versions = array();
-		$sql = "SELECT		puv.*, pu.*
+		$sql = "SELECT		puv.*, pu.*, pus.loginUsername, pus.loginPassword
 			FROM		wcf".WCF_N."_package_update_version puv
 			LEFT JOIN	wcf".WCF_N."_package_update pu
 			ON		(pu.packageUpdateID = puv.packageUpdateID)

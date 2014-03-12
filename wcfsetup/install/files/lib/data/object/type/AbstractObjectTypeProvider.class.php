@@ -5,7 +5,7 @@ namespace wcf\data\object\type;
  * Abstract implementation of an object type provider.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.object.type
@@ -31,7 +31,7 @@ abstract class AbstractObjectTypeProvider implements IObjectTypeProvider {
 	public $listClassName = '';
 	
 	/**
-	 * @see	wcf\data\object\type\IObjectTypeProvider::getObjectByID()
+	 * @see	\wcf\data\object\type\IObjectTypeProvider::getObjectByID()
 	 */
 	public function getObjectByID($objectID) {
 		$object = new $this->className($objectID);
@@ -43,7 +43,7 @@ abstract class AbstractObjectTypeProvider implements IObjectTypeProvider {
 	}
 	
 	/**
-	 * @see	wcf\data\object\type\IObjectTypeProvider::getObjectsByIDs()
+	 * @see	\wcf\data\object\type\IObjectTypeProvider::getObjectsByIDs()
 	 */
 	public function getObjectsByIDs(array $objectIDs) {
 		$tableAlias = call_user_func(array($this->className, 'getDatabaseTableAlias'));

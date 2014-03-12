@@ -7,7 +7,7 @@ use wcf\system\language\LanguageFactory;
  * This class provides default implementations for a list of dynamic user options.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -15,12 +15,12 @@ use wcf\system\language\LanguageFactory;
  */
 abstract class UserOptionListForm extends AbstractOptionListForm {
 	/**
-	 * @see	wcf\acp\form\AbstractOptionListForm::$optionHandlerClassName
+	 * @see	\wcf\acp\form\AbstractOptionListForm::$optionHandlerClassName
 	 */
 	public $optionHandlerClassName = 'wcf\system\option\user\UserOptionHandler';
 	
 	/**
-	 * @see	wcf\acp\form\AbstractOptionListForm::$supportI18n
+	 * @see	\wcf\acp\form\AbstractOptionListForm::$supportI18n
 	 */
 	public $supportI18n = false;
 	

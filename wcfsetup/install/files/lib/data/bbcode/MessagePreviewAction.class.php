@@ -14,7 +14,7 @@ use wcf\util\StringUtil;
  * Provides a default message preview action.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.message
@@ -22,7 +22,7 @@ use wcf\util\StringUtil;
  */
 class MessagePreviewAction extends BBCodeAction {
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
+	 * @see	\wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
 	 */
 	protected $allowGuestAccess = array('getMessagePreview');
 		
@@ -41,7 +41,7 @@ class MessagePreviewAction extends BBCodeAction {
 	
 	/**
 	 * Returns a rendered message preview.
-	 *
+	 * 
 	 * @return	array
 	 */
 	public function getMessagePreview() {

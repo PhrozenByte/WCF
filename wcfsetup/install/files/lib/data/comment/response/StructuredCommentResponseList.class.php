@@ -9,7 +9,7 @@ use wcf\system\like\LikeHandler;
  * Provides a structured comment response list.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.comment.response
@@ -18,13 +18,13 @@ use wcf\system\like\LikeHandler;
 class StructuredCommentResponseList extends CommentResponseList {
 	/**
 	 * comment object
-	 * @var	wcf\data\comment\Comment;
+	 * @var	\wcf\data\comment\Comment;
 	 */
 	public $comment = null;
 	
 	/**
 	 * comment manager
-	 * @var	wcf\system\comment\manager\ICommentManager
+	 * @var	\wcf\system\comment\manager\ICommentManager
 	 */
 	public $commentManager = null;
 	
@@ -35,15 +35,15 @@ class StructuredCommentResponseList extends CommentResponseList {
 	public $minResponseTime = 0;
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$sqlLimit
+	 * @see	\wcf\data\DatabaseObjectList::$sqlLimit
 	 */
 	public $sqlLimit = 50;
 	
 	/**
 	 * Creates a new structured comment response list.
 	 * 
-	 * @param	wcf\system\comment\manager\ICommentManager	$commentManager
-	 * @param	wcf\data\comment\Comment			$comment
+	 * @param	\wcf\system\comment\manager\ICommentManager	$commentManager
+	 * @param	\wcf\data\comment\Comment			$comment
 	 */
 	public function __construct(ICommentManager $commentManager, Comment $comment) {
 		parent::__construct();
@@ -56,7 +56,7 @@ class StructuredCommentResponseList extends CommentResponseList {
 	}
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::readObjects()
+	 * @see	\wcf\data\DatabaseObjectList::readObjects()
 	 */
 	public function readObjects() {
 		parent::readObjects();
@@ -88,7 +88,7 @@ class StructuredCommentResponseList extends CommentResponseList {
 	
 	/**
 	 * Fetches the like data.
-	 *
+	 * 
 	 * @return	array
 	 */
 	public function getLikeData() {

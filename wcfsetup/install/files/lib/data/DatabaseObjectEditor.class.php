@@ -6,7 +6,7 @@ use wcf\system\WCF;
  * Basic implementation for object editors following the decorator pattern.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data
@@ -14,7 +14,7 @@ use wcf\system\WCF;
  */
 abstract class DatabaseObjectEditor extends DatabaseObjectDecorator implements IEditableObject {
 	/**
-	 * @see	wcf\data\IEditableObject::create()
+	 * @see	\wcf\data\IEditableObject::create()
 	 */
 	public static function create(array $parameters = array()) {
 		$keys = $values = '';
@@ -48,7 +48,7 @@ abstract class DatabaseObjectEditor extends DatabaseObjectDecorator implements I
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableObject::update()
+	 * @see	\wcf\data\IEditableObject::update()
 	 */
 	public function update(array $parameters = array()) {
 		if (empty($parameters)) return;
@@ -70,7 +70,7 @@ abstract class DatabaseObjectEditor extends DatabaseObjectDecorator implements I
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableObject::updateCounters()
+	 * @see	\wcf\data\IEditableObject::updateCounters()
 	 */
 	public function updateCounters(array $counters = array()) {
 		if (empty($counters)) return;
@@ -92,14 +92,14 @@ abstract class DatabaseObjectEditor extends DatabaseObjectDecorator implements I
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableObject::delete()
+	 * @see	\wcf\data\IEditableObject::delete()
 	 */
 	public function delete() {
 		static::deleteAll(array($this->getObjectID()));
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableObject::deleteAll()
+	 * @see	\wcf\data\IEditableObject::deleteAll()
 	 */
 	public static function deleteAll(array $objectIDs = array()) {
 		$sql = "DELETE FROM	".static::getDatabaseTableName()."

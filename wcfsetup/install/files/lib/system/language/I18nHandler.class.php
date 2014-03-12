@@ -12,7 +12,7 @@ use wcf\util\StringUtil;
  * Provides internationalization support for input fields.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.language
@@ -21,7 +21,7 @@ use wcf\util\StringUtil;
 class I18nHandler extends SingletonFactory {
 	/**
 	 * list of available languages
-	 * @var	array<wcf\data\language\Language>
+	 * @var	array<\wcf\data\language\Language>
 	 */
 	protected $availableLanguages = array();
 	
@@ -51,12 +51,12 @@ class I18nHandler extends SingletonFactory {
 	
 	/**
 	 * language variable regex object
-	 * @var	wcf\system\Regex
+	 * @var	\wcf\system\Regex
 	 */
 	protected $regex = null;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		$this->availableLanguages = LanguageFactory::getInstance()->getLanguages();
@@ -133,7 +133,7 @@ class I18nHandler extends SingletonFactory {
 	 * 
 	 * @param	string		elementID
 	 * @return	string
-	 * @see		wcf\system\language\I18nHandler::isPlainValue()
+	 * @see		\wcf\system\language\I18nHandler::isPlainValue()
 	 */
 	public function getValue($elementID) {
 		return $this->plainValues[$elementID];
@@ -214,6 +214,11 @@ class I18nHandler extends SingletonFactory {
 	 * @return	boolean
 	 */
 	public function validateValue($elementID, $requireI18n = false, $permitEmptyValue = false) {
+		// do not force i18n if only one language is available
+		if ($requireI18n && count($this->availableLanguages) == 1) {
+			$requireI18n = false;
+		}
+		
 		if ($this->isPlainValue($elementID)) {
 			// plain values may be left empty
 			if ($permitEmptyValue) {
@@ -313,13 +318,15 @@ class I18nHandler extends SingletonFactory {
 		// update language items
 		if (!empty($updateLanguageIDs)) {
 			$sql = "UPDATE	wcf".WCF_N."_language_item
-				SET	languageItemValue = ?
+				SET	languageItemValue = ?,
+					languageItemOriginIsSystem = ?
 				WHERE	languageItemID = ?";
 			$statement = WCF::getDB()->prepareStatement($sql);
 			
 			foreach ($updateLanguageIDs as $languageID) {
 				$statement->execute(array(
 					(isset($this->i18nValues[$elementID]) ? $this->i18nValues[$elementID][$languageID] : $this->plainValues[$elementID]),
+					0,
 					$languageItemIDs[$languageID]
 				));
 			}
@@ -414,6 +421,11 @@ class I18nHandler extends SingletonFactory {
 						if ($row['languageID'] == LanguageFactory::getInstance()->getDefaultLanguageID()) {
 							$value = $languageItemValue;
 						}
+					}
+					
+					// item appeared to be a language item but either is not or does not exist
+					if (empty($i18nValues) && empty($value)) {
+						$value = $this->elementOptions[$elementID]['value'];
 					}
 				}
 				else {

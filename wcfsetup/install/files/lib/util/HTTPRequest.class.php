@@ -13,7 +13,7 @@ use wcf\system\WCF;
  * It supports POST, SSL, Basic Auth etc.
  * 
  * @author	Tim Duesterhus
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	util
@@ -34,7 +34,7 @@ final class HTTPRequest {
 	
 	/**
 	 * given files
-	 * @var array
+	 * @var	array
 	 */
 	private $files = array();
 	
@@ -109,10 +109,10 @@ final class HTTPRequest {
 	 * 
 	 * @param	string		$url		URL to connect to
 	 * @param	array<string>	$options
-	 * @param	array		$postParameters	Parameters to send via POST
+	 * @param	mixed		$postParameters	Parameters to send via POST
 	 * @param	array		$files		Files to attach to the request
 	 */
-	public function __construct($url, array $options = array(), array $postParameters = array(), array $files = array()) {
+	public function __construct($url, array $options = array(), $postParameters = array(), array $files = array()) {
 		$this->setURL($url);
 		
 		$this->postParameters = $postParameters;
@@ -126,7 +126,13 @@ final class HTTPRequest {
 		$this->addHeader('Accept-Language', WCF::getLanguage()->getFixedLanguageCode());
 		if ($this->options['method'] !== 'GET') {
 			if (empty($this->files)) {
-				$this->body = http_build_query($this->postParameters, '', '&');
+				if (is_array($postParameters)) {
+					$this->body = http_build_query($this->postParameters, '', '&');
+				}
+				else if (is_string($postParameters) && !empty($postParameters)) {
+					$this->body = $postParameters;
+				}
+				
 				$this->addHeader('Content-Type', 'application/x-www-form-urlencoded');
 			}
 			else {
@@ -196,7 +202,6 @@ final class HTTPRequest {
 		$this->useSSL = $parsedUrl['scheme'] === 'https';
 		$this->host = $parsedUrl['host'];
 		$this->port = isset($parsedUrl['port']) ? $parsedUrl['port'] : ($this->useSSL ? 443 : 80);
-		$this->path = isset($parsedUrl['path']) ? $parsedUrl['path'] : '/';
 		$this->query = isset($parsedUrl['query']) ? $parsedUrl['query'] : '';
 		
 		// update the 'Host:' header if URL has changed
@@ -308,13 +313,26 @@ final class HTTPRequest {
 				catch (SystemException $e) {
 					throw new SystemException("Received 'Location: ".$this->replyHeaders['Location']."' from server, which is invalid.", 0, $e);
 				}
-				$newRequest->execute();
 				
-				// update data with data from the inner request
-				$this->url = $newRequest->url;
-				$this->statusCode = $newRequest->statusCode;
-				$this->replyHeaders = $newRequest->replyHeaders;
-				$this->replyBody = $newRequest->replyBody;
+				try {
+					$newRequest->execute();
+					
+					// update data with data from the inner request
+					$this->url = $newRequest->url;
+					$this->statusCode = $newRequest->statusCode;
+					$this->replyHeaders = $newRequest->replyHeaders;
+					$this->replyBody = $newRequest->replyBody;
+				}
+				catch (SystemException $e) {
+					// update data with data from the inner request
+					$this->url = $newRequest->url;
+					$this->statusCode = $newRequest->statusCode;
+					$this->replyHeaders = $newRequest->replyHeaders;
+					$this->replyBody = $newRequest->replyBody;
+					
+					throw $e;
+				}
+				
 				return;
 			break;
 			
@@ -404,8 +422,9 @@ final class HTTPRequest {
 		if ($append && isset($this->headers[$name])) {
 			$this->headers[$name][] = $value;
 		}
-		
-		$this->headers[$name] = (array) $value;
+		else {
+			$this->headers[$name] = array($value);
+		}
 	}
 	
 	/**

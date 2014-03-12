@@ -15,11 +15,13 @@
 	<p>{lang}wcf.acp.attachment.stats{/lang}</p>
 </header>
 
+{include file='formError'}
+
 <form method="post" action="{link controller='AttachmentList'}{/link}">
 	<div class="container containerPadding marginTop">
 		<fieldset>
 			<legend>{lang}wcf.global.filter{/lang}</legend>
-		
+			
 			<dl>
 				<dt><label for="username">{lang}wcf.user.username{/lang}</label></dt>
 				<dd>
@@ -48,6 +50,7 @@
 	
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

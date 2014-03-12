@@ -72,9 +72,12 @@
 			> ol {
 				list-style-type: none;
 				margin-left: 0;
+				overflow: auto;
 				
 				> li {
 					padding-left: 0;
+					white-space: pre;
+					word-wrap: normal;
 				}
 			}
 		}
@@ -194,7 +197,7 @@
 		padding-left: 54px;
 	}
 	
-	&:before {
+	&::before {
 		content: "\f10d";
 		color: @wcfDimmedColor;
 		font-family: FontAwesome;
@@ -220,7 +223,7 @@
 		padding-left: @wcfGapLarge;
 		min-height: 0;
 		
-		&:before {
+		&::before {
 			display: none;
 		}
 	}
@@ -228,7 +231,7 @@
 
 @media only screen and (max-width: 800px) {
 	.quoteBox {
-		&:before {
+		&::before {
 			font-size: 14px;
 			left: @wcfGapSmall;
 		}
@@ -254,6 +257,7 @@
 	}
 	
 	> div {
+		overflow: hidden;
 		padding-bottom: @wcfGapSmall;
 	}
 }

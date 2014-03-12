@@ -1,13 +1,12 @@
 <?php
 namespace wcf\system\bbcode\highlighter;
 use wcf\system\Regex;
-use wcf\util\StringUtil;
 
 /**
  * Highlights syntax of PHP sourcecode.
  * 
  * @author	Tim Duesterhus, Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode.highlighter
@@ -17,7 +16,7 @@ class PhpHighlighter extends Highlighter {
 	public static $colorToClass = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		parent::init();
@@ -31,7 +30,7 @@ class PhpHighlighter extends Highlighter {
 	}
 	
 	/**
-	 * @see	wcf\system\bbcode\highlighter\Highlighter::highlight()
+	 * @see	\wcf\system\bbcode\highlighter\Highlighter::highlight()
 	 */
 	public function highlight($code) {
 		// add starting php tag
@@ -57,12 +56,16 @@ class PhpHighlighter extends Highlighter {
 		// remove breaks
 		$highlightedCode = str_replace("\n", "", $highlightedCode);
 		$highlightedCode = str_replace('<br />', "\n", $highlightedCode);
+		
 		// get tabs back
 		$highlightedCode = str_replace('&nbsp;&nbsp;&nbsp;&nbsp;', "\t", $highlightedCode);
+		// replace non breaking space with normal space, white-space is preserved by CSS
+		$highlightedCode = str_replace('&nbsp;', " ", $highlightedCode);
+		
 		// convert colors to classes
 		$highlightedCode = strtr($highlightedCode, self::$colorToClass);
 		
-		// replace double quotes by entity 
+		// replace double quotes by entity
 		return Regex::compile('(?<!\<span class=)"(?!\>)')->replace($highlightedCode, '&quot;');
 	}
 }

@@ -7,7 +7,7 @@ use wcf\data\comment\Comment;
  * Default interface for comment managers.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.comment.manager
@@ -25,7 +25,7 @@ interface ICommentManager {
 	/**
 	 * Returns true if the current user may edit given comment.
 	 * 
-	 * @param	wcf\data\comment\Comment	$comment
+	 * @param	\wcf\data\comment\Comment	$comment
 	 * @return	boolean
 	 */
 	public function canEditComment(Comment $comment);
@@ -33,7 +33,7 @@ interface ICommentManager {
 	/**
 	 * Returns true if the current user may edit given response.
 	 * 
-	 * @param	wcf\data\comment\response\CommentResponse	$response
+	 * @param	\wcf\data\comment\response\CommentResponse	$response
 	 * @return	boolean
 	 */
 	public function canEditResponse(CommentResponse $response);
@@ -41,7 +41,7 @@ interface ICommentManager {
 	/**
 	 * Returns true if the current user may delete given comment.
 	 * 
-	 * @param	wcf\data\comment\Comment	$comment
+	 * @param	\wcf\data\comment\Comment	$comment
 	 * @return	boolean
 	 */
 	public function canDeleteComment(Comment $comment);
@@ -49,7 +49,7 @@ interface ICommentManager {
 	/**
 	 * Returns true if the current user may delete given response.
 	 * 
-	 * @param	wcf\data\comment\response\CommentResponse	$response
+	 * @param	\wcf\data\comment\response\CommentResponse	$response
 	 */
 	public function canDeleteResponse(CommentResponse $response);
 	

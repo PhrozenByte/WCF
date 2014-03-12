@@ -9,7 +9,7 @@ use wcf\util\StringUtil;
  * This class represents an e-mail.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.mail
@@ -18,67 +18,67 @@ use wcf\util\StringUtil;
 class Mail {
 	/**
 	 * line ending string
-	 * @var string
+	 * @var	string
 	 */
 	public static $lineEnding = "\n";
 	
 	/**
 	 * mail header
-	 * @var string
+	 * @var	string
 	 */
 	protected $header = '';
 	
 	/**
 	 * boundary for multipart/mixed mail
-	 * @var string
+	 * @var	string
 	 */
 	protected $boundary = '';
 	
 	/**
 	 * mail content mime type
-	 * @var string
+	 * @var	string
 	 */
 	protected $contentType = "text/plain";
 	
 	/**
 	 * mail recipients
-	 * @var array<string>
+	 * @var	array<string>
 	 */
 	protected $to = array();
 	
 	/**
 	 * mail subject
-	 * @var string
+	 * @var	string
 	 */
 	protected $subject = '';
 	
 	/**
 	 * mail message
-	 * @var string
+	 * @var	string
 	 */
 	protected $message = '';
 	
 	/**
 	 * mail sender
-	 * @var array<string>
+	 * @var	string
 	 */
-	protected $from = array();
+	protected $from = '';
 	
 	/**
 	 * mail carbon copy
-	 * @var array<string>
+	 * @var	array<string>
 	 */
 	protected $cc = array();
 	
 	/**
 	 * mail blind carbon copy
-	 * @var array<string>
+	 * @var	array<string>
 	 */
 	protected $bcc = array();
 	
 	/**
 	 * mail attachments
-	 * @var array
+	 * @var	array
 	 */
 	protected $attachments = array();
 	
@@ -96,7 +96,7 @@ class Mail {
 	
 	/**
 	 * mail language
-	 * @var wcf\data\language\Language
+	 * @var	\wcf\data\language\Language
 	 */
 	protected $language = null;
 	
@@ -144,7 +144,7 @@ class Mail {
 		
 		$this->header .=
 			'X-Priority: 3'.self::$lineEnding
-			.'X-Mailer: WoltLab Community Framework Mail Package'.self::$lineEnding									
+			.'X-Mailer: WoltLab Community Framework Mail Package'.self::$lineEnding
 			.'From: '.$this->getFrom().self::$lineEnding
 			.($this->getCCString() != '' ? 'CC:'.$this->getCCString().self::$lineEnding : '')
 			.($this->getBCCString() != '' ? 'BCC:'.$this->getBCCString().self::$lineEnding : '');
@@ -190,7 +190,7 @@ class Mail {
 	public function getBody() {
 		$counter = 1;
 		$this->body = '';
-
+		
 		if (count($this->getAttachments())) {
 			// add message
 			$this->body .= '--'.$this->getBoundary().self::$lineEnding;
@@ -347,7 +347,7 @@ class Mail {
 	/**
 	 * Gets the sender of this mail.
 	 * 
-	 * @return	mixed
+	 * @return	string
 	 */
 	public function getFrom() {
 		return $this->from;
@@ -514,16 +514,16 @@ class Mail {
 	/**
 	 * Sets the mail language.
 	 * 
-	 * @param	wcf\data\language\Language	$language
+	 * @param	\wcf\data\language\Language	$language
 	 */
 	public function setLanguage(Language $language) {
 		$this->language = $language;
 	}
 	
 	/**
-	 * Gets the mail language.
-	 *
-	 * @return	wcf\data\language\Language
+	 * Returns the mail language.
+	 * 
+	 * @return	\wcf\data\language\Language
 	 */
 	public function getLanguage() {
 		if ($this->language === null) return WCF::getLanguage();

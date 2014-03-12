@@ -1,14 +1,11 @@
 <?php
-use wcf\data\language\LanguageEditor;
-use wcf\system\cache\CacheHandler;
 use wcf\system\session\SessionHandler;
-use wcf\system\template\ACPTemplateEngine;
 use wcf\system\WCF;
 use wcf\util\DateUtil;
 
 /**
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @category	Community Framework
@@ -67,5 +64,3 @@ if ($timezone = @date_default_timezone_get()) {
 		$statement->execute(array($timezone, 'timezone'));
 	}
 }
-
-

@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Handles user online locations.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.user.online.location
@@ -23,7 +23,7 @@ class UserOnlineLocationHandler extends SingletonFactory {
 	public $locations = array();
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		// load locations
@@ -35,7 +35,7 @@ class UserOnlineLocationHandler extends SingletonFactory {
 	/**
 	 * Gets the location of a given user.
 	 * 
-	 * @param	wcf\data\user\online\UserOnline		$user
+	 * @param	\wcf\data\user\online\UserOnline		$user
 	 * @return	string
 	 */
 	public function getLocation(UserOnline $user) {

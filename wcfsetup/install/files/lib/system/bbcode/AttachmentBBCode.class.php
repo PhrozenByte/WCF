@@ -8,7 +8,7 @@ use wcf\util\StringUtil;
  * Parses the [attach] bbcode tag.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode
@@ -17,7 +17,7 @@ use wcf\util\StringUtil;
 class AttachmentBBCode extends AbstractBBCode {
 	/**
 	 * list of attachments
-	 * @var	wcf\data\attachment\GroupedAttachmentList
+	 * @var	\wcf\data\attachment\GroupedAttachmentList
 	 */
 	protected static $attachmentList = null;
 	
@@ -28,7 +28,7 @@ class AttachmentBBCode extends AbstractBBCode {
 	protected static $objectID = 0;
 	
 	/**
-	 * @see	wcf\system\bbcode\IBBCode::getParsedTag()
+	 * @see	\wcf\system\bbcode\IBBCode::getParsedTag()
 	 */
 	public function getParsedTag(array $openingTag, $content, array $closingTag, BBCodeParser $parser) {
 		// get attachment id
@@ -52,10 +52,10 @@ class AttachmentBBCode extends AbstractBBCode {
 			if ($attachment->showAsImage() && $parser->getOutputType() == 'text/html') {
 				// image
 				$linkParameters = array(
-					'object' => $attachment	
+					'object' => $attachment
 				);
 				if ($attachment->hasThumbnail()) {
-					$linkParameters['thumbnail'] = 1; 
+					$linkParameters['thumbnail'] = 1;
 				}
 				
 				// get alignment
@@ -83,7 +83,7 @@ class AttachmentBBCode extends AbstractBBCode {
 	/**
 	 * Sets the attachment list.
 	 * 
-	 * @param	wcf\data\attachment\GroupedAttachmentList	$attachments
+	 * @param	\wcf\data\attachment\GroupedAttachmentList	$attachments
 	 */
 	public static function setAttachmentList(GroupedAttachmentList $attachmentList) {
 		self::$attachmentList = $attachmentList;

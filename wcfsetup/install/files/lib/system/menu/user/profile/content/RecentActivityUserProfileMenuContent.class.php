@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Handles user activity events.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.menu.user.profile.content
@@ -17,7 +17,7 @@ use wcf\system\WCF;
  */
 class RecentActivityUserProfileMenuContent extends SingletonFactory implements IUserProfileMenuContent {
 	/**
-	 * @see	wcf\system\menu\user\profile\content\IUserProfileMenuContent::getContent()
+	 * @see	\wcf\system\menu\user\profile\content\IUserProfileMenuContent::getContent()
 	 */
 	public function getContent($userID) {
 		$eventList = new ViewableUserActivityEventList();
@@ -40,7 +40,7 @@ class RecentActivityUserProfileMenuContent extends SingletonFactory implements I
 	}
 	
 	/**
-	 * @see	wcf\system\menu\user\profile\content\IUserProfileMenuContent::isVisible()
+	 * @see	\wcf\system\menu\user\profile\content\IUserProfileMenuContent::isVisible()
 	 */
 	public function isVisible($userID) {
 		return true;

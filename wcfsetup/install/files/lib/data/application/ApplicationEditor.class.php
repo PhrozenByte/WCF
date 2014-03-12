@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Provides functions to edit applications.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.application
@@ -17,7 +17,7 @@ use wcf\system\WCF;
  */
 class ApplicationEditor extends DatabaseObjectEditor implements IEditableCachedObject {
 	/**
-	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	\wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\application\Application';
 	
@@ -85,7 +85,7 @@ class ApplicationEditor extends DatabaseObjectEditor implements IEditableCachedO
 	}
 	
 	/**
-	 * @see	wcf\data\IEditableCachedObject::resetCache()
+	 * @see	\wcf\data\IEditableCachedObject::resetCache()
 	 */
 	public static function resetCache() {
 		ApplicationCacheBuilder::getInstance()->reset();

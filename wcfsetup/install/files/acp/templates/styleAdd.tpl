@@ -63,9 +63,7 @@
 	{if $action == 'edit'}<p>{$styleName}</p>{/if}
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $success|isset}
 	<p class="success">{lang}wcf.global.success.{$action}{/lang}</p>
@@ -212,7 +210,7 @@
 				<dl{if $errorField == 'styleDescription'} class="formError"{/if}>
 					<dt><label for="styleDescription">{lang}wcf.acp.style.styleDescription{/lang}</label></dt>
 					<dd>
-						<textarea name="styleDescription" id="styleDescription">{$styleDescription}</textarea>
+						<textarea name="styleDescription" id="styleDescription">{$i18nPlainValues['styleDescription']}</textarea>
 						{if $errorField == 'styleDescription'}
 							<small class="innerError">
 								{if $errorType == 'empty'}
@@ -569,6 +567,7 @@
 	<div class="formSubmit">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
 		<input type="hidden" name="tmpHash" value="{$tmpHash}" />
+		{@SECURITY_TOKEN_INPUT_TAG}
 	</div>
 </form>
 

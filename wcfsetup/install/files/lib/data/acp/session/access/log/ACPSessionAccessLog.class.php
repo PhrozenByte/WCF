@@ -7,7 +7,7 @@ use wcf\util\UserUtil;
  * Represents a session access log entry.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.acp.session.access.log
@@ -15,12 +15,12 @@ use wcf\util\UserUtil;
  */
 class ACPSessionAccessLog extends DatabaseObject {
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableName
 	 */
 	protected static $databaseTableName = 'acp_session_access_log';
 	
 	/**
-	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
+	 * @see	\wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'sessionAccessLogID';
 	
@@ -39,7 +39,7 @@ class ACPSessionAccessLog extends DatabaseObject {
 	
 	/**
 	 * Returns the ip address and attempts to convert into IPv4.
-	 *
+	 * 
 	 * @return	string
 	 */
 	public function getIpAddress() {

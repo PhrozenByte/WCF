@@ -6,7 +6,7 @@ use wcf\data\acl\option\category\ACLOptionCategoryList;
  * Caches the acl categories for a certain package.
  * 
  * @author	Matthias Schmidt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.cache.builder
@@ -14,7 +14,7 @@ use wcf\data\acl\option\category\ACLOptionCategoryList;
  */
 class ACLOptionCategoryCacheBuilder extends AbstractCacheBuilder {
 	/**
-	 * @see	wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
+	 * @see	\wcf\system\cache\builder\AbstractCacheBuilder::rebuild()
 	 */
 	public function rebuild(array $parameters) {
 		$list = new ACLOptionCategoryList();

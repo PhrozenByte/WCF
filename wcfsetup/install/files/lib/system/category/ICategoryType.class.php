@@ -6,7 +6,7 @@ use wcf\data\category\CategoryEditor;
  * Every category type has to implement this interface.
  * 
  * @author	Matthias Schmidt
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.category
@@ -16,7 +16,7 @@ interface ICategoryType {
 	/**
 	 * Is called right after the given category is deleted.
 	 * 
-	 * @param	wcf\data\category\CategoryEditor	$categoryEditor
+	 * @param	\wcf\data\category\CategoryEditor	$categoryEditor
 	 */
 	public function afterDeletion(CategoryEditor $categoryEditor);
 	
@@ -66,7 +66,7 @@ interface ICategoryType {
 	public function getObjectTypeName($definitionName);
 	
 	/**
-	 * Returns the language variable category for the description language 
+	 * Returns the language variable category for the description language
 	 * variables of categories of this type.
 	 * 
 	 * @return	string

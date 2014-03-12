@@ -3,6 +3,7 @@ namespace wcf\system\option;
 use wcf\data\option\category\OptionCategory;
 use wcf\data\option\Option;
 use wcf\system\application\ApplicationHandler;
+use wcf\system\event\EventHandler;
 use wcf\system\exception\SystemException;
 use wcf\system\exception\UserInputException;
 use wcf\system\language\I18nHandler;
@@ -14,7 +15,7 @@ use wcf\util\StringUtil;
  * Handles options.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.option
@@ -35,13 +36,13 @@ class OptionHandler implements IOptionHandler {
 	
 	/**
 	 * list of all option categories
-	 * @var	array<wcf\data\option\category\OptionCategory>
+	 * @var	array<\wcf\data\option\category\OptionCategory>
 	 */
 	public $cachedCategories = null;
 	
 	/**
 	 * list of all options
-	 * @var	array<wcf\data\option\Option>
+	 * @var	array<\wcf\data\option\Option>
 	 */
 	public $cachedOptions = null;
 	
@@ -71,7 +72,7 @@ class OptionHandler implements IOptionHandler {
 	
 	/**
 	 * type object cache
-	 * @var	array<wcf\system\option\IOptionType>
+	 * @var	array<\wcf\system\option\IOptionType>
 	 */
 	public $typeObjects = array();
 	
@@ -106,7 +107,7 @@ class OptionHandler implements IOptionHandler {
 	public $didInit = false;
 	
 	/**
-	 * @see	wcf\system\option\IOptionHandler::__construct()
+	 * @see	\wcf\system\option\IOptionHandler::__construct()
 	 */
 	public function __construct($supportI18n, $languageItemPattern = '', $categoryName = '') {
 		$this->categoryName = $categoryName;
@@ -118,7 +119,7 @@ class OptionHandler implements IOptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionHandler::readUserInput()
+	 * @see	\wcf\system\option\IOptionHandler::readUserInput()
 	 */
 	public function readUserInput(array &$source) {
 		if (isset($source['values']) && is_array($source['values'])) $this->rawValues = $source['values'];
@@ -135,7 +136,7 @@ class OptionHandler implements IOptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionHandler::validate()
+	 * @see	\wcf\system\option\IOptionHandler::validate()
 	 */
 	public function validate() {
 		$errors = array();
@@ -153,7 +154,7 @@ class OptionHandler implements IOptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionHandler::getOptionTree()
+	 * @see	\wcf\system\option\IOptionHandler::getOptionTree()
 	 */
 	public function getOptionTree($parentCategoryName = '', $level = 0) {
 		$tree = array();
@@ -191,7 +192,7 @@ class OptionHandler implements IOptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionHandler::getCategoryOptions()
+	 * @see	\wcf\system\option\IOptionHandler::getCategoryOptions()
 	 */
 	public function getCategoryOptions($categoryName = '', $inherit = true) {
 		$children = array();
@@ -220,7 +221,7 @@ class OptionHandler implements IOptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionHandler::readData()
+	 * @see	\wcf\system\option\IOptionHandler::readData()
 	 */
 	public function readData() {
 		foreach ($this->options as $option) {
@@ -234,7 +235,7 @@ class OptionHandler implements IOptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionHandler::save()
+	 * @see	\wcf\system\option\IOptionHandler::save()
 	 */
 	public function save($categoryName = null, $optionPrefix = null) {
 		$saveOptions = array();
@@ -286,7 +287,7 @@ class OptionHandler implements IOptionHandler {
 	/**
 	 * Validates an option.
 	 * 
-	 * @param	wcf\data\option\Option		$option
+	 * @param	\wcf\data\option\Option		$option
 	 */
 	protected function validateOption(Option $option) {
 		// get type object
@@ -310,7 +311,7 @@ class OptionHandler implements IOptionHandler {
 	}
 	
 	/**
-	 * @see	wcf\system\option\IOptionType::getFormElement()
+	 * @see	\wcf\system\option\IOptionType::getFormElement()
 	 */
 	protected function getFormElement($type, Option $option) {
 		return $this->getTypeObject($type)->getFormElement($option, (isset($this->optionValues[$option->optionName]) ? $this->optionValues[$option->optionName] : null));
@@ -320,7 +321,7 @@ class OptionHandler implements IOptionHandler {
 	 * Returns an object of the requested option type.
 	 * 
 	 * @param	string			$type
-	 * @return	wcf\system\option\IOptionType
+	 * @return	\wcf\system\option\IOptionType
 	 */
 	public function getTypeObject($type) {
 		if (!isset($this->typeObjects[$type])) {
@@ -393,6 +394,9 @@ class OptionHandler implements IOptionHandler {
 		$this->cachedOptions = $cache->getData(array(), 'options');
 		$this->cachedCategoryStructure = $cache->getData(array(), 'categoryStructure');
 		$this->cachedOptionToCategories = $cache->getData(array(), 'optionToCategories');
+		
+		// allow option manipulation
+		EventHandler::getInstance()->fireAction($this, 'afterReadCache');
 	}
 	
 	/**
@@ -434,7 +438,7 @@ class OptionHandler implements IOptionHandler {
 	/**
 	 * Checks the required permissions and options of a category.
 	 * 
-	 * @param	wcf\data\option\category\OptionCategory		$category
+	 * @param	\wcf\data\option\category\OptionCategory		$category
 	 * @return	boolean
 	 */
 	protected function checkCategory(OptionCategory $category) {
@@ -471,7 +475,7 @@ class OptionHandler implements IOptionHandler {
 	/**
 	 * Checks the required permissions and options of an option.
 	 * 
-	 * @param	wcf\data\option\Option		$option
+	 * @param	\wcf\data\option\Option		$option
 	 * @return	boolean
 	 */
 	protected function checkOption(Option $option) {
@@ -512,7 +516,7 @@ class OptionHandler implements IOptionHandler {
 	/**
 	 * Checks visibility of an option.
 	 * 
-	 * @param	wcf\data\option\Option		$option
+	 * @param	\wcf\data\option\Option		$option
 	 * @return	boolean
 	 */
 	protected function checkVisibility(Option $option) {

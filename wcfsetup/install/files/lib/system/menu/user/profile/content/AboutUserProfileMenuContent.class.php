@@ -9,7 +9,7 @@ use wcf\system\WCF;
  * Handles user profile information content.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.menu.user.profile.content
@@ -18,12 +18,12 @@ use wcf\system\WCF;
 class AboutUserProfileMenuContent extends SingletonFactory implements IUserProfileMenuContent {
 	/**
 	 * user option handler object
-	 * @var	wcf\system\option\user\UserOptionHandler
+	 * @var	\wcf\system\option\user\UserOptionHandler
 	 */
 	public $optionHandler = null;
 	
 	/**
-	 * @see	wcf\system\menu\user\profile\content\IUserProfileMenuContent::getContent()
+	 * @see	\wcf\system\menu\user\profile\content\IUserProfileMenuContent::getContent()
 	 */
 	public function getContent($userID) {
 		if ($this->optionHandler === null) {
@@ -44,7 +44,7 @@ class AboutUserProfileMenuContent extends SingletonFactory implements IUserProfi
 	}
 	
 	/**
-	 * @see	wcf\system\menu\user\profile\content\IUserProfileMenuContent::isVisible()
+	 * @see	\wcf\system\menu\user\profile\content\IUserProfileMenuContent::isVisible()
 	 */
 	public function isVisible($userID) {
 		return true;

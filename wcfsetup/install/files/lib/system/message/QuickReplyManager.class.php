@@ -17,7 +17,7 @@ use wcf\util\MessageUtil;
  * Manages quick replies and stored messages.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.message
@@ -32,7 +32,7 @@ class QuickReplyManager extends SingletonFactory {
 	
 	/**
 	 * container object
-	 * @var	wcf\data\DatabaseObject
+	 * @var	\wcf\data\DatabaseObject
 	 */
 	public $container = null;
 	
@@ -99,7 +99,7 @@ class QuickReplyManager extends SingletonFactory {
 	/**
 	 * Validates parameters for current request.
 	 * 
-	 * @param	wcf\system\message\IMessageQuickReplyAction	$object
+	 * @param	\wcf\system\message\IMessageQuickReplyAction	$object
 	 * @param	array<array>					$parameters
 	 * @param	string						$containerClassName
 	 * @param	string						$containerDecoratorClassName
@@ -144,7 +144,7 @@ class QuickReplyManager extends SingletonFactory {
 	/**
 	 * Creates a new message and returns the parsed template.
 	 * 
-	 * @param	wcf\data\IMessageQuickReplyAction	$object
+	 * @param	\wcf\data\IMessageQuickReplyAction	$object
 	 * @param	array<array>				$parameters
 	 * @param	string					$containerActionClassName
 	 * @param	string					$sortOrder
@@ -220,7 +220,7 @@ class QuickReplyManager extends SingletonFactory {
 	/**
 	 * Returns the container object.
 	 * 
-	 * @return	wcf\data\DatabaseObject
+	 * @return	\wcf\data\DatabaseObject
 	 */
 	public function getContainer() {
 		return $this->container;

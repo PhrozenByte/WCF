@@ -15,7 +15,7 @@ use wcf\util\HTTPRequest;
  * Contains business logic related to preparation of package installations.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.package
@@ -30,7 +30,7 @@ class PackageInstallationScheduler {
 	
 	/**
 	 * list of package update servers
-	 * @var	array<wcf\data\package\update\server\PackageUpdateServer>
+	 * @var	array<\wcf\data\package\update\server\PackageUpdateServer>
 	 */
 	protected $packageUpdateServers = array();
 	
@@ -244,7 +244,7 @@ class PackageInstallationScheduler {
 			
 			// check response
 			if ($response['statusCode'] != 200) {
-				throw new SystemException(WCF::getLanguage()->get('wcf.acp.packageUpdate.error.downloadFailed', array('$package' => $package)) . ' ('.$response['body'].')');
+				throw new SystemException(WCF::getLanguage()->getDynamicVariable('wcf.acp.package.error.downloadFailed', array('__downloadPackage' => $package)) . ' ('.$response['body'].')');
 			}
 			
 			// write content to tmp file
@@ -479,7 +479,7 @@ class PackageInstallationScheduler {
 			WHERE		puf.packageUpdateVersionID IN (
 						SELECT	packageUpdateVersionID
 						FROM	wcf".WCF_N."_package_update_version
-						WHERE 	packageUpdateID IN (
+						WHERE	packageUpdateID IN (
 							SELECT	packageUpdateID
 							FROM	wcf".WCF_N."_package_update
 							WHERE	package = ?
@@ -526,7 +526,7 @@ class PackageInstallationScheduler {
 	
 	/**
 	 * Determines intermediate update steps using a backtracking algorithm in case there is no direct upgrade possible.
-	 *
+	 * 
 	 * @param	string		$package		package identifier
 	 * @param	array		$fromversions		list of all fromversions
 	 * @param	string		$currentVersion		current package version
@@ -579,7 +579,7 @@ class PackageInstallationScheduler {
 	
 	/**
 	 * Compares the length of two updates threads.
-	 *
+	 * 
 	 * @param	array		$updateThreadListA
 	 * @param	array		$updateThreadListB
 	 * @return	integer

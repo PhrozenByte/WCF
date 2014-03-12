@@ -9,7 +9,7 @@ use wcf\util\StringUtil;
  * Parses urls and smilies in simple messages.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.bbcode
@@ -24,7 +24,7 @@ class SimpleMessageParser extends SingletonFactory {
 	
 	/**
 	 * list of smilies
-	 * @var	array<wcf\data\smiley\Smiley>
+	 * @var	array<\wcf\data\smiley\Smiley>
 	 */
 	protected $smilies = array();
 	
@@ -35,7 +35,7 @@ class SimpleMessageParser extends SingletonFactory {
 	public $message = '';
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		parent::init();
@@ -147,10 +147,17 @@ class SimpleMessageParser extends SingletonFactory {
 	/**
 	 * Callback for preg_replace.
 	 * 
-	 * @see	wcf\system\bbcode\SimpleMessageParser::parseURLs()
+	 * @see	\wcf\system\bbcode\SimpleMessageParser::parseURLs()
 	 */
 	protected function parseURLsCallback($matches) {
-		return StringUtil::getAnchorTag(StringUtil::decodeHTML($matches[0]));
+		$url = StringUtil::decodeHTML($matches[0]);
+		
+		// add protocol if necessary
+		if (!preg_match("/[a-z]:\/\//si", $url)) {
+			$url = 'http://'.$url;
+		}
+		
+		return StringUtil::getAnchorTag($url);
 	}
 	
 	/**

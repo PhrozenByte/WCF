@@ -8,7 +8,7 @@ use wcf\system\WCF;
  * Basis class for a tree menu.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.menu
@@ -17,7 +17,7 @@ use wcf\system\WCF;
 abstract class TreeMenu extends SingletonFactory {
 	/**
 	 * list of visible menu items
-	 * @var	array<wcf\system\menu\ITreeMenuItem>
+	 * @var	array<\wcf\system\menu\ITreeMenuItem>
 	 */
 	public $menuItemList = array();
 	
@@ -29,12 +29,12 @@ abstract class TreeMenu extends SingletonFactory {
 	
 	/**
 	 * list of all menu items
-	 * @var	array<wcf\system\menu\ITreeMenuItem>
+	 * @var	array<\wcf\system\menu\ITreeMenuItem>
 	 */
 	public $menuItems = null;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	\wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		// get menu items from cache
@@ -66,7 +66,7 @@ abstract class TreeMenu extends SingletonFactory {
 	/**
 	 * Checks the options and permissions of given menu item.
 	 * 
-	 * @param	wcf\system\menu\ITreeMenuItem		$item
+	 * @param	\wcf\system\menu\ITreeMenuItem		$item
 	 * @return	boolean
 	 */
 	protected function checkMenuItem(ITreeMenuItem $item) {

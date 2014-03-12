@@ -5,7 +5,7 @@ namespace wcf\system\search\acp;
  * Represents an ACP search result.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.search.acp
@@ -54,7 +54,7 @@ class ACPSearchResult {
 	}
 	
 	/**
-	 * @see	wcf\system\search\acp\ACPSearchResult::getTitle()
+	 * @see	\wcf\system\search\acp\ACPSearchResult::getTitle()
 	 */
 	public function __toString() {
 		return $this->getTitle();

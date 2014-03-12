@@ -1,11 +1,12 @@
 <?php
 /**
  * This script tries to find the temp folder and unzip all setup files into.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
+// @codingStandardsIgnoreFile
 // define constants
 define('INSTALL_SCRIPT', __FILE__);
 define('INSTALL_SCRIPT_DIR', dirname(__FILE__).'/');
@@ -123,7 +124,7 @@ class SystemException extends \Exception implements IPrintableException {
 <body>
 	<div>
 		<h1>Fatal error: <?php echo htmlspecialchars($this->getMessage()); ?></h1>
-	
+		
 		<div>
 			<p><?php echo $this->getDescription(); ?></p>
 			<?php if ($this->getCode()) { ?><p>You get more information about the problem in our knowledge base: <a href="http://www.woltlab.com/help/?code=<?php echo intval($this->getCode()); ?>">http://www.woltlab.com/help/?code=<?php echo intval($this->getCode()); ?></a></p><?php } ?>
@@ -153,7 +154,6 @@ class SystemException extends \Exception implements IPrintableException {
 <?php
 	}
 }
-
 
 /**
  * Loads the required classes automatically.
@@ -251,7 +251,7 @@ class BasicFileUtil {
 				return $_SERVER['DOCUMENT_ROOT'].'/tmp/';
 			}
 		}
-	
+		
 		if (isset($_ENV['TMP']) && @is_writable($_ENV['TMP'])) {
 			return $_ENV['TMP'] . '/';
 		}
@@ -261,7 +261,7 @@ class BasicFileUtil {
 		if (isset($_ENV['TMPDIR']) && @is_writable($_ENV['TMPDIR'])) {
 			return $_ENV['TMPDIR'] . '/';
 		}
-	
+		
 		if (($path = ini_get('upload_tmp_dir')) && @is_writable($path)) {
 			return $path . '/';
 		}
@@ -271,7 +271,7 @@ class BasicFileUtil {
 		if (function_exists('session_save_path') && ($path = session_save_path()) && @is_writable($path)) {
 			return $path . '/';
 		}
-	
+		
 		$path = INSTALL_SCRIPT_DIR.'tmp/';
 		if (@file_exists($path) && @is_writable($path)) {
 			return $path;
@@ -308,10 +308,13 @@ class BasicFileUtil {
 		// determine mode
 		if (self::$mode === null) {
 			// do not use PHP_OS here, as this represents the system it was built on != running on
-			if (strpos(php_uname(), 'Windows') !== false) {
+			// php_uname() is forbidden on some strange hosts; PHP_EOL is reliable 
+			if (PHP_EOL == "\r\n") {
+				// Windows
 				self::$mode = 0777;
 			}
 			else {
+				// anything but Windows
 				clearstatcache();
 				
 				self::$mode = 0666;
@@ -598,7 +601,7 @@ class Tar {
 		if (strlen($binaryData) != 512) {
 			return false;
 		}
-
+		
 		$header = array();
 		$checksum = 0;
 		// First part of the header
@@ -614,7 +617,7 @@ class Tar {
 		for ($i = 156; $i < 512; $i++) {
 			$checksum += ord(substr($binaryData, $i, 1));
 		}
-
+		
 		// Extract the values
 		//$data = unpack("a100filename/a8mode/a8uid/a8gid/a12size/a12mtime/a8checksum/a1typeflag/a100link/a6magic/a2version/a32uname/a32gname/a8devmajor/a8devminor", $binaryData);
 		if (version_compare(PHP_VERSION, '5.5.0-dev', '>=')) {

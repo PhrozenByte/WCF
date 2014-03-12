@@ -1,7 +1,7 @@
 <?php
 namespace wcf\form;
 use wcf\data\user\User;
-use wcf\data\user\UserEditor;
+use wcf\data\user\UserAction;
 use wcf\system\exception\UserInputException;
 use wcf\system\mail\Mail;
 use wcf\system\menu\user\UserMenu;
@@ -16,20 +16,20 @@ use wcf\util\UserUtil;
  * Shows the account management form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	form
  * @category	Community Framework
  */
-class AccountManagementForm extends AbstractSecureForm {
+class AccountManagementForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$enableTracking
+	 * @see	\wcf\page\AbstractPage::$enableTracking
 	 */
 	public $enableTracking = true;
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$loginRequired
+	 * @see	\wcf\page\AbstractPage::$loginRequired
 	 */
 	public $loginRequired = true;
 	
@@ -136,7 +136,7 @@ class AccountManagementForm extends AbstractSecureForm {
 	public $googleDisconnect = 0;
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -145,7 +145,7 @@ class AccountManagementForm extends AbstractSecureForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -172,7 +172,7 @@ class AccountManagementForm extends AbstractSecureForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -255,7 +255,7 @@ class AccountManagementForm extends AbstractSecureForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::readData()
+	 * @see	\wcf\page\IPage::readData()
 	 */
 	public function readData() {
 		parent::readData();
@@ -268,7 +268,7 @@ class AccountManagementForm extends AbstractSecureForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -296,7 +296,7 @@ class AccountManagementForm extends AbstractSecureForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::show()
+	 * @see	\wcf\page\IPage::show()
 	 */
 	public function show() {
 		// set active tab
@@ -306,7 +306,7 @@ class AccountManagementForm extends AbstractSecureForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
@@ -314,7 +314,6 @@ class AccountManagementForm extends AbstractSecureForm {
 		$success = array();
 		$updateParameters = array();
 		$updateOptions = array();
-		$userEditor = new UserEditor(WCF::getUser());
 		
 		// quit
 		if (WCF::getSession()->getPermission('user.profile.canQuit')) {
@@ -334,7 +333,7 @@ class AccountManagementForm extends AbstractSecureForm {
 		if (WCF::getSession()->getPermission('user.profile.canRename') && $this->username != WCF::getUser()->username) {
 			if (mb_strtolower($this->username) != mb_strtolower(WCF::getUser()->username)) {
 				$updateParameters['lastUsernameChange'] = TIME_NOW;
-				$updateParameters['oldUsername'] = $userEditor->username;
+				$updateParameters['oldUsername'] = WCF::getUser()->username;
 			}
 			$updateParameters['username'] = $this->username;
 			$success[] = 'wcf.user.changeUsername.success';
@@ -370,18 +369,7 @@ class AccountManagementForm extends AbstractSecureForm {
 		// password
 		if (!WCF::getUser()->authData) {
 			if (!empty($this->newPassword) || !empty($this->confirmNewPassword)) {
-				$userEditor->update(array(
-					'password' => $this->newPassword
-				));
-				
-				// update cookie
-				if (isset($_COOKIE[COOKIE_PREFIX.'password'])) {
-					// reload user
-					$user = new User($userEditor->userID);
-					
-					HeaderUtil::setCookie('password', PasswordUtil::getSaltedHash($this->newPassword, $user->password), TIME_NOW + 365 * 24 * 3600);
-				}
-				
+				$updateParameters['password'] = $this->newPassword;
 				$success[] = 'wcf.user.changePassword.success';
 			}
 		}
@@ -443,11 +431,23 @@ class AccountManagementForm extends AbstractSecureForm {
 			}
 		}
 		
+		$data = array();
 		if (!empty($updateParameters)) {
-			$userEditor->update($updateParameters);
+			$data['data'] = array_merge($this->additionalFields, $updateParameters);
 		}
 		if (!empty($updateOptions)) {
-			$userEditor->updateUserOptions($updateOptions);
+			$data['options'] = $updateOptions;
+		}
+		
+		$this->objectAction = new UserAction(array(WCF::getUser()), 'update', $data);
+		$this->objectAction->executeAction();
+		
+		// update cookie
+		if (isset($_COOKIE[COOKIE_PREFIX.'password']) && isset($updateParameters['password'])) {
+			// reload user
+			$user = new User(WCF::getUser()->userID);
+			
+			HeaderUtil::setCookie('password', PasswordUtil::getSaltedHash($updateParameters['password'], $user->password), TIME_NOW + 365 * 24 * 3600);
 		}
 		
 		$this->saved();

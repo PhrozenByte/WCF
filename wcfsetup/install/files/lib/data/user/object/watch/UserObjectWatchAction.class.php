@@ -10,7 +10,7 @@ use wcf\system\WCF;
  * Executes watched object-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	data.user.object.watch
@@ -19,13 +19,13 @@ use wcf\system\WCF;
 class UserObjectWatchAction extends AbstractDatabaseObjectAction {
 	/**
 	 * object type object
-	 * @var	wcf\data\object\type\ObjectType
+	 * @var	\wcf\data\object\type\ObjectType
 	 */
 	protected $objectType = null;
 	
 	/**
 	 * user object watch object
-	 * @var	wcf\data\user\object\watch\UserObjectWatch
+	 * @var	\wcf\data\user\object\watch\UserObjectWatch
 	 */
 	protected $userObjectWatch = null;
 	

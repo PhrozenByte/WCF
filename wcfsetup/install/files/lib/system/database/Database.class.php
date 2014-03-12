@@ -7,7 +7,7 @@ use wcf\system\WCF;
  * Abstract implementation of a database access class using PDO.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.database
@@ -58,7 +58,7 @@ abstract class Database {
 	
 	/**
 	 * enables failsafe connection
-	 * @var boolean
+	 * @var	boolean
 	 */
 	protected $failsafeTest = false;
 	
@@ -70,7 +70,7 @@ abstract class Database {
 	
 	/**
 	 * database editor object
-	 * @var	wcf\system\database\editor\DatabaseEditor
+	 * @var	\wcf\system\database\editor\DatabaseEditor
 	 */
 	protected $editor = null;
 	
@@ -117,7 +117,7 @@ abstract class Database {
 	 * 
 	 * @param	string		$table
 	 * @param	string		$field
-	 * @return	integer	
+	 * @return	integer
 	 */
 	public function getInsertID($table, $field) {
 		try {
@@ -217,7 +217,7 @@ abstract class Database {
 	 * @param	string			$statement
 	 * @param	integer			$limit
 	 * @param	integer			$offset
-	 * @return	wcf\system\database\statement\PreparedStatement
+	 * @return	\wcf\system\database\statement\PreparedStatement
 	 */
 	public function prepareStatement($statement, $limit = 0, $offset = 0) {
 		$statement = $this->handleLimitParameter($statement, $limit, $offset);
@@ -346,8 +346,8 @@ abstract class Database {
 	
 	/**
 	 * Returns a database editor object.
-	 *
-	 * @return	wcf\system\database\editor\DatabaseEditor
+	 * 
+	 * @return	\wcf\system\database\editor\DatabaseEditor
 	 */
 	public function getEditor() {
 		if ($this->editor === null) {
@@ -359,7 +359,7 @@ abstract class Database {
 	
 	/**
 	 * Returns true if this database type is supported.
-	 *
+	 * 
 	 * @return	boolean
 	 */
 	public static function isSupported() {

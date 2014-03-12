@@ -5,9 +5,7 @@
 	{if $action == 'edit'}<p>{$template->getPath()}</p>{/if}
 </header>
 
-{if $errorField}
-	<p class="error">{lang}wcf.global.form.error{/lang}</p>
-{/if}
+{include file='formError'}
 
 {if $success|isset}
 	<p class="success">{lang}wcf.global.success.{$action}{/lang}</p>
@@ -59,10 +57,9 @@
 				{event name='dataFields'}
 			</fieldset>
 			
-			
 			<fieldset>
 				<legend><label for="templateSource">{lang}wcf.acp.template.source{/lang}</label></legend>
-			
+				
 				<dl class="wide">
 					<dt><label for="templateSource">{lang}wcf.acp.template.source{/lang}</label></dt>
 					<dd>
@@ -71,7 +68,6 @@
 					</dd>
 				</dl>
 			</fieldset>
-				
 			
 			{event name='fieldsets'}
 		</div>
@@ -79,11 +75,11 @@
 		<div class="formSubmit">
 			<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" />
 			{if $copy}<input type="hidden" name="copy" value="{@$copy}" />{/if}
+			{@SECURITY_TOKEN_INPUT_TAG}
 		</div>
 	</form>
 {else}
 	<p class="error">{lang}wcf.acp.template.error.noGroups{/lang}</p>
 {/if}
-
 
 {include file='footer'}

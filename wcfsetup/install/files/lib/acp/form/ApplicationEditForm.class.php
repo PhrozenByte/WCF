@@ -17,7 +17,7 @@ use wcf\util\StringUtil;
  * Shows the application edit form.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -25,13 +25,13 @@ use wcf\util\StringUtil;
  */
 class ApplicationEditForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.package';
 	
 	/**
 	 * viewable application object
-	 * @var	wcf\data\application\ViewableApplication
+	 * @var	\wcf\data\application\ViewableApplication
 	 */
 	public $application = null;
 	
@@ -40,12 +40,6 @@ class ApplicationEditForm extends AbstractForm {
 	 * @var	string
 	 */
 	public $cookieDomain = '';
-	
-	/**
-	 * cookie path
-	 * @var	string
-	 */
-	public $cookiePath = '';
 	
 	/**
 	 * domain name
@@ -60,7 +54,7 @@ class ApplicationEditForm extends AbstractForm {
 	public $domainPath = '';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.system.canManageApplication');
 	
@@ -71,12 +65,12 @@ class ApplicationEditForm extends AbstractForm {
 	public $packageID = 0;
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$templateName
+	 * @see	\wcf\page\AbstractPage::$templateName
 	 */
 	public $templateName = 'applicationEdit';
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -89,33 +83,31 @@ class ApplicationEditForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
 		
 		if (isset($_POST['cookieDomain'])) $this->cookieDomain = StringUtil::trim($_POST['cookieDomain']);
-		if (isset($_POST['cookiePath'])) $this->cookiePath = StringUtil::trim($_POST['cookiePath']);
 		if (isset($_POST['domainName'])) $this->domainName = StringUtil::trim($_POST['domainName']);
 		if (isset($_POST['domainPath'])) $this->domainPath = StringUtil::trim($_POST['domainPath']);
 	}
 	
 	/**
-	 * @see	wcf\page\IForm::readData()
+	 * @see	\wcf\page\IForm::readData()
 	 */
 	public function readData() {
 		parent::readData();
 		
 		if (empty($_POST)) {
 			$this->cookieDomain = $this->application->cookieDomain;
-			$this->cookiePath = $this->application->cookiePath;
 			$this->domainName = $this->application->domainName;
 			$this->domainPath = $this->application->domainPath;
 		}
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
@@ -137,31 +129,18 @@ class ApplicationEditForm extends AbstractForm {
 				throw new UserInputException('cookieDomain', 'containsPath');
 			}
 			
-			// check if cookie domain shares the same domain (may exclude subdomains)
-			if (!StringUtil::endsWith($this->domainName, $this->cookieDomain)) {
-				throw new UserInputException('cookieDomain', 'notValid');
-			}
-		}
-		
-		if (empty($this->domainPath)) {
-			$this->cookiePath = '';
-		}
-		else {
-			// strip first and last slash
-			$this->domainPath = FileUtil::removeLeadingSlash(FileUtil::removeTrailingSlash($this->domainPath));
-			$this->cookiePath = FileUtil::removeLeadingSlash(FileUtil::removeTrailingSlash($this->cookiePath));
+			// strip port from cookie domain
+			$regex = new Regex(':[0-9]+$');
+			$this->cookieDomain = $regex->replace($this->cookieDomain, '');
 			
-			if (!empty($this->cookiePath) && ($this->domainPath != $this->cookiePath)) {
-				// check if cookie path is contained within domain path
-				if (!StringUtil::startsWith($this->domainPath, $this->cookiePath)) {
-					throw new UserInputException('cookiePath', 'notValid');
-				}
+			// check if cookie domain shares the same domain (may exclude subdomains)
+			if (!StringUtil::endsWith($regex->replace($this->domainName, ''), $this->cookieDomain)) {
+				throw new UserInputException('cookieDomain', 'notValid');
 			}
 		}
 		
 		// add slashes
 		$this->domainPath = FileUtil::addLeadingSlash(FileUtil::addTrailingSlash($this->domainPath));
-		$this->cookiePath = FileUtil::addLeadingSlash(FileUtil::addTrailingSlash($this->cookiePath));
 		
 		// search for other applications with the same domain and path
 		$sql = "SELECT	packageID
@@ -183,18 +162,17 @@ class ApplicationEditForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
 		
 		// save application
-		$this->objectAction = new ApplicationAction(array($this->application->getDecoratedObject()), 'update', array('data' => array(
+		$this->objectAction = new ApplicationAction(array($this->application->getDecoratedObject()), 'update', array('data' => array_merge($this->additionalFields, array(
 			'cookieDomain' => $this->cookieDomain,
-			'cookiePath' => $this->cookiePath,
 			'domainName' => $this->domainName,
 			'domainPath' => $this->domainPath
-		)));
+		))));
 		$this->objectAction->executeAction();
 		
 		$this->saved();
@@ -209,7 +187,7 @@ class ApplicationEditForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
@@ -217,7 +195,6 @@ class ApplicationEditForm extends AbstractForm {
 		WCF::getTPL()->assign(array(
 			'application' => $this->application,
 			'cookieDomain' => $this->cookieDomain,
-			'cookiePath' => $this->cookiePath,
 			'domainName' => $this->domainName,
 			'domainPath' => $this->domainPath,
 			'packageID' => $this->packageID

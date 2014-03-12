@@ -4,9 +4,9 @@ use wcf\data\option\Option;
 
 /**
  * Option type implementation for url input fields.
- *
+ * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	system.option
@@ -14,7 +14,7 @@ use wcf\data\option\Option;
  */
 class URLOptionType extends TextOptionType {
 	/**
-	 * @see	wcf\system\option\TextOptionType::getContent()
+	 * @see	\wcf\system\option\TextOptionType::getContent()
 	 */
 	protected function getContent(Option $option, $newValue) {
 		if ($newValue && !preg_match('~^https?://~i', $newValue)) {

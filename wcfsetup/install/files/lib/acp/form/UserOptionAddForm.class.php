@@ -13,7 +13,7 @@ use wcf\util\StringUtil;
  * Shows the user option add form.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2013 WoltLab GmbH
+ * @copyright	2001-2014 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf
  * @subpackage	acp.form
@@ -21,119 +21,119 @@ use wcf\util\StringUtil;
  */
 class UserOptionAddForm extends AbstractForm {
 	/**
-	 * @see	wcf\page\AbstractPage::$activeMenuItem
+	 * @see	\wcf\page\AbstractPage::$activeMenuItem
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.user.option.add';
 	
 	/**
-	 * @see	wcf\page\AbstractPage::$neededPermissions
+	 * @see	\wcf\page\AbstractPage::$neededPermissions
 	 */
 	public $neededPermissions = array('admin.user.canManageUserOption');
 	
 	/**
 	 * option name
-	 * @var string
+	 * @var	string
 	 */
 	public $optionName = '';
 	
 	/**
 	 * option description
-	 * @var string
+	 * @var	string
 	 */
 	public $optionDescription = '';
 	
 	/**
 	 * category name
-	 * @var string
+	 * @var	string
 	 */
 	public $categoryName = '';
 	
 	/**
 	 * option type
-	 * @var string
+	 * @var	string
 	 */
 	public $optionType = 'text';
 	
 	/**
 	 * option default value
-	 * @var string
+	 * @var	string
 	 */
 	public $defaultValue = '';
 	
 	/**
 	 * validation pattern
-	 * @var string
+	 * @var	string
 	 */
 	public $validationPattern = '';
 	
 	/**
 	 * select options
-	 * @var string
+	 * @var	string
 	 */
 	public $selectOptions = '';
 	
 	/**
 	 * field is required
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $required = 0;
 	
 	/**
-	 * shows this field in the registration process 
-	 * @var boolean
+	 * shows this field in the registration process
+	 * @var	boolean
 	 */
 	public $askDuringRegistration = 0;
 	
 	/**
 	 * edit permission bitmask
-	 * @var integer
+	 * @var	integer
 	 */
 	public $editable = 3;
 	
 	/**
 	 * view permission bitmask
-	 * @var integer
+	 * @var	integer
 	 */
 	public $visible = 15;
 	
 	/**
 	 * field is searchable
-	 * @var boolean
+	 * @var	boolean
 	 */
 	public $searchable = 0;
 	
 	/**
 	 * show order
-	 * @var integer
+	 * @var	integer
 	 */
 	public $showOrder = 0;
 	
 	/**
 	 * output class
-	 * @var string
+	 * @var	string
 	 */
 	public $outputClass = '';
 	
 	/**
 	 * available option categories
-	 * @var array<wcf\data\user\option\UserOptionCategory>
+	 * @var	array<\wcf\data\user\option\UserOptionCategory>
 	 */
 	public $availableCategories = array();
 	
 	/**
 	 * available option types
-	 * @var array<string>
+	 * @var	array<string>
 	 */
 	public static $availableOptionTypes = array('birthday', 'boolean', 'date', 'integer', 'float', 'password', 'multiSelect', 'radioButton', 'select', 'text', 'textarea', 'message', 'URL');
 	
 	/**
 	 * list of option type that require select options
-	 * @var array<string>
+	 * @var	array<string>
 	 */
 	public static $optionTypesUsingSelectOptions = array('multiSelect', 'radioButton', 'select');
 	
 	/**
-	 * @see	wcf\page\IPage::readParameters()
+	 * @see	\wcf\page\IPage::readParameters()
 	 */
 	public function readParameters() {
 		parent::readParameters();
@@ -149,7 +149,7 @@ class UserOptionAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see wcf\form\IForm::readFormParameters()
+	 * @see	\wcf\form\IForm::readFormParameters()
 	 */
 	public function readFormParameters() {
 		parent::readFormParameters();
@@ -180,14 +180,14 @@ class UserOptionAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see wcf\form\IForm::validate()
+	 * @see	\wcf\form\IForm::validate()
 	 */
 	public function validate() {
 		parent::validate();
 		
 		// option name
 		if (!I18nHandler::getInstance()->validateValue('optionName', true)) {
-			throw new UserInputException('optionName');
+			throw new UserInputException('optionName', 'multilingual');
 		}
 		
 		// category name
@@ -223,12 +223,12 @@ class UserOptionAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see	wcf\form\IForm::save()
+	 * @see	\wcf\form\IForm::save()
 	 */
 	public function save() {
 		parent::save();
 		
-		$this->objectAction = new UserOptionAction(array(), 'create', array('data' => array(
+		$this->objectAction = new UserOptionAction(array(), 'create', array('data' => array_merge($this->additionalFields, array(
 			'optionName' => StringUtil::getRandomID(),
 			'categoryName' => $this->categoryName,
 			'optionType' => $this->optionType,
@@ -244,7 +244,7 @@ class UserOptionAddForm extends AbstractForm {
 			'visible' => $this->visible,
 			'packageID' => 1,
 			'additionalData' => ($this->optionType == 'select' ? serialize(array('allowEmptyValue' => true)) : '')
-		)));
+		))));
 		$this->objectAction->executeAction();
 		
 		$returnValues = $this->objectAction->getReturnValues();
@@ -272,7 +272,7 @@ class UserOptionAddForm extends AbstractForm {
 	}
 	
 	/**
-	 * @see wcf\page\IPage::assignVariables()
+	 * @see	\wcf\page\IPage::assignVariables()
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
